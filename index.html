@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MomsBakery | Najibabad's Premium Cake & Gift Corner</title>
+    <title>MomsBakery | Total Admin Control</title>
     
     <!-- Scripts & Styles -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -17,17 +17,18 @@
         .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
         [x-cloak] { display: none !important; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .admin-input { border: 1px solid #e2e8f0; padding: 12px; border-radius: 15px; width: 100%; margin-bottom: 12px; font-size: 14px;}
-        .instagram-grid img { aspect-ratio: 1/1; object-fit: cover; border-radius: 15px; }
+        .admin-card { background: white; border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid #eee; shadow: sm; }
+        .admin-input { border: 1px solid #ddd; padding: 10px; border-radius: 12px; width: 100%; margin-bottom: 8px; font-size: 13px;}
+        .admin-label { font-size: 10px; font-weight: bold; color: #999; text-transform: uppercase; margin-left: 5px; }
     </style>
 </head>
 <body x-data="bakeryApp()" x-init="init()">
 
     <!-- NAVIGATION -->
     <nav class="fixed w-full z-50 glass py-3 px-6 flex justify-between items-center shadow-sm">
-        <div class="serif text-2xl font-bold text-[#3E2723]">MomsBakery</div>
+        <div class="serif text-2xl font-bold text-[#3E2723]" x-text="site.brandName"></div>
         <div class="flex items-center gap-4">
-            <button @click="showAdminLogin = true" class="text-[10px] font-bold border border-[#3E2723] px-3 py-1 rounded-full">ADMIN LOGIN</button>
+            <button @click="showAdminLogin = true" class="text-[10px] font-bold border border-[#3E2723] px-3 py-1 rounded-full uppercase">Settings</button>
             <div class="relative cursor-pointer" @click="showCart = true">
                 <span class="text-2xl">🛒</span>
                 <span class="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center" x-text="cartCount()"></span>
@@ -35,31 +36,45 @@
         </div>
     </nav>
 
-    <!-- HERO SECTION -->
-    <section class="h-[80vh] flex items-center justify-center text-center bg-gradient-to-b from-pink-100 to-[#FDF8F5] px-6">
+    <!-- HERO SECTION (Admin Controlled) -->
+    <section class="h-[70vh] flex items-center justify-center text-center bg-[#FFF5F5] px-6 pt-20">
         <div class="animate__animated animate__fadeIn">
-            <span class="text-pink-500 font-bold tracking-[0.4em] text-xs uppercase block mb-2">Baking Happiness in Najibabad</span>
-            <h1 class="serif text-5xl md:text-8xl text-[#3E2723] mb-6">Sweet Memories<br><span class="italic font-light">Freshly Baked</span></h1>
+            <span class="text-pink-500 font-bold tracking-[0.4em] text-[10px] uppercase block mb-2" x-text="site.heroTagline"></span>
+            <h1 class="serif text-5xl md:text-8xl text-[#3E2723] mb-4" x-text="site.heroTitle"></h1>
+            <p class="text-gray-500 text-sm mb-8" x-text="site.heroSubTitle"></p>
             <div class="flex gap-4 justify-center">
-                <a href="#shop" class="bg-[#3E2723] text-white px-10 py-4 rounded-full font-bold text-sm shadow-xl">Order Now</a>
+                <a href="#shop" class="bg-[#3E2723] text-white px-8 py-3 rounded-full font-bold text-sm shadow-xl">Order Now</a>
             </div>
         </div>
     </section>
 
-    <!-- OUR COLLECTION (Dynamic Tabs) -->
+    <!-- SHOP BY WEIGHT SECTION -->
+    <section class="py-8 bg-white border-b overflow-x-auto no-scrollbar">
+        <div class="max-w-7xl mx-auto px-6 flex justify-start md:justify-center gap-3">
+            <template x-for="w in weights">
+                <button @click="activeWeight = w" 
+                        :class="activeWeight === w ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-500'"
+                        class="px-6 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition"
+                        x-text="w"></button>
+            </template>
+        </div>
+    </section>
+
+    <!-- MAIN COLLECTION -->
     <section id="shop" class="py-16 px-6 max-w-7xl mx-auto">
         <div class="text-center mb-10">
             <h2 class="serif text-4xl mb-6">Our Collection</h2>
             <div class="flex overflow-x-auto gap-3 no-scrollbar justify-start md:justify-center pb-4">
                 <template x-for="cat in categories">
                     <button @click="activeTab = cat" 
-                            :class="activeTab === cat ? 'bg-[#3E2723] text-white shadow-lg' : 'bg-white text-gray-500'"
-                            class="px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border border-gray-100"
+                            :class="activeTab === cat ? 'bg-[#3E2723] text-white shadow-lg' : 'bg-white text-gray-400'"
+                            class="px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap transition border border-gray-100"
                             x-text="cat"></button>
                 </template>
             </div>
         </div>
 
+        <!-- Products -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
             <template x-for="item in filteredItems" :key="item.id">
                 <div class="bg-white p-4 rounded-[35px] shadow-sm hover:shadow-xl transition-all relative">
@@ -70,23 +85,26 @@
                     </template>
                     <img :src="item.image" class="w-full aspect-square object-cover rounded-[25px] mb-3">
                     <h3 class="font-bold text-sm text-[#3E2723] truncate" x-text="item.name"></h3>
-                    <p class="text-pink-600 font-bold text-sm mb-3">₹<span x-text="item.price"></span></p>
-                    <button @click="addToCart(item)" :disabled="item.isOutOfStock" class="w-full bg-[#3E2723] text-white py-3 rounded-2xl text-[10px] font-bold uppercase active:scale-95 transition">Add to Cart</button>
+                    <div class="flex justify-between items-center mb-3">
+                        <p class="text-pink-600 font-bold text-sm">₹<span x-text="item.price"></span></p>
+                        <span class="text-[9px] bg-gray-100 px-2 py-1 rounded text-gray-500 font-bold" x-text="item.weight"></span>
+                    </div>
+                    <button @click="addToCart(item)" :disabled="item.isOutOfStock" class="w-full bg-[#3E2723] text-white py-2 rounded-xl text-[10px] font-bold uppercase active:scale-95 transition">Add to Cart</button>
                 </div>
             </template>
         </div>
 
-        <!-- SPECIAL COLLECTIONS (Festival, Seasonal, Limited) -->
+        <!-- SPECIAL COLLECTIONS (Admin Controlled) -->
         <div class="bg-[#3E2723] rounded-[50px] p-8 md:p-16 text-white mb-20">
-            <h2 class="serif text-4xl mb-10 text-center">Special Collections</h2>
+            <h2 class="serif text-3xl mb-10 text-center">Special Collections</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <template x-for="special in specials">
                     <div class="group relative overflow-hidden rounded-[30px] h-80">
                         <img :src="special.image" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
-                            <span class="text-pink-400 text-[10px] font-bold uppercase tracking-widest" x-text="special.type"></span>
+                            <span class="text-pink-400 text-[10px] font-bold uppercase tracking-widest" x-text="special.category"></span>
                             <h3 class="serif text-2xl" x-text="special.name"></h3>
-                            <button @click="addToCart(special)" class="mt-4 text-xs font-bold border border-white w-fit px-4 py-2 rounded-full hover:bg-white hover:text-black transition">Add to Cart • ₹<span x-text="special.price"></span></button>
+                            <button @click="addToCart(special)" class="mt-4 text-xs font-bold border border-white w-fit px-4 py-2 rounded-full hover:bg-white hover:text-black transition">Add • ₹<span x-text="special.price"></span></button>
                         </div>
                     </div>
                 </template>
@@ -94,92 +112,81 @@
         </div>
     </section>
 
-    <!-- CUSTOMER REVIEWS -->
+    <!-- CUSTOMER REVIEWS (Admin Controlled) -->
     <section class="py-16 bg-pink-50">
         <div class="max-w-7xl mx-auto px-6">
-            <h2 class="serif text-4xl text-center mb-12">Customer Reviews</h2>
+            <h2 class="serif text-4xl text-center mb-12">Customer Love</h2>
             <div class="flex overflow-x-auto gap-6 no-scrollbar pb-10">
                 <template x-for="review in reviews">
                     <div class="min-w-[300px] md:min-w-[400px] bg-white p-6 rounded-[40px] shadow-sm">
                         <div class="flex items-center gap-4 mb-4">
-                            <img :src="review.photo" class="w-16 h-16 rounded-full object-cover border-2 border-pink-200">
+                            <img :src="review.photo" class="w-14 h-14 rounded-full object-cover">
                             <div>
-                                <h4 class="font-bold text-[#3E2723]" x-text="review.name"></h4>
-                                <div class="text-yellow-400 text-xs">★★★★★</div>
+                                <h4 class="font-bold text-[#3E2723] text-sm" x-text="review.name"></h4>
+                                <div class="text-yellow-400 text-[10px]">★★★★★</div>
                             </div>
                         </div>
-                        <p class="text-gray-600 italic text-sm" x-text="review.text"></p>
+                        <p class="text-gray-600 italic text-xs leading-relaxed" x-text="review.text"></p>
                     </div>
                 </template>
             </div>
         </div>
     </section>
 
-    <!-- INSTAGRAM FEED -->
+    <!-- INSTAGRAM FEED (Admin Controlled) -->
     <section class="py-20 px-6 max-w-7xl mx-auto">
-        <div class="text-center mb-12">
-            <h2 class="serif text-3xl mb-2">Follow Us on Instagram</h2>
-            <p class="text-gray-400 text-sm">@momsbakeryandcakecorner</p>
-        </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 instagram-grid">
-            <img src="https://images.unsplash.com/photo-1557925923-33b27f891f88?q=80">
-            <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?q=80">
-            <img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?q=80">
-            <img src="https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?q=80">
-            <img src="https://images.unsplash.com/photo-1519340333755-5072134d2371?q=80">
-            <img src="https://images.unsplash.com/photo-1464349153735-7db50ed83c84?q=80">
+        <h2 class="serif text-2xl text-center mb-10">Follow @momsbakeryandcakecorner</h2>
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-3">
+            <template x-for="img in site.instaFeed">
+                <img :src="img" class="aspect-square object-cover rounded-2xl shadow-sm">
+            </template>
         </div>
     </section>
 
-    <!-- FAQ & ADDRESS -->
-    <section class="py-20 px-6 bg-white">
+    <!-- STORE INFO & FAQ (Admin Controlled) -->
+    <footer class="py-20 px-6 bg-white border-t">
         <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-16">
             <div>
-                <h2 class="serif text-4xl mb-8">Store Info</h2>
-                <div class="space-y-6">
-                    <div>
-                        <h4 class="font-bold text-pink-600 text-xs uppercase tracking-widest mb-2">Location</h4>
-                        <p class="text-[#3E2723] font-bold">Mota Aam, near Pooja Hospital,<br>Najibabad, Uttar Pradesh.</p>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-pink-600 text-xs uppercase tracking-widest mb-2">Contact</h4>
-                        <p class="text-[#3E2723] font-bold">+91 8218250432</p>
-                        <p class="text-gray-400 text-sm">momsbakery@gmail.com</p>
-                    </div>
+                <h2 class="serif text-3xl mb-8">Visit Us</h2>
+                <div class="space-y-4 text-sm">
+                    <p class="text-[#3E2723] font-bold" x-text="site.address"></p>
+                    <p class="text-gray-500">Phone: <span class="font-bold" x-text="site.phone"></span></p>
+                    <p class="text-gray-500">Email: <span class="font-bold" x-text="site.email"></span></p>
                 </div>
             </div>
-            <div x-data="{ openFaq: 1 }">
-                <h2 class="serif text-4xl mb-8">FAQ</h2>
+            <div>
+                <h2 class="serif text-3xl mb-8">FAQ</h2>
                 <div class="space-y-4">
-                    <div class="border-b pb-4 cursor-pointer" @click="openFaq = 1">
-                        <h4 class="font-bold text-sm flex justify-between">Ordering Process <span x-show="openFaq != 1">+</span></h4>
-                        <p x-show="openFaq == 1" class="text-xs text-gray-500 mt-2">Browse items, add to cart, and checkout to WhatsApp. We confirm via chat.</p>
-                    </div>
-                    <div class="border-b pb-4 cursor-pointer" @click="openFaq = 2">
-                        <h4 class="font-bold text-sm flex justify-between">Custom Cakes <span x-show="openFaq != 2">+</span></h4>
-                        <p x-show="openFaq == 2" class="text-xs text-gray-500 mt-2">Photo cakes and theme cakes require 24-48 hours notice.</p>
-                    </div>
+                    <template x-for="(f, i) in faqs">
+                        <div class="border-b pb-4 cursor-pointer" x-data="{ open: false }" @click="open = !open">
+                            <h4 class="font-bold text-sm flex justify-between" x-text="f.q"> <span x-text="open ? '-':'+'"></span></h4>
+                            <p x-show="open" class="text-xs text-gray-500 mt-2" x-text="f.a"></p>
+                        </div>
+                    </template>
                 </div>
             </div>
         </div>
-    </section>
+    </footer>
 
-    <!-- SHOPPING CART -->
+    <!-- CART -->
     <div x-show="showCart" class="fixed inset-0 z-[100] flex justify-end" x-cloak>
         <div class="absolute inset-0 bg-black/60" @click="showCart = false"></div>
         <div class="relative w-full max-w-md bg-white h-full p-8 shadow-2xl flex flex-col animate__animated animate__slideInRight">
-            <h2 class="serif text-3xl mb-8">Your Cart</h2>
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="serif text-3xl">Your Cart</h2>
+                <button @click="showCart = false" class="text-3xl">&times;</button>
+            </div>
             <div class="flex-1 overflow-y-auto no-scrollbar">
                 <template x-for="(item, index) in cart" :key="index">
                     <div class="flex gap-4 mb-4 bg-gray-50 p-4 rounded-3xl">
                         <img :src="item.image" class="w-16 h-16 rounded-xl object-cover">
                         <div class="flex-1">
                             <h4 class="font-bold text-sm" x-text="item.name"></h4>
-                            <p class="text-pink-500 text-xs font-bold">₹<span x-text="item.price"></span></p>
+                            <p class="text-pink-500 text-xs font-bold">₹<span x-text="item.price"></span> | <span x-text="item.weight"></span></p>
                             <div class="flex items-center gap-3 mt-1">
-                                <button @click="updateQty(index, -1)" class="w-6 h-6 bg-white rounded-full shadow text-xs">-</button>
+                                <button @click="updateQty(index, -1)" class="w-6 h-6 bg-white rounded-full text-xs">-</button>
                                 <span class="text-xs font-bold" x-text="item.qty"></span>
-                                <button @click="updateQty(index, 1)" class="w-6 h-6 bg-white rounded-full shadow text-xs">+</button>
+                                <button @click="updateQty(index, 1)" class="w-6 h-6 bg-white rounded-full text-xs">+</button>
                             </div>
                         </div>
                         <button @click="cart.splice(index, 1)" class="text-red-400">🗑️</button>
@@ -191,63 +198,118 @@
                     <span>Total:</span>
                     <span>₹<span x-text="getCartTotal()"></span></span>
                 </div>
-                <button @click="checkoutWhatsApp()" class="w-full bg-green-500 text-white py-4 rounded-2xl font-bold shadow-lg">Order via WhatsApp</button>
+                <button @click="checkoutWhatsApp()" class="w-full bg-green-500 text-white py-4 rounded-2xl font-bold shadow-lg">Checkout Order</button>
             </div>
         </div>
     </div>
 
-    <!-- ADMIN DASHBOARD -->
+    <!-- ADMIN LOGIN -->
     <div x-show="showAdminLogin" class="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-black/90" x-cloak>
         <div class="bg-white w-full max-w-sm p-8 rounded-[40px] text-center">
-            <h2 class="serif text-2xl mb-6">Owner Login</h2>
-            <input type="password" x-model="adminPassword" placeholder="Admin Password" class="admin-input text-center">
-            <button @click="loginAdmin()" class="w-full bg-[#3E2723] text-white py-4 rounded-2xl font-bold">Enter Dashboard</button>
-            <button @click="showAdminLogin = false" class="mt-4 text-gray-400 text-xs">Cancel</button>
+            <h2 class="serif text-2xl mb-6">Admin Access</h2>
+            <input type="password" x-model="adminPassword" placeholder="Enter Password" class="admin-input text-center">
+            <button @click="loginAdmin()" class="w-full bg-[#3E2723] text-white py-4 rounded-2xl font-bold">Login</button>
+            <button @click="showAdminLogin = false" class="mt-4 text-gray-400 text-xs">Close</button>
         </div>
     </div>
 
-    <div x-show="isAdmin" class="fixed inset-0 z-[120] bg-white overflow-y-auto p-6" x-cloak>
-        <div class="max-w-2xl mx-auto pb-20">
-            <div class="flex justify-between items-center mb-8 sticky top-0 bg-white py-4 z-10 border-b">
-                <h2 class="serif text-3xl">Admin Control</h2>
-                <button @click="isAdmin = false" class="bg-red-500 text-white px-6 py-2 rounded-full font-bold">Logout</button>
+    <!-- MASTER ADMIN PANEL -->
+    <div x-show="isAdmin" class="fixed inset-0 z-[120] bg-white overflow-y-auto p-6 animate__animated animate__slideInUp" x-cloak>
+        <div class="max-w-3xl mx-auto pb-20">
+            <div class="flex justify-between items-center mb-8 sticky top-0 bg-white py-4 border-b z-10">
+                <h2 class="serif text-2xl">Site Management</h2>
+                <button @click="isAdmin = false" class="bg-red-500 text-white px-6 py-2 rounded-full text-xs font-bold">Exit Dashboard</button>
             </div>
 
-            <!-- ADD ITEM -->
-            <div class="bg-pink-50 p-6 rounded-[40px] mb-8">
-                <h3 class="font-bold mb-4">Add Product/Special</h3>
-                <input type="text" x-model="newItem.name" placeholder="Name" class="admin-input">
-                <input type="number" x-model="newItem.price" placeholder="Price" class="admin-input">
-                <select x-model="newItem.dest" class="admin-input">
-                    <option value="items">Regular Items</option>
-                    <option value="specials">Special Collections</option>
-                </select>
-                <select x-model="newItem.category" class="admin-input">
-                    <template x-for="cat in categories">
-                        <option :value="cat" x-text="cat"></option>
-                    </template>
-                </select>
-                <div class="bg-white p-4 rounded-2xl text-center border-2 border-dashed mb-4">
-                    <p class="text-[10px] text-gray-400 font-bold mb-2 uppercase">Pick Image from Phone Gallery</p>
-                    <input type="file" @change="handleFileUpload" class="text-xs">
+            <!-- TAB CONTROLS -->
+            <div class="flex gap-2 mb-6 overflow-x-auto no-scrollbar">
+                <button @click="adminTab = 'site'" :class="adminTab==='site' ? 'bg-pink-500 text-white':'bg-gray-100'" class="px-4 py-2 rounded-xl text-xs font-bold">Site Setup</button>
+                <button @click="adminTab = 'products'" :class="adminTab==='products' ? 'bg-pink-500 text-white':'bg-gray-100'" class="px-4 py-2 rounded-xl text-xs font-bold">Products</button>
+                <button @click="adminTab = 'content'" :class="adminTab==='content' ? 'bg-pink-500 text-white':'bg-gray-100'" class="px-4 py-2 rounded-xl text-xs font-bold">Reviews/FAQ</button>
+                <button @click="adminTab = 'insta'" :class="adminTab==='insta' ? 'bg-pink-500 text-white':'bg-gray-100'" class="px-4 py-2 rounded-xl text-xs font-bold">Instagram</button>
+            </div>
+
+            <!-- SITE SETUP -->
+            <div x-show="adminTab === 'site'" class="admin-card">
+                <h3 class="font-bold text-pink-600 mb-4">Global Identity</h3>
+                <label class="admin-label">Brand Name</label>
+                <input type="text" x-model="site.brandName" class="admin-input" @input="saveSite()">
+                <label class="admin-label">WhatsApp Number</label>
+                <input type="text" x-model="site.phone" class="admin-input" @input="saveSite()">
+                <label class="admin-label">Address</label>
+                <input type="text" x-model="site.address" class="admin-input" @input="saveSite()">
+                
+                <h3 class="font-bold text-pink-600 my-4">Hero Section</h3>
+                <label class="admin-label">Hero Tagline</label>
+                <input type="text" x-model="site.heroTagline" class="admin-input" @input="saveSite()">
+                <label class="admin-label">Hero Title</label>
+                <input type="text" x-model="site.heroTitle" class="admin-input" @input="saveSite()">
+                <label class="admin-label">Hero Sub-text</label>
+                <input type="text" x-model="site.heroSubTitle" class="admin-input" @input="saveSite()">
+            </div>
+
+            <!-- PRODUCT MANAGER -->
+            <div x-show="adminTab === 'products'">
+                <div class="admin-card">
+                    <h3 class="font-bold text-pink-600 mb-4">Add Product</h3>
+                    <input type="text" x-model="newItem.name" placeholder="Name" class="admin-input">
+                    <input type="number" x-model="newItem.price" placeholder="Price" class="admin-input">
+                    <select x-model="newItem.category" class="admin-input">
+                        <template x-for="c in categories"><option :value="c" x-text="c"></option></template>
+                    </select>
+                    <select x-model="newItem.weight" class="admin-input">
+                        <template x-for="w in weights"><option :value="w" x-text="w"></option></template>
+                    </select>
+                    <select x-model="newItem.dest" class="admin-input">
+                        <option value="items">Regular Collection</option>
+                        <option value="specials">Special Collections (Banner)</option>
+                    </select>
+                    <div class="bg-gray-50 p-4 rounded-xl text-center border-dashed border-2 mb-4">
+                        <p class="text-[10px] text-gray-400 font-bold mb-2">PICK GALLERY IMAGE</p>
+                        <input type="file" @change="handleFileUpload" class="text-xs">
+                    </div>
+                    <button @click="addItem()" class="w-full bg-[#3E2723] text-white py-3 rounded-xl font-bold">Add to Shop</button>
                 </div>
-                <button @click="addItem()" class="w-full bg-[#3E2723] text-white py-4 rounded-2xl font-bold">Upload to Website</button>
+
+                <h3 class="font-bold mb-4">Inventory List</h3>
+                <div class="space-y-2">
+                    <template x-for="item in [...items, ...specials]" :key="item.id">
+                        <div class="flex items-center gap-3 bg-white border p-2 rounded-xl">
+                            <img :src="item.image" class="w-10 h-10 rounded-lg object-cover">
+                            <div class="flex-1 text-[11px]">
+                                <p class="font-bold" x-text="item.name"></p>
+                                <p class="text-gray-400" x-text="item.weight"></p>
+                            </div>
+                            <button @click="toggleStock(item.id)" :class="item.isOutOfStock ? 'bg-red-500':'bg-green-500'" class="text-white px-2 py-1 rounded text-[8px] font-bold" x-text="item.isOutOfStock ? 'Out':'In Stock'"></button>
+                            <button @click="deleteItem(item.id)" class="text-red-400 text-xs">🗑️</button>
+                        </div>
+                    </template>
+                </div>
             </div>
 
-            <!-- MANAGE ITEMS -->
-            <h3 class="font-bold text-lg mb-4">Inventory List</h3>
-            <div class="space-y-3">
-                <template x-for="item in [...items, ...specials]" :key="item.id">
-                    <div class="flex items-center gap-4 bg-white border p-3 rounded-2xl">
-                        <img :src="item.image" class="w-12 h-12 rounded-lg object-cover">
-                        <div class="flex-1">
-                            <h4 class="font-bold text-xs" x-text="item.name"></h4>
-                            <p class="text-[10px] text-gray-500">₹<span x-text="item.price"></span></p>
-                        </div>
-                        <div class="flex gap-2">
-                            <button @click="toggleStock(item.id)" :class="item.isOutOfStock ? 'bg-red-100 text-red-600':'bg-green-100 text-green-600'" class="px-3 py-1 rounded-full text-[10px] font-bold" x-text="item.isOutOfStock ? 'Out':'In Stock'"></button>
-                            <button @click="deleteItem(item.id)" class="text-gray-300">🗑️</button>
-                        </div>
+            <!-- REVIEWS/FAQ MANAGER -->
+            <div x-show="adminTab === 'content'">
+                <div class="admin-card">
+                    <h3 class="font-bold text-pink-600 mb-4">Add Review</h3>
+                    <input type="text" x-model="newReview.name" placeholder="Name" class="admin-input">
+                    <textarea x-model="newReview.text" placeholder="Review text" class="admin-input"></textarea>
+                    <button @click="addReview()" class="bg-pink-500 text-white w-full py-2 rounded-xl font-bold text-xs">Post Review</button>
+                </div>
+                <div class="admin-card">
+                    <h3 class="font-bold text-pink-600 mb-4">Add FAQ</h3>
+                    <input type="text" x-model="newFaq.q" placeholder="Question" class="admin-input">
+                    <textarea x-model="newFaq.a" placeholder="Answer" class="admin-input"></textarea>
+                    <button @click="addFaq()" class="bg-[#3E2723] text-white w-full py-2 rounded-xl font-bold text-xs">Add FAQ</button>
+                </div>
+            </div>
+
+            <!-- INSTAGRAM MANAGER -->
+            <div x-show="adminTab === 'insta'" class="admin-card">
+                <h3 class="font-bold text-pink-600 mb-4">Instagram Image Links</h3>
+                <template x-for="(link, i) in site.instaFeed" :key="i">
+                    <div class="mb-2">
+                        <label class="text-[9px] font-bold" x-text="'Slot ' + (i+1)"></label>
+                        <input type="text" x-model="site.instaFeed[i]" class="admin-input" @input="saveSite()">
                     </div>
                 </template>
             </div>
@@ -257,47 +319,72 @@
     <script>
         function bakeryApp() {
             return {
-                isAdmin: false,
-                showAdminLogin: false,
-                showCart: false,
-                adminPassword: '',
-                activeTab: 'Cakes',
+                isAdmin: false, showAdminLogin: false, showCart: false, adminTab: 'site',
+                adminPassword: '', activeTab: 'Cakes', activeWeight: 'All Weight',
                 cart: [],
                 categories: ['Cakes', 'Drinks', 'Bouquets', 'Watches', 'Perfumes', 'Imported'],
-                
-                newItem: { name: '', price: '', category: 'Cakes', dest: 'items', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80', isOutOfStock: false },
+                weights: ['All Weight', '0.5 kg', '1 kg', '1.5 kg', '2 kg', '3 kg', 'Custom Weight'],
+
+                site: {
+                    brandName: 'MomsBakery',
+                    heroTagline: 'Baking Happiness in Najibabad',
+                    heroTitle: 'Sweet Memories',
+                    heroSubTitle: 'Freshly Baked Handcrafted Delights',
+                    phone: '918218250432',
+                    address: 'Mota Aam, near Pooja Hospital, Najibabad, UP.',
+                    email: 'momsbakery@gmail.com',
+                    instaFeed: [
+                        'https://images.unsplash.com/photo-1557925923-33b27f891f88?q=80',
+                        'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?q=80',
+                        'https://images.unsplash.com/photo-1535141192574-5d4897c12636?q=80',
+                        'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?q=80',
+                        'https://images.unsplash.com/photo-1519340333755-5072134d2371?q=80',
+                        'https://images.unsplash.com/photo-1464349153735-7db50ed83c84?q=80'
+                    ]
+                },
 
                 items: [
-                    { id: 1, name: 'Truffle Cake', price: 550, category: 'Cakes', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80', isOutOfStock: false },
+                    { id: 1, name: 'Truffle Cake', price: 550, category: 'Cakes', weight: '0.5 kg', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80', isOutOfStock: false },
                 ],
-
                 specials: [
-                    { id: 101, name: 'Diwali Festive Combo', price: 1500, type: 'Festival Special', image: 'https://images.unsplash.com/photo-1504113888839-1c8eb50233d3?q=80', isOutOfStock: false },
-                    { id: 102, name: 'Winter Velvet', price: 850, type: 'Seasonal Special', image: 'https://images.unsplash.com/photo-1616541823729-00fe0aacd32c?q=80', isOutOfStock: false },
+                    { id: 101, name: 'Diwali Combo', price: 1500, category: 'Cakes', weight: '1 kg', type: 'Festival Special', image: 'https://images.unsplash.com/photo-1504113888839-1c8eb50233d3?q=80', isOutOfStock: false }
+                ],
+                reviews: [
+                    { name: 'Sarah J.', photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80', text: 'Best cakes in Najibabad!' }
+                ],
+                faqs: [
+                    { q: 'Delivery time?', a: 'Within 2 hours in Najibabad.' }
                 ],
 
-                reviews: [
-                    { name: 'Sarah J.', photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80', text: 'The best cake I ever had in Najibabad. Fresh and delicious!' },
-                    { name: 'Aman V.', photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80', text: 'Amazing bouquet and watch collection. Perfect for gifts.' }
-                ],
+                newItem: { name: '', price: '', category: 'Cakes', weight: '0.5 kg', dest: 'items', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80' },
+                newReview: { name: '', text: '', photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80' },
+                newFaq: { q: '', a: '' },
 
                 init() {
-                    const savedItems = localStorage.getItem('moms_items_v2');
-                    const savedSpecials = localStorage.getItem('moms_specials_v2');
-                    if(savedItems) this.items = JSON.parse(savedItems);
-                    if(savedSpecials) this.specials = JSON.parse(savedSpecials);
+                    const i = localStorage.getItem('m_items');
+                    const s = localStorage.getItem('m_specials');
+                    const site = localStorage.getItem('m_site');
+                    const f = localStorage.getItem('m_faqs');
+                    const r = localStorage.getItem('m_reviews');
+
+                    if(i) this.items = JSON.parse(i);
+                    if(s) this.specials = JSON.parse(s);
+                    if(site) this.site = JSON.parse(site);
+                    if(f) this.faqs = JSON.parse(f);
+                    if(r) this.reviews = JSON.parse(r);
                 },
 
                 get filteredItems() {
-                    return this.items.filter(item => item.category === this.activeTab);
+                    return this.items.filter(item => {
+                        const c = item.category === this.activeTab;
+                        const w = this.activeWeight === 'All Weight' || item.weight === this.activeWeight;
+                        return c && w;
+                    });
                 },
 
                 loginAdmin() {
-                    if(this.adminPassword === 'moms123') {
-                        this.isAdmin = true;
-                        this.showAdminLogin = false;
-                        this.adminPassword = '';
-                    } else { alert('Incorrect Password'); }
+                    if(this.adminPassword === 'moms123') { this.isAdmin = true; this.showAdminLogin = false; this.adminPassword = ''; }
+                    else alert('Wrong password');
                 },
 
                 handleFileUpload(e) {
@@ -309,32 +396,49 @@
 
                 addItem() {
                     if(!this.newItem.name || !this.newItem.price) return;
-                    const item = { ...this.newItem, id: Date.now() };
-                    if(this.newItem.dest === 'items') this.items.push(item);
-                    else this.specials.push(item);
-                    this.save();
-                    this.newItem = { name: '', price: '', category: 'Cakes', dest: 'items', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80', isOutOfStock: false };
+                    const itm = { ...this.newItem, id: Date.now(), isOutOfStock: false };
+                    if(this.newItem.dest === 'items') this.items.push(itm);
+                    else this.specials.push(itm);
+                    this.saveData();
+                    this.newItem.name = ''; this.newItem.price = '';
+                },
+
+                addReview() {
+                    if(!this.newReview.name) return;
+                    this.reviews.push({...this.newReview});
+                    this.saveData();
+                    this.newReview.name = ''; this.newReview.text = '';
+                },
+
+                addFaq() {
+                    if(!this.newFaq.q) return;
+                    this.faqs.push({...this.newFaq});
+                    this.saveData();
+                    this.newFaq.q = ''; this.newFaq.a = '';
                 },
 
                 deleteItem(id) {
                     this.items = this.items.filter(i => i.id !== id);
                     this.specials = this.specials.filter(i => i.id !== id);
-                    this.save();
+                    this.saveData();
                 },
 
                 toggleStock(id) {
                     [...this.items, ...this.specials].forEach(i => { if(i.id === id) i.isOutOfStock = !i.isOutOfStock; });
-                    this.save();
+                    this.saveData();
                 },
 
-                save() {
-                    localStorage.setItem('moms_items_v2', JSON.stringify(this.items));
-                    localStorage.setItem('moms_specials_v2', JSON.stringify(this.specials));
+                saveSite() { localStorage.setItem('m_site', JSON.stringify(this.site)); },
+                saveData() {
+                    localStorage.setItem('m_items', JSON.stringify(this.items));
+                    localStorage.setItem('m_specials', JSON.stringify(this.specials));
+                    localStorage.setItem('m_faqs', JSON.stringify(this.faqs));
+                    localStorage.setItem('m_reviews', JSON.stringify(this.reviews));
                 },
 
                 addToCart(item) {
-                    let existing = this.cart.find(i => i.id === item.id);
-                    if(existing) existing.qty++;
+                    let ex = this.cart.find(i => i.id === item.id);
+                    if(ex) ex.qty++;
                     else this.cart.push({ ...item, qty: 1 });
                     this.showCart = true;
                 },
@@ -348,10 +452,10 @@
                 cartCount() { return this.cart.reduce((t, i) => t + i.qty, 0); },
 
                 checkoutWhatsApp() {
-                    let msg = `*New Order from MomsBakery Website*\n\n`;
-                    this.cart.forEach(i => msg += `• ${i.name} (x${i.qty}) - ₹${i.price * i.qty}\n`);
-                    msg += `\n*Total: ₹${this.getCartTotal()}*\n\nAddress: Mota Aam, near Pooja Hospital, Najibabad.`;
-                    window.open(`https://wa.me/918218250432?text=${encodeURIComponent(msg)}`, '_blank');
+                    let msg = `*Order from ${this.site.brandName}*\n\n`;
+                    this.cart.forEach(i => msg += `• ${i.name} (${i.weight}) x${i.qty} = ₹${i.price * i.qty}\n`);
+                    msg += `\n*Total: ₹${this.getCartTotal()}*\n\nAddress: ${this.site.address}`;
+                    window.open(`https://wa.me/${this.site.phone}/?text=${encodeURIComponent(msg)}`, '_blank');
                 }
             }
         }
