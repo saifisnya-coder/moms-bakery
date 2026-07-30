@@ -3,445 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MomsBakery | Master Suite</title>
-    
+    <title>MomsBakery & Cake Corner | Premium Artisan Cakes</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
+    <script src="https://unpkg.com/framer-motion@11.0.3/dist/framer-motion.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        [x-cloak] { display: none !important; }
-        body { font-family: 'Poppins', sans-serif; background-color: #FDF8F5; scroll-behavior: smooth; }
-        .serif { font-family: 'Playfair Display', serif; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        
-        /* Premium Highlight Sections */
-        .section-special { background: linear-gradient(135deg, #1a1a1a 0%, #3E2723 100%); color: white; }
-        .section-watches { background: #0f172a; color: #f1f5f9; border-top: 2px solid #334155; }
-        .section-imported { background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%); }
-        
-        .admin-card { background: white; border-radius: 24px; padding: 24px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin-bottom: 20px; border: 1px solid #f1f5f9; }
-        .admin-input { width: 100%; border: 1px solid #e2e8f0; padding: 12px; border-radius: 12px; margin-bottom: 12px; outline: none; font-size: 14px; }
-        .admin-input:focus { border-color: #3E2723; ring: 2px ring-[#3E2723]; }
-        
-        .product-card { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .product-card:hover { transform: translateY(-8px); }
-        .search-bar { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FDFBF7; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .premium-shadow { box-shadow: 0 20px 50px rgba(0,0,0,0.05); }
+        .cake-card:hover { transform: translateY(-10px); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
     </style>
 </head>
-<body x-data="bakeryApp()" x-init="init()">
+<body>
+    <div id="root"></div>
 
-    <!-- NAVIGATION & SEARCH -->
-    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md py-3 px-4 md:px-10 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm">
-        <div class="flex justify-between items-center w-full md:w-auto">
-            <div class="serif text-2xl font-black text-[#3E2723]" x-text="site.brandName"></div>
-            <div class="flex items-center gap-4 md:hidden">
-                <button @click="showCart = true" class="relative text-2xl">🛒<span class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center" x-text="cartCount()"></span></button>
-            </div>
-        </div>
+    <script type="text/babel">
+        // Since we are in a single file for iPhone ease, we use React via CDN
+    </script>
+    <!-- React & Babel CDNs -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-        <!-- SEARCH BAR -->
-        <div class="relative w-full max-w-md">
-            <input type="text" x-model="searchQuery" placeholder="Search cakes, watches, perfumes..." 
-                   class="w-full pl-10 pr-4 py-2 rounded-full border border-gray-200 text-sm focus:outline-none focus:border-pink-400 transition">
-            <span class="absolute left-4 top-2.5 opacity-30">🔍</span>
-        </div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-        <div class="hidden md:flex items-center gap-6">
-            <button @click="showAdminLogin = true" class="text-[10px] font-bold border-2 border-[#3E2723] px-4 py-1.5 rounded-full uppercase tracking-widest hover:bg-[#3E2723] hover:text-white transition">Admin Panel</button>
-            <div class="relative cursor-pointer" @click="showCart = true">
-                <span class="text-2xl">🛒</span>
-                <span class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-white" x-text="cartCount()"></span>
-            </div>
-        </div>
-    </nav>
+        const App = () => {
+            const [cart, setCart] = useState([]);
+            const [view, setView] = useState('home'); // home, shop, admin, cart
+            const [activeCategory, setActiveCategory] = useState('All');
 
-    <!-- HERO -->
-    <section class="min-h-[70vh] flex items-center justify-center text-center px-6 pt-32 bg-white">
-        <div class="animate__animated animate__fadeIn">
-            <span class="text-pink-500 font-bold tracking-[0.4em] text-[12px] uppercase block mb-4" x-text="site.heroTagline"></span>
-            <h1 class="serif text-5xl md:text-8xl text-[#3E2723] mb-6 leading-none" x-text="site.heroTitle"></h1>
-            <p class="text-gray-500 max-w-lg mx-auto mb-10 text-sm md:text-base" x-text="site.heroSubTitle"></p>
-            <a href="#shop-grid" class="bg-[#3E2723] text-white px-12 py-4 rounded-full font-bold shadow-2xl hover:scale-105 transition transform">Explore Collection</a>
-        </div>
-    </section>
+            const products = [
+                { id: 1, name: "Gold Leaf Wedding Cake", price: 5500, cat: "Wedding", img: "https://images.unsplash.com/photo-1535254973040-607b474cb80d?w=800" },
+                { id: 2, name: "Belgian Truffle Dream", price: 1200, cat: "Chocolate", img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800" },
+                { id: 3, name: "Strawberry Bento Box", price: 450, cat: "Bento", img: "https://images.unsplash.com/photo-1562440499-64c9a111f713?w=800" },
+                { id: 4, name: "Luxury Red Velvet", price: 1500, cat: "Birthday", img: "https://images.unsplash.com/photo-1616733148217-9dfd449f2391?w=800" },
+                { id: 5, name: "Macaron Tower Cake", price: 3200, cat: "Designer", img: "https://images.unsplash.com/photo-1519340333755-56e9c1d04579?w=800" },
+                { id: 6, name: "Blueberry Cheesecake", price: 1800, cat: "Fruit", img: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=800" }
+            ];
 
-    <!-- CAKE WEIGHT SELECTOR -->
-    <section class="py-10 bg-pink-50/30" x-show="activeTab === 'Cakes' && !searchQuery">
-        <div class="max-w-7xl mx-auto px-6">
-            <h3 class="text-center text-[10px] font-black text-pink-400 uppercase tracking-[0.3em] mb-6">Select Cake Size</h3>
-            <div class="flex overflow-x-auto gap-3 no-scrollbar justify-start md:justify-center">
-                <template x-for="w in weights">
-                    <button @click="activeWeight = w" 
-                            :class="activeWeight === w ? 'bg-pink-500 text-white scale-110 shadow-lg' : 'bg-white text-gray-400 border'"
-                            class="px-8 py-2.5 rounded-2xl text-xs font-bold transition-all whitespace-nowrap" x-text="w"></button>
-                </template>
-            </div>
-        </div>
-    </section>
+            const categories = ["All", "Birthday", "Wedding", "Chocolate", "Bento", "Designer", "Fruit"];
 
-    <!-- CATEGORY BAR -->
-    <div class="sticky top-[120px] md:top-[72px] z-40 bg-white/80 backdrop-blur-md border-b py-4 overflow-x-auto no-scrollbar flex justify-start md:justify-center gap-4 px-6">
-        <template x-for="cat in categories">
-            <button @click="activeTab = cat; if(cat !== 'Cakes') activeWeight = 'All Weight'" 
-                    :class="activeTab === cat ? 'bg-[#3E2723] text-white shadow-md' : 'bg-gray-100 text-gray-500'"
-                    class="px-8 py-2 rounded-full text-[10px] font-bold uppercase transition-all whitespace-nowrap" x-text="cat"></button>
-        </template>
-    </div>
+            const addToCart = (p) => {
+                setCart([...cart, p]);
+                alert("Added to cart! 🎂");
+            };
 
-    <!-- MAIN PRODUCT GRID -->
-    <section id="shop-grid" class="py-16 px-6 max-w-7xl mx-auto min-h-[500px]">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <template x-for="item in filteredItems" :key="item.id">
-                <div class="product-card bg-white p-4 rounded-[40px] shadow-sm border border-gray-50 relative group" x-data="{ localQty: 1 }">
-                    <template x-if="item.isOutOfStock">
-                        <div class="absolute inset-0 bg-white/80 backdrop-blur-[2px] z-10 flex items-center justify-center rounded-[40px] font-black text-red-500 uppercase tracking-widest">Out of Stock</div>
-                    </template>
-                    
-                    <div class="relative overflow-hidden rounded-[30px] mb-4">
-                        <img :src="item.image" class="w-full aspect-square object-cover group-hover:scale-110 transition duration-500">
-                    </div>
-                    
-                    <h3 class="font-bold text-sm text-[#3E2723] mb-1 truncate px-2" x-text="item.name"></h3>
-                    <div class="flex justify-between items-center mb-4 px-2">
-                        <span class="text-pink-600 font-bold">₹<span x-text="item.price"></span></span>
-                        <span class="text-[9px] font-bold bg-gray-50 text-gray-400 px-2 py-1 rounded" x-text="item.weight"></span>
-                    </div>
+            const sendWhatsApp = () => {
+                const text = `Hello MomsBakery! I want to order:\n${cart.map(i => `- ${i.name} (₹${i.price})`).join('\n')}\nTotal: ₹${cart.reduce((a,b) => a + b.price, 0)}`;
+                window.open(`https://wa.me/REPLACE_WITH_YOUR_NUMBER?text=${encodeURIComponent(text)}`);
+            };
 
-                    <!-- QUANTITY SELECTOR -->
-                    <div class="flex items-center justify-between bg-gray-50 rounded-2xl p-2 mb-3">
-                        <button @click="if(localQty > 1) localQty--" class="w-8 h-8 flex items-center justify-center bg-white rounded-xl shadow-sm text-lg">-</button>
-                        <span class="font-bold text-xs" x-text="localQty"></span>
-                        <button @click="localQty++" class="w-8 h-8 flex items-center justify-center bg-white rounded-xl shadow-sm text-lg">+</button>
-                    </div>
-
-                    <button @click="addToCart(item, localQty); localQty = 1" 
-                            class="w-full bg-[#3E2723] text-white py-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest active:scale-95 transition">
-                        Add to Bag
-                    </button>
-                </div>
-            </template>
-        </div>
-    </section>
-
-    <!-- LUXURY WATCHES SECTION (DYNAMIC) -->
-    <section class="py-24 px-6 section-watches" x-show="site.showWatches">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <span class="text-blue-400 font-bold tracking-[0.4em] text-[10px] uppercase">Exclusive Collection</span>
-                <h2 class="serif text-5xl mt-4">Luxury Timepieces</h2>
-                <div class="h-1 w-20 bg-blue-500 mx-auto mt-6 rounded-full"></div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <template x-for="item in items.filter(i => i.category === 'Watches').slice(0,4)" :key="item.id">
-                    <div class="bg-white/5 border border-white/10 p-6 rounded-[40px] hover:bg-white/10 transition" x-data="{ localQty: 1 }">
-                        <img :src="item.image" class="w-full aspect-square object-cover rounded-[30px] mb-6 shadow-2xl">
-                        <h3 class="font-bold text-lg mb-2" x-text="item.name"></h3>
-                        <p class="text-blue-400 font-bold mb-6">₹<span x-text="item.price"></span></p>
-                        
-                        <div class="flex items-center justify-between bg-black/40 rounded-2xl p-2 mb-4">
-                            <button @click="if(localQty > 1) localQty--" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20">-</button>
-                            <span class="text-sm font-bold" x-text="localQty"></span>
-                            <button @click="localQty++" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20">+</button>
+            return (
+                <div className="min-h-screen">
+                    {/* Navigation */}
+                    <nav className="fixed top-0 w-full z-50 glass px-6 py-4 flex justify-between items-center">
+                        <div className="text-xl font-bold italic text-[#3D1E14]">
+                            MomsBakery <span className="text-[#D4AF37]">&</span> Cake Corner
                         </div>
-                        
-                        <button @click="addToCart(item, localQty); localQty = 1" class="w-full bg-white text-black py-4 rounded-2xl font-bold uppercase text-[10px]">Add Watch</button>
-                    </div>
-                </template>
-            </div>
-        </div>
-    </section>
-
-    <!-- CHEF'S SPECIALS -->
-    <section class="py-24 px-6 section-special" x-show="site.showSpecials">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="serif text-4xl text-center mb-16">Signature Specials</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                <template x-for="item in specials" :key="item.id">
-                    <div class="bg-white/5 backdrop-blur-xl p-8 rounded-[50px] border border-white/10" x-data="{ localQty: 1 }">
-                        <img :src="item.image" class="w-full h-72 object-cover rounded-[40px] mb-8 shadow-2xl">
-                        <h3 class="serif text-3xl mb-2" x-text="item.name"></h3>
-                        <p class="text-pink-400 text-xl font-bold mb-8">₹<span x-text="item.price"></span></p>
-                        
-                        <div class="flex items-center justify-between bg-white/10 rounded-3xl p-3 mb-6">
-                            <button @click="if(localQty > 1) localQty--" class="w-10 h-10 rounded-full bg-white/20 text-xl">-</button>
-                            <span class="text-lg font-bold" x-text="localQty"></span>
-                            <button @click="localQty++" class="w-10 h-10 rounded-full bg-white/20 text-xl">+</button>
+                        <div className="flex items-center gap-6">
+                            <button onClick={() => setView('home')} className="hidden md:block hover:text-[#D4AF37]">Home</button>
+                            <button onClick={() => setView('shop')} className="hidden md:block hover:text-[#D4AF37]">Shop</button>
+                            <div className="relative cursor-pointer" onClick={() => setView('cart')}>
+                                <i data-lucide="shopping-bag"></i>
+                                {cart.length > 0 && <span className="absolute -top-2 -right-2 bg-[#D4AF37] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">{cart.length}</span>}
+                            </div>
+                            <button onClick={() => setView('admin')} className="text-xs text-gray-400">Admin</button>
                         </div>
-                        
-                        <button @click="addToCart(item, localQty); localQty = 1" class="w-full bg-white text-[#3E2723] py-5 rounded-3xl font-bold uppercase tracking-widest text-xs">Reserve Now</button>
-                    </div>
-                </template>
-            </div>
-        </div>
-    </section>
+                    </nav>
 
-    <!-- ADMIN LOGIN -->
-    <div x-show="showAdminLogin" class="fixed inset-0 z-[110] flex items-center justify-center bg-black/95 backdrop-blur-md" x-cloak>
-        <div class="bg-white p-12 rounded-[50px] w-full max-w-sm text-center animate__animated animate__zoomIn">
-            <h2 class="serif text-3xl mb-2">Staff Only</h2>
-            <p class="text-gray-400 text-xs mb-8">Enter administrative credentials</p>
-            <input type="password" x-model="adminPassword" placeholder="Password" class="admin-input text-center text-xl tracking-[0.3em]">
-            <button @click="loginAdmin()" class="w-full bg-[#3E2723] text-white py-4 rounded-2xl font-bold shadow-xl">Unlock Dashboard</button>
-            <button @click="showAdminLogin = false" class="mt-6 text-xs text-gray-400 font-bold uppercase tracking-widest">Close</button>
-        </div>
-    </div>
-
-    <!-- MASTER ADMIN PANEL -->
-    <div x-show="isAdmin" class="fixed inset-0 z-[120] bg-gray-50 overflow-y-auto p-4 md:p-10" x-cloak>
-        <div class="max-w-6xl mx-auto pb-32">
-            <div class="flex flex-col md:flex-row justify-between items-center mb-12 gap-6 bg-white p-6 rounded-3xl shadow-sm sticky top-0 z-50">
-                <div>
-                    <h1 class="serif text-3xl">Control Center</h1>
-                    <p class="text-[10px] font-bold text-pink-500 uppercase tracking-widest">Live Content Management</p>
-                </div>
-                <div class="flex gap-4">
-                    <!-- THE IMPORTANT SAVE BUTTON -->
-                    <button @click="save(); alert('Database Updated Successfully!')" class="bg-green-600 text-white px-8 py-3 rounded-full font-bold text-xs uppercase shadow-lg hover:bg-green-700 transition">💾 Save Changes</button>
-                    <button @click="isAdmin = false" class="bg-red-500 text-white px-8 py-3 rounded-full font-bold text-xs uppercase shadow-lg">Exit</button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                <!-- SETTINGS -->
-                <div class="space-y-6">
-                    <div class="admin-card">
-                        <h3 class="font-bold text-xs text-pink-500 uppercase mb-6 tracking-widest">Store Branding</h3>
-                        <input type="text" x-model="site.brandName" placeholder="Brand Name" class="admin-input">
-                        <input type="text" x-model="site.phone" placeholder="WhatsApp (91...)" class="admin-input">
-                        <textarea x-model="site.address" placeholder="Store Address" class="admin-input h-24"></textarea>
-                    </div>
-                    
-                    <div class="admin-card">
-                        <h3 class="font-bold text-xs text-blue-500 uppercase mb-6 tracking-widest">Section Management</h3>
-                        <div class="space-y-4">
-                            <label class="flex justify-between items-center cursor-pointer p-2 hover:bg-gray-50 rounded-xl">
-                                <span class="text-sm font-bold">Special Highlights</span>
-                                <input type="checkbox" x-model="site.showSpecials" class="w-5 h-5">
-                            </label>
-                            <label class="flex justify-between items-center cursor-pointer p-2 hover:bg-gray-50 rounded-xl">
-                                <span class="text-sm font-bold">Watch Section</span>
-                                <input type="checkbox" x-model="site.showWatches" class="w-5 h-5">
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ADD INVENTORY -->
-                <div class="lg:col-span-2 space-y-6">
-                    <div class="admin-card bg-[#3E2723] text-white">
-                        <h3 class="font-bold text-xs text-pink-300 uppercase mb-6 tracking-widest">Quick Add Product</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <input type="text" x-model="newItem.name" placeholder="Name" class="admin-input text-black">
-                            <input type="number" x-model="newItem.price" placeholder="Price (₹)" class="admin-input text-black">
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <select x-model="newItem.category" class="admin-input text-black">
-                                <template x-for="cat in categories"><option :value="cat" x-text="cat"></option></template>
-                            </select>
-                            <select x-model="newItem.weight" class="admin-input text-black">
-                                <template x-for="w in weightList"><option :value="w" x-text="w"></option></template>
-                            </select>
-                        </div>
-                        <select x-model="newItem.dest" class="admin-input text-black">
-                            <option value="items">Regular Grid</option>
-                            <option value="specials">Chef's Special Section</option>
-                        </select>
-                        <div class="mt-2 p-4 border-2 border-dashed border-white/20 rounded-2xl">
-                            <p class="text-[10px] uppercase font-bold mb-2">Upload Image (Max 10MB)</p>
-                            <input type="file" @change="handleFileUpload" class="text-xs" accept="image/*">
-                        </div>
-                        <button @click="addItem()" class="w-full bg-pink-500 text-white py-4 rounded-xl font-bold mt-6 shadow-xl">Confirm & Add</button>
-                    </div>
-
-                    <!-- REELS -->
-                    <div class="admin-card">
-                        <h3 class="font-bold text-xs text-purple-600 uppercase mb-4 tracking-widest">Reel Manager (MP4)</h3>
-                        <input type="file" @change="handleVideoUpload" class="text-xs admin-input" accept="video/mp4">
-                        <div class="grid grid-cols-3 gap-2 mt-4">
-                            <template x-for="(vid, idx) in site.reels" :key="idx">
-                                <div class="relative group h-40 bg-black rounded-xl overflow-hidden">
-                                    <video :src="vid" class="w-full h-full object-cover"></video>
-                                    <button @click="site.reels.splice(idx, 1)" class="absolute inset-0 bg-red-500/80 opacity-0 group-hover:opacity-100 flex items-center justify-center font-bold">DELETE</button>
+                    {view === 'home' && (
+                        <main>
+                            {/* Hero */}
+                            <section className="h-screen flex items-center justify-center text-center px-4 pt-20">
+                                <div className="max-w-4xl">
+                                    <p className="text-[#D4AF37] font-bold tracking-[0.3em] mb-4 uppercase text-sm">Experience Pure Luxury</p>
+                                    <h1 className="text-5xl md:text-8xl font-serif text-[#3D1E14] mb-8">Baking Memories <br/><span className="italic">Every Single Day</span></h1>
+                                    <div className="flex flex-col md:flex-row gap-4 justify-center">
+                                        <button onClick={() => setView('shop')} className="bg-[#3D1E14] text-white px-10 py-4 rounded-full text-lg font-semibold hover:bg-[#D4AF37] transition-all premium-shadow">Explore Collection</button>
+                                        <button onClick={sendWhatsApp} className="bg-white border border-gray-200 text-[#3D1E14] px-10 py-4 rounded-full text-lg font-semibold hover:bg-[#F8E1E7] transition-all">WhatsApp Order</button>
+                                    </div>
                                 </div>
-                            </template>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                            </section>
 
-    <!-- CART SLIDE OVER -->
-    <div x-show="showCart" class="fixed inset-0 z-[100] flex justify-end" x-cloak>
-        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" @click="showCart = false"></div>
-        <div class="relative w-full max-w-md bg-white h-full p-8 shadow-2xl flex flex-col animate__animated animate__slideInRight">
-            <div class="flex justify-between items-center mb-10">
-                <h2 class="serif text-3xl">Cart</h2>
-                <button @click="showCart = false" class="text-3xl">&times;</button>
-            </div>
-            
-            <div class="flex-1 overflow-y-auto pr-2 no-scrollbar">
-                <template x-for="(item, index) in cart" :key="index">
-                    <div class="flex gap-4 mb-6 bg-gray-50 p-4 rounded-[30px] items-center">
-                        <img :src="item.image" class="w-20 h-20 rounded-2xl object-cover shadow-sm">
-                        <div class="flex-1">
-                            <h4 class="font-bold text-sm" x-text="item.name"></h4>
-                            <p class="text-pink-600 text-xs font-bold mb-2">₹<span x-text="item.price"></span></p>
-                            <div class="flex items-center gap-3">
-                                <button @click="updateQty(index, -1)" class="w-6 h-6 bg-white rounded-full shadow-sm">-</button>
-                                <span class="font-bold text-xs" x-text="item.qty"></span>
-                                <button @click="updateQty(index, 1)" class="w-6 h-6 bg-white rounded-full shadow-sm">+</button>
+                            {/* Featured Grid */}
+                            <section className="py-20 px-6 max-w-7xl mx-auto">
+                                <h2 className="text-3xl font-serif mb-12 text-center">Our Signature Creations</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                    {products.slice(0, 3).map(p => (
+                                        <div key={p.id} className="cake-card glass rounded-[2.5rem] p-4 premium-shadow">
+                                            <img src={p.img} className="w-full h-80 object-cover rounded-[2rem] mb-6" />
+                                            <h3 className="text-xl font-bold mb-2">{p.name}</h3>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-[#D4AF37] font-bold text-xl">₹{p.price}</span>
+                                                <button onClick={() => addToCart(p)} className="bg-[#3D1E14] text-white p-3 rounded-2xl hover:bg-[#D4AF37]"><i data-lucide="plus"></i></button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        </main>
+                    )}
+
+                    {view === 'shop' && (
+                        <section className="pt-32 px-6 max-w-7xl mx-auto min-h-screen">
+                            <div className="flex overflow-x-auto gap-4 mb-12 pb-4 no-scrollbar">
+                                {categories.map(c => (
+                                    <button 
+                                        key={c}
+                                        onClick={() => setActiveCategory(c)}
+                                        className={`px-8 py-2 rounded-full border whitespace-nowrap transition-all ${activeCategory === c ? 'bg-[#3D1E14] text-white' : 'bg-white border-gray-200'}`}
+                                    >
+                                        {c}
+                                    </button>
+                                ))}
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                {products.filter(p => activeCategory === 'All' || p.cat === activeCategory).map(p => (
+                                    <div key={p.id} className="cake-card glass rounded-[2.5rem] p-4 premium-shadow">
+                                        <img src={p.img} className="w-full h-80 object-cover rounded-[2rem] mb-6" />
+                                        <h3 className="text-xl font-bold mb-2">{p.name}</h3>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-[#D4AF37] font-bold text-xl">₹{p.price}</span>
+                                            <button onClick={() => addToCart(p)} className="bg-[#3D1E14] text-white p-3 rounded-2xl">Add to Cart</button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
+                    {view === 'cart' && (
+                        <section className="pt-32 px-6 max-w-2xl mx-auto min-h-screen">
+                            <h2 className="text-3xl font-serif mb-8">Your Cart ({cart.length})</h2>
+                            {cart.length === 0 ? <p>Your cart is empty.</p> : (
+                                <div className="space-y-4">
+                                    {cart.map((item, index) => (
+                                        <div key={index} className="glass p-4 rounded-2xl flex justify-between items-center">
+                                            <div className="flex items-center gap-4">
+                                                <img src={item.img} className="w-16 h-16 rounded-xl object-cover" />
+                                                <div>
+                                                    <h4 className="font-bold">{item.name}</h4>
+                                                    <p className="text-[#D4AF37]">₹{item.price}</p>
+                                                </div>
+                                            </div>
+                                            <button onClick={() => setCart(cart.filter((_, i) => i !== index))} className="text-red-500 underline">Remove</button>
+                                        </div>
+                                    ))}
+                                    <div className="mt-10 p-6 glass rounded-3xl">
+                                        <div className="flex justify-between text-xl font-bold mb-6">
+                                            <span>Total Amount:</span>
+                                            <span>₹{cart.reduce((a,b) => a+b.price, 0)}</span>
+                                        </div>
+                                        <button onClick={sendWhatsApp} className="w-full bg-[#3D1E14] text-white py-4 rounded-2xl font-bold text-lg">Order via WhatsApp</button>
+                                    </div>
+                                </div>
+                            )}
+                        </section>
+                    )}
+
+                    {view === 'admin' && (
+                        <section className="pt-32 px-6 max-w-4xl mx-auto min-h-screen">
+                            <div className="glass p-8 rounded-[2rem]">
+                                <h2 className="text-2xl font-bold mb-6">Admin Dashboard</h2>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                                    <div className="bg-white p-4 rounded-2xl border">
+                                        <p className="text-xs text-gray-500 uppercase">Sales</p>
+                                        <p className="text-xl font-bold">₹42,000</p>
+                                    </div>
+                                    <div className="bg-white p-4 rounded-2xl border">
+                                        <p className="text-xs text-gray-500 uppercase">Orders</p>
+                                        <p className="text-xl font-bold">12</p>
+                                    </div>
+                                </div>
+                                <button className="bg-[#D4AF37] text-white px-6 py-2 rounded-lg font-bold">+ Add Product</button>
+                            </div>
+                        </section>
+                    )}
+
+                    {/* Footer */}
+                    <footer className="bg-[#3D1E14] text-white py-20 px-6 mt-20">
+                        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+                            <div>
+                                <h3 className="text-2xl font-serif mb-6">MomsBakery</h3>
+                                <p className="text-gray-400">Premium artisan bakery serving luxury cakes and desserts for every occasion.</p>
+                            </div>
+                            <div>
+                                <h4 className="font-bold mb-4">Contact</h4>
+                                <p className="text-gray-400">@momsbakeryandcakecorner</p>
+                                <p className="text-gray-400">WhatsApp: YOUR_NUMBER</p>
+                            </div>
+                            <div>
+                                <h4 className="font-bold mb-4">Newsletter</h4>
+                                <input type="email" placeholder="Enter email" className="bg-transparent border-b border-gray-600 w-full py-2 outline-none" />
                             </div>
                         </div>
-                        <button @click="cart.splice(index, 1)" class="text-red-300 hover:text-red-600">🗑️</button>
-                    </div>
-                </template>
-            </div>
-
-            <div class="pt-8 border-t border-gray-100">
-                <div class="flex justify-between font-bold text-2xl mb-8">
-                    <span>Total Bill:</span>
-                    <span class="text-[#3E2723]">₹<span x-text="getCartTotal()"></span></span>
+                    </footer>
                 </div>
-                <button @click="checkoutWhatsApp()" class="w-full bg-green-500 text-white py-5 rounded-[25px] font-bold uppercase tracking-widest shadow-xl shadow-green-100">Order via WhatsApp</button>
-            </div>
-        </div>
-    </div>
+            );
+        };
 
-    <script>
-        function bakeryApp() {
-            return {
-                isAdmin: false, showAdminLogin: false, showCart: false, adminPassword: '',
-                activeTab: 'Cakes', activeWeight: 'All Weight', searchQuery: '',
-                cart: [],
-                categories: ['Cakes', 'Watches', 'Imported', 'Drinks', 'Perfumes', 'Bouquets'],
-                weights: ['All Weight', '0.5 kg', '1 kg', '1.5 kg', '2 kg', '3 kg', 'Custom'],
-                weightList: ['N/A', '0.5 kg', '1 kg', '1.5 kg', '2 kg', '3 kg', 'Custom'],
-
-                site: {
-                    brandName: 'MomsBakery',
-                    heroTagline: 'Najibabads Elite Bakery & Gift Corner',
-                    heroTitle: 'Luxury Craftsmanship',
-                    heroSubTitle: 'Specialists in Designer Cakes, Premium Luxury Watches, and Imported Global Treasures.',
-                    phone: '918218250432',
-                    address: 'Mota Aam, near Pooja Hospital, Najibabad, UP.',
-                    showSpecials: true,
-                    showWatches: true,
-                    reels: []
-                },
-
-                items: [], specials: [],
-                newItem: { name: '', price: '', category: 'Cakes', weight: 'N/A', dest: 'items', image: '' },
-
-                init() {
-                    const saved = localStorage.getItem('moms_data_v10');
-                    if(saved) {
-                        const data = JSON.parse(saved);
-                        this.site = data.site || this.site;
-                        this.items = data.items || [];
-                        this.specials = data.specials || [];
-                    }
-                },
-
-                save() {
-                    localStorage.setItem('moms_data_v10', JSON.stringify({
-                        site: this.site, items: this.items, specials: this.specials
-                    }));
-                },
-
-                get filteredItems() {
-                    let filtered = [...this.items];
-                    
-                    // Filter by Search
-                    if(this.searchQuery) {
-                        return filtered.filter(i => 
-                            i.name.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
-                            i.category.toLowerCase().includes(this.searchQuery.toLowerCase())
-                        );
-                    }
-
-                    // Filter by Category
-                    filtered = filtered.filter(i => i.category === this.activeTab);
-
-                    // Filter by Weight
-                    if(this.activeTab === 'Cakes' && this.activeWeight !== 'All Weight') {
-                        filtered = filtered.filter(i => i.weight === this.activeWeight);
-                    }
-
-                    return filtered;
-                },
-
-                loginAdmin() {
-                    if(this.adminPassword === 'moms123') { 
-                        this.isAdmin = true; 
-                        this.showAdminLogin = false; 
-                        this.adminPassword = ''; 
-                    } else alert('Unauthorized!');
-                },
-
-                handleFileUpload(e) {
-                    const reader = new FileReader();
-                    reader.onload = (f) => this.newItem.image = f.target.result;
-                    reader.readAsDataURL(e.target.files[0]);
-                },
-
-                handleVideoUpload(e) {
-                    const file = e.target.files[0];
-                    if(file.size > 10000000) { alert('Limit is 10MB'); return; }
-                    const reader = new FileReader();
-                    reader.onload = (f) => { this.site.reels.push(f.target.result); };
-                    reader.readAsDataURL(file);
-                },
-
-                addItem() {
-                    if(!this.newItem.name || !this.newItem.image) return;
-                    const itm = { ...this.newItem, id: Date.now(), isOutOfStock: false };
-                    if(this.newItem.dest === 'items') this.items.push(itm);
-                    else this.specials.push(itm);
-                    this.newItem = { name: '', price: '', category: 'Cakes', weight: 'N/A', dest: 'items', image: '' };
-                    // We don't auto-save here, admin must click "Save Changes" button
-                },
-
-                deleteItem(id) {
-                    this.items = this.items.filter(i => i.id !== id);
-                    this.specials = this.specials.filter(i => i.id !== id);
-                },
-
-                toggleStock(id) {
-                    [...this.items, ...this.specials].forEach(i => { if(i.id === id) i.isOutOfStock = !i.isOutOfStock; });
-                },
-
-                addToCart(item, qty = 1) {
-                    const ex = this.cart.find(i => i.id === item.id);
-                    if(ex) ex.qty += qty; 
-                    else this.cart.push({ ...item, qty: qty });
-                    this.showCart = true;
-                },
-
-                updateQty(idx, amt) {
-                    this.cart[idx].qty += amt;
-                    if(this.cart[idx].qty < 1) this.cart.splice(idx, 1);
-                },
-
-                getCartTotal() { return this.cart.reduce((t, i) => t + (i.price * i.qty), 0); },
-                cartCount() { return this.cart.reduce((t, i) => t + i.qty, 0); },
-
-                checkoutWhatsApp() {
-                    if(this.cart.length === 0) return;
-                    let msg = `*NEW ORDER - ${this.site.brandName}*\n\n`;
-                    this.cart.forEach(i => {
-                        msg += `🛒 *${i.name}*\n`;
-                        msg += `   Qty: ${i.qty} | Price: ₹${i.price * i.qty}\n\n`;
-                    });
-                    msg += `*Bill Amount: ₹${this.getCartTotal()}*\n\n`;
-                    msg += `📍 *Delivery:* ${this.site.address}\n`;
-                    msg += `_Order via Website Portal_`;
-                    window.open(`https://wa.me/${this.site.phone}/?text=${encodeURIComponent(msg)}`);
-                }
-            }
-        }
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+        
+        // Initialize Lucide Icons
+        setTimeout(() => lucide.createIcons(), 500);
     </script>
 </body>
 </html>
