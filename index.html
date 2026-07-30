@@ -252,3 +252,57 @@
 
 </body>
 </html>
+<!-- CAKE SIZE SELECTION & GUIDE SECTION -->
+    <section id="size-guide" class="py-20 px-6 bg-white">
+        <div class="max-w-5xl mx-auto" x-data="{ 
+            selectedSize: '0.5 KG', 
+            price: '₹550', 
+            servings: '4-6 People',
+            description: 'Perfect for small family celebrations or intimate birthdays.' 
+        }">
+            <div class="text-center mb-12">
+                <span class="text-[10px] font-bold text-pink-400 uppercase tracking-[0.3em]">Ordering Guide</span>
+                <h2 class="serif text-4xl text-[#3E2723] mt-2">Choose Your Perfect Size</h2>
+            </div>
+
+            <div class="glass p-8 md:p-12 rounded-[50px] border-2 border-pink-50 flex flex-col md:flex-row gap-12 items-center">
+                <!-- Visual Size Representation -->
+                <div class="flex-1 flex justify-center items-end gap-4 h-64">
+                    <!-- 0.5 KG -->
+                    <div @click="selectedSize = '0.5 KG'; price = '₹550'; servings = '4-6 People'; description = 'Perfect for small family celebrations or intimate birthdays.'" 
+                         :class="selectedSize === '0.5 KG' ? 'bg-pink-400 h-32' : 'bg-pink-100 h-24'" 
+                         class="w-16 rounded-t-full transition-all duration-500 cursor-pointer flex items-center justify-center text-white font-bold text-[10px]">0.5k</div>
+                    <!-- 1.0 KG -->
+                    <div @click="selectedSize = '1.0 KG'; price = '₹999'; servings = '10-12 People'; description = 'Our most popular size. Ideal for office parties or medium gatherings.'" 
+                         :class="selectedSize === '1.0 KG' ? 'bg-pink-400 h-48' : 'bg-pink-100 h-24'" 
+                         class="w-20 rounded-t-full transition-all duration-500 cursor-pointer flex items-center justify-center text-white font-bold text-xs">1.0k</div>
+                    <!-- 2.0 KG -->
+                    <div @click="selectedSize = '2.0 KG'; price = '₹1899'; servings = '20-25 People'; description = 'A grand celebration cake. Great for weddings, anniversaries, and big parties.'" 
+                         :class="selectedSize === '2.0 KG' ? 'bg-pink-400 h-60' : 'bg-pink-100 h-24'" 
+                         class="w-24 rounded-t-full transition-all duration-500 cursor-pointer flex items-center justify-center text-white font-bold text-sm">2.0k</div>
+                </div>
+
+                <!-- Info Details -->
+                <div class="flex-1 text-center md:text-left">
+                    <div class="inline-block bg-pink-50 text-pink-500 px-4 py-1 rounded-full text-[10px] font-black uppercase mb-4" x-text="selectedSize"></div>
+                    <h3 class="serif text-3xl text-[#3E2723] mb-2" x-text="servings"></h3>
+                    <p class="text-gray-500 text-sm mb-6" x-text="description"></p>
+                    
+                    <div class="flex items-center justify-center md:justify-start gap-4 mb-8">
+                        <span class="text-2xl font-bold text-[#3E2723]" x-text="price"></span>
+                        <span class="text-gray-300">|</span>
+                        <span class="text-xs text-gray-400 uppercase tracking-widest">Starting Price</span>
+                    </div>
+
+                    <a :href="'https://wa.me/918218250432?text=Hi, I want to order a ' + selectedSize + ' cake.'" 
+                       class="inline-block bg-[#3E2723] text-white px-10 py-4 rounded-2xl font-bold text-sm shadow-xl hover:bg-black transition">
+                        Order <span x-text="selectedSize"></span> Now
+                    </a>
+                </div>
+            </div>
+            
+            <p class="text-center mt-8 text-[10px] text-gray-400 uppercase tracking-widest">
+                *Sizes larger than 5KG or multi-tier cakes available on special request.
+            </p>
+        </div>
+    </section>
