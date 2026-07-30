@@ -152,3 +152,67 @@
 
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mom's Bakery | Luxury Gifts & Boutique</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #FDF8F5; scroll-behavior: smooth; }
+        .serif { font-family: 'Playfair Display', serif; }
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.4); }
+        .video-card { aspect-ratio: 9/16; border-radius: 30px; overflow: hidden; position: relative; background: #000; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body x-data="{ wishlist: 0 }">
+
+    <!-- STICKY NAV -->
+    <nav class="fixed w-full z-50 glass py-3 px-6 flex justify-between items-center border-b border-pink-100">
+        <div class="serif text-lg font-bold text-[#3E2723]">Mom's Bakery</div>
+        <div class="hidden md:flex gap-6 text-[10px] uppercase font-black tracking-widest">
+            <a href="#video-reels">Videos</a>
+            <a href="#cakes">Cakes</a>
+            <a href="#drinks">Drinks</a>
+            <a href="#perfumes">Perfumes</a>
+            <a href="#imported">Imported</a>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="text-sm">❤️ <b x-text="wishlist">0</b></span>
+            <a href="https://wa.me/918218250432" class="bg-green-600 text-white p-2 rounded-full shadow-lg">
+                <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.484 8.412 0 6.556-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.309 1.656zm6.29-4.174c1.511.896 3.109 1.369 4.75 1.371h.005c5.454 0 9.893-4.439 9.895-9.895.001-2.643-1.028-5.127-2.899-6.999-1.871-1.872-4.354-2.902-6.997-2.902-5.455 0-9.893 4.439-9.895 9.895-.001 1.745.459 3.447 1.329 4.922l-1.006 3.673 3.765-.988z"/></svg>
+            </a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="pt-32 pb-16 px-6 text-center">
+        <h1 class="serif text-5xl md:text-8xl text-[#3E2723] mb-4">The Luxury <br><span class="text-pink-400 italic">Experience.</span></h1>
+        <p class="text-gray-500 text-sm tracking-wide">Mota Aam, Najibabad • Premium Bakery & Gift Boutique</p>
+    </section>
+
+    <!-- SECTION 1: INSTAGRAM REELS (4 VIDEOS) -->
+    <section id="video-reels" class="py-10 px-6">
+        <h2 class="serif text-2xl mb-8 text-center uppercase tracking-widest">See it in Motion</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-6xl mx-auto">
+            <!-- Video 1 -->
+            <div class="video-card group">
+                <div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-transparent transition">
+                    <span class="text-white text-3xl">▶</span>
+                </div>
+                <img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?q=80" class="w-full h-full object-cover opacity-80">
+                <div class="absolute bottom-4 left-4 text-white text-[10px] font-bold uppercase">Wedding Cake Reel</div>
+            </div>
+            <!-- Video 2 -->
+            <div class="video-card group">
+                <img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?q=80" class="w-full h-full object-cover opacity-80">
+                <div class="absolute bottom-4 left-4 text-white text-[10px] font-bold uppercase">Chocolate Pouring</div>
+            </div>
+            <!-- Video 3 -->
+            <div class="video-card group">
+                <img src="https://images.unsplash.com/photo-1558301211-0d8c8ddee6ec?q=80" class="w-full h-full object-cover opacity-80">
+                <div class="absolute bottom-4 left-4 text-white text-[10px] font-bold uppercase">Gift Packing</div>
