@@ -3,232 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mom's Bakery | Luxury Gift Shop Najibabad</title>
+    <title>Mom's Bakery & Gift Corner | Najibabad</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #FDF8F5; scroll-behavior: smooth; overflow-x: hidden; }
+        body { font-family: 'Poppins', sans-serif; background-color: #FDF8F5; scroll-behavior: smooth; }
         .serif { font-family: 'Playfair Display', serif; }
-        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.4); }
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.4); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .offer-gradient { background: linear-gradient(135deg, #3E2723 0%, #63413a 100%); }
-        .category-card:hover { transform: scale(1.05); transition: 0.3s; }
+        .hero-gradient { background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1535254973040-607b474cb8c2?q=80&w=2000'); background-size: cover; background-position: center; }
     </style>
 </head>
 <body x-data="{ wishlist: 0, openFaq: null }">
 
-    <!-- TOP ANNOUNCEMENT -->
-    <div class="bg-[#3E2723] text-white text-[10px] py-2 text-center uppercase tracking-widest font-bold">
-        Free Delivery in Najibabad on orders above ₹999
-    </div>
-
-    <!-- STICKY NAV -->
-    <nav class="fixed w-full z-50 glass py-3 px-6 flex justify-between items-center border-b border-pink-100 top-8 md:top-10">
-        <div class="serif text-lg font-bold text-[#3E2723]">Mom's Bakery</div>
-        <div class="hidden md:flex gap-4 text-[9px] uppercase font-black tracking-tighter">
-            <a href="#featured">Featured</a>
-            <a href="#categories">Shop</a>
-            <a href="#offers">Offers</a>
-            <a href="#faq">Help</a>
+    <!-- NAVIGATION -->
+    <nav class="fixed w-full z-50 glass py-4 px-6 flex justify-between items-center">
+        <div class="serif text-xl font-bold text-[#3E2723]">Mom's Bakery</div>
+        <div class="hidden lg:flex gap-6 text-[10px] uppercase font-bold tracking-widest text-[#3E2723]">
+            <a href="#featured">Cakes</a>
+            <a href="#categories">Categories</a>
+            <a href="#gallery">Gallery</a>
+            <a href="#contact">Contact</a>
         </div>
         <div class="flex items-center gap-4">
-            <span class="text-sm font-bold">❤️ <b x-text="wishlist">0</b></span>
-            <a href="https://wa.me/918218250432" class="bg-green-600 text-white px-4 py-2 rounded-full text-[10px] font-bold">WhatsApp Order</a>
+            <span class="text-sm">❤️ <b x-text="wishlist">0</b></span>
+            <a href="https://wa.me/918218250432" class="bg-[#3E2723] text-white px-5 py-2 rounded-full text-[10px] font-bold">ORDER NOW</a>
         </div>
     </nav>
 
-    <!-- HERO SECTION -->
-    <section class="pt-48 pb-20 px-6 text-center bg-gradient-to-b from-pink-50 to-transparent">
-        <h1 class="serif text-6xl md:text-9xl text-[#3E2723] mb-4 leading-tight">Sweet <br><span class="italic font-light text-pink-400 text-5xl md:text-7xl">& Pure</span></h1>
-        <p class="text-gray-500 text-sm mb-8">Mota Aam, Najibabad • Premium Bakery & Boutique</p>
-    </section>
-
-    <!-- 1. INSTAGRAM REELS SECTION -->
-    <section id="video-reels" class="py-10 px-6">
-        <h2 class="serif text-2xl mb-8 text-center uppercase tracking-widest text-pink-400">Insta Vibes</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-6xl mx-auto">
-            <div class="aspect-[9/16] rounded-3xl bg-black overflow-hidden relative group">
-                <img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?q=80" class="w-full h-full object-cover opacity-70">
-                <div class="absolute inset-0 flex items-center justify-center text-white text-3xl">▶</div>
-            </div>
-            <div class="aspect-[9/16] rounded-3xl bg-black overflow-hidden relative">
-                <img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?q=80" class="w-full h-full object-cover opacity-70">
-                <div class="absolute inset-0 flex items-center justify-center text-white text-3xl">▶</div>
-            </div>
-            <div class="aspect-[9/16] rounded-3xl bg-black overflow-hidden relative">
-                <img src="https://images.unsplash.com/photo-1558301211-0d8c8ddee6ec?q=80" class="w-full h-full object-cover opacity-70">
-                <div class="absolute inset-0 flex items-center justify-center text-white text-3xl">▶</div>
-            </div>
-            <div class="aspect-[9/16] rounded-3xl bg-black overflow-hidden relative">
-                <img src="https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80" class="w-full h-full object-cover opacity-70">
-                <div class="absolute inset-0 flex items-center justify-center text-white text-3xl">▶</div>
+    <!-- 1. HERO SECTION -->
+    <section class="h-screen flex items-center justify-center text-center hero-gradient text-white px-6">
+        <div class="max-w-4xl">
+            <span class="uppercase tracking-[0.5em] text-[10px] mb-4 block animate-pulse">Since 2026 • Najibabad</span>
+            <h1 class="serif text-6xl md:text-9xl mb-6">Mom's Bakery <br>& <span class="italic font-light">Cake Corner</span></h1>
+            <p class="text-sm md:text-lg opacity-90 mb-10 max-w-xl mx-auto">Handcrafted custom cakes and premium gifts designed to make your celebrations unforgettable.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#categories" class="bg-white text-black px-10 py-4 rounded-full font-bold text-sm shadow-2xl">Explore Cakes</a>
+                <a href="https://wa.me/918218250432" class="glass text-white px-10 py-4 rounded-full font-bold text-sm">Order on WhatsApp</a>
             </div>
         </div>
     </section>
 
-    <!-- 2. SHOP BY CATEGORY -->
-    <section id="categories" class="py-20 px-6 max-w-7xl mx-auto">
-        <h2 class="serif text-3xl text-[#3E2723] mb-10 text-center">Shop by Category</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
-            <a href="#cakes" class="category-card text-center">
-                <div class="w-full aspect-square bg-white rounded-full flex items-center justify-center shadow-sm border border-pink-50 text-3xl">🎂</div>
-                <p class="text-[10px] font-bold mt-2 uppercase tracking-tighter">Birthday</p>
-            </a>
-            <a href="#cakes" class="category-card text-center">
-                <div class="w-full aspect-square bg-white rounded-full flex items-center justify-center shadow-sm border border-pink-50 text-3xl">💍</div>
-                <p class="text-[10px] font-bold mt-2 uppercase tracking-tighter">Wedding</p>
-            </a>
-            <a href="#cakes" class="category-card text-center">
-                <div class="w-full aspect-square bg-white rounded-full flex items-center justify-center shadow-sm border border-pink-50 text-3xl">🍱</div>
-                <p class="text-[10px] font-bold mt-2 uppercase tracking-tighter">Bento</p>
-            </a>
-            <a href="#cakes" class="category-card text-center">
-                <div class="w-full aspect-square bg-white rounded-full flex items-center justify-center shadow-sm border border-pink-50 text-3xl">🧁</div>
-                <p class="text-[10px] font-bold mt-2 uppercase tracking-tighter">Cupcakes</p>
-            </a>
-            <a href="#cakes" class="category-card text-center">
-                <div class="w-full aspect-square bg-white rounded-full flex items-center justify-center shadow-sm border border-pink-50 text-3xl">🍰</div>
-                <p class="text-[10px] font-bold mt-2 uppercase tracking-tighter">Pastries</p>
-            </a>
-            <a href="#cakes" class="category-card text-center">
-                <div class="w-full aspect-square bg-white rounded-full flex items-center justify-center shadow-sm border border-pink-50 text-3xl">🍫</div>
-                <p class="text-[10px] font-bold mt-2 uppercase tracking-tighter">Brownies</p>
-            </a>
-            <a href="#cakes" class="category-card text-center">
-                <div class="w-full aspect-square bg-white rounded-full flex items-center justify-center shadow-sm border border-pink-50 text-3xl">🧸</div>
-                <p class="text-[10px] font-bold mt-2 uppercase tracking-tighter">Kids</p>
-            </a>
-            <a href="#cakes" class="category-card text-center">
-                <div class="w-full aspect-square bg-white rounded-full flex items-center justify-center shadow-sm border border-pink-50 text-3xl">❤️</div>
-                <p class="text-[10px] font-bold mt-2 uppercase tracking-tighter">Anniversary</p>
-            </a>
+    <!-- 2. OUR STORY -->
+    <section class="py-24 px-6 max-w-4xl mx-auto text-center">
+        <h2 class="serif text-4xl text-[#3E2723] mb-8">Our Story</h2>
+        <p class="text-gray-500 leading-relaxed italic text-lg">"At Mom's Bakery, we believe that a cake is not just a dessert; it’s a centerpiece for memories. Born from a passion for homemade quality, every item is baked fresh using premium ingredients and a mother’s touch."</p>
+        <div class="mt-8 flex justify-center gap-4">
+            <span class="text-[10px] font-bold uppercase tracking-widest bg-pink-100 text-pink-500 px-4 py-1 rounded-full">Homemade</span>
+            <span class="text-[10px] font-bold uppercase tracking-widest bg-yellow-100 text-yellow-600 px-4 py-1 rounded-full">Premium Ingredients</span>
         </div>
     </section>
 
     <!-- 3. FEATURED CAKES -->
     <section id="featured" class="py-20 px-6 bg-white">
         <div class="max-w-7xl mx-auto">
-            <div class="flex justify-between items-center mb-10">
-                <h2 class="serif text-4xl text-[#3E2723]">Best Sellers</h2>
-                <span class="text-xs font-bold text-pink-400">Swiping...</span>
-            </div>
+            <h2 class="serif text-4xl mb-12">Chef's Recommendations</h2>
             <div class="flex overflow-x-auto gap-8 no-scrollbar pb-10">
-                <!-- Item 1 -->
-                <div class="min-w-[320px] glass p-6 rounded-[50px]" x-data="{ liked: false }">
+                <!-- Product Card -->
+                <div class="min-w-[300px] bg-[#FDF8F5] p-5 rounded-[40px] shadow-sm" x-data="{ liked: false }">
                     <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1562773229-da4488414447?q=80" class="rounded-[40px] mb-6 aspect-square object-cover">
-                        <button @click="liked = !liked; wishlist += (liked ? 1 : -1)" class="absolute top-4 right-4 bg-white/80 p-3 rounded-full text-xl shadow-sm" :class="liked ? 'text-red-500' : 'text-gray-300'">❤️</button>
+                        <img src="https://images.unsplash.com/photo-1562773229-da4488414447?q=80" class="rounded-[30px] mb-4 aspect-square object-cover">
+                        <button @click="liked = !liked; wishlist += (liked ? 1 : -1)" class="absolute top-4 right-4 bg-white/80 p-3 rounded-full shadow-sm" :class="liked ? 'text-red-500' : 'text-gray-300'">❤️</button>
                     </div>
-                    <h3 class="serif text-2xl mb-2">Signature Truffle</h3>
-                    <div class="flex justify-between items-center mb-6">
-                        <span class="font-bold text-[#D4AF37]">₹699</span>
-                        <span class="text-[10px] bg-pink-100 text-pink-500 px-3 py-1 rounded-full font-bold">Top Selling</span>
-                    </div>
-                    <div class="space-y-3 mb-6 text-sm">
-                        <select class="w-full p-3 rounded-2xl bg-gray-50 border-none outline-none">
-                            <option>Size: 0.5 KG</option>
-                            <option>1.0 KG - ₹1199</option>
-                        </select>
-                        <input type="text" placeholder="Name on Cake..." class="w-full p-3 rounded-2xl bg-gray-50 border-none outline-none">
-                    </div>
-                    <a href="https://wa.me/918218250432" class="block w-full bg-[#3E2723] text-white py-4 rounded-2xl text-center font-bold">WhatsApp to Buy</a>
-                </div>
-                <!-- More items can be duplicated here -->
-            </div>
-        </div>
-    </section>
-
-    <!-- 4. SPECIAL OFFERS -->
-    <section id="offers" class="py-20 px-6 max-w-7xl mx-auto">
-        <div class="offer-gradient rounded-[60px] p-10 text-white flex flex-col md:flex-row items-center gap-10">
-            <div class="flex-1">
-                <span class="text-pink-300 font-bold uppercase tracking-[0.3em] text-xs">Limited Time Offer</span>
-                <h2 class="serif text-5xl mt-4 mb-6">Combo: Cake + Bouquet</h2>
-                <p class="text-gray-300 mb-8">Get any 0.5kg cake and a classic red rose bouquet at 20% off. Use code below.</p>
-                <div class="flex gap-4">
-                    <div class="bg-white/10 border border-white/20 px-6 py-3 rounded-2xl font-mono text-xl">MOMS20</div>
-                    <button class="bg-pink-400 text-white px-8 py-3 rounded-2xl font-bold">Copy Code</button>
-                </div>
-            </div>
-            <div class="w-64 h-64 bg-pink-100/10 rounded-full flex items-center justify-center text-9xl">🎁</div>
-        </div>
-    </section>
-
-    <!-- 5. PERFUMES & IMPORTED -->
-    <section id="luxury" class="py-20 px-6 bg-[#1A1A1A] text-white">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="serif text-4xl mb-12 text-center">Global Selection</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div class="group">
-                    <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?q=80" class="rounded-3xl mb-4 grayscale group-hover:grayscale-0 transition duration-700">
-                    <p class="text-[10px] text-pink-400 font-bold uppercase">Perfume</p>
-                    <h3 class="font-bold">Oud Luxury Intense</h3>
-                    <p class="text-xs opacity-50 mt-1">₹2,499</p>
-                </div>
-                <div class="group">
-                    <img src="https://images.unsplash.com/photo-1621939514649-280e2ee25f60?q=80" class="rounded-3xl mb-4 grayscale group-hover:grayscale-0 transition duration-700">
-                    <p class="text-[10px] text-pink-400 font-bold uppercase">Imported</p>
-                    <h3 class="font-bold">Global Choco-Box</h3>
-                    <p class="text-xs opacity-50 mt-1">₹1,199</p>
+                    <h3 class="serif text-xl">Best Seller: Belgian Truffle</h3>
+                    <p class="text-pink-500 font-bold mb-4">₹550 onwards</p>
+                    <a href="https://wa.me/918218250432" class="block w-full bg-[#3E2723] text-white py-3 rounded-2xl text-center text-xs font-bold">Order Custom</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 6. FAQ SECTION -->
-    <section id="faq" class="py-20 px-6 max-w-4xl mx-auto">
-        <h2 class="serif text-4xl text-center mb-12">Common Questions</h2>
+    <!-- 4. SHOP BY CATEGORY (9 Categories) -->
+    <section id="categories" class="py-20 px-6 bg-[#FDF8F5]">
+        <h2 class="serif text-3xl text-center mb-16">Shop by Category</h2>
+        <div class="grid grid-cols-3 md:grid-cols-9 gap-4 max-w-7xl mx-auto">
+            <div class="text-center group">
+                <div class="aspect-square bg-white rounded-full flex items-center justify-center text-2xl shadow-sm group-hover:bg-pink-100 transition">🎂</div>
+                <p class="text-[9px] font-bold mt-2 uppercase">Birthday</p>
+            </div>
+            <div class="text-center group">
+                <div class="aspect-square bg-white rounded-full flex items-center justify-center text-2xl shadow-sm group-hover:bg-pink-100 transition">💍</div>
+                <p class="text-[9px] font-bold mt-2 uppercase">Wedding</p>
+            </div>
+            <div class="text-center group">
+                <div class="aspect-square bg-white rounded-full flex items-center justify-center text-2xl shadow-sm group-hover:bg-pink-100 transition">✨</div>
+                <p class="text-[9px] font-bold mt-2 uppercase">Anniversary</p>
+            </div>
+            <div class="text-center group">
+                <div class="aspect-square bg-white rounded-full flex items-center justify-center text-2xl shadow-sm group-hover:bg-pink-100 transition">🧸</div>
+                <p class="text-[9px] font-bold mt-2 uppercase">Kids</p>
+            </div>
+            <div class="text-center group">
+                <div class="aspect-square bg-white rounded-full flex items-center justify-center text-2xl shadow-sm group-hover:bg-pink-100 transition">🍱</div>
+                <p class="text-[9px] font-bold mt-2 uppercase">Bento</p>
+            </div>
+            <div class="text-center group">
+                <div class="aspect-square bg-white rounded-full flex items-center justify-center text-2xl shadow-sm group-hover:bg-pink-100 transition">🧁</div>
+                <p class="text-[9px] font-bold mt-2 uppercase">Cupcakes</p>
+            </div>
+            <div class="text-center group">
+                <div class="aspect-square bg-white rounded-full flex items-center justify-center text-2xl shadow-sm group-hover:bg-pink-100 transition">🍰</div>
+                <p class="text-[9px] font-bold mt-2 uppercase">Pastries</p>
+            </div>
+            <div class="text-center group">
+                <div class="aspect-square bg-white rounded-full flex items-center justify-center text-2xl shadow-sm group-hover:bg-pink-100 transition">🍫</div>
+                <p class="text-[9px] font-bold mt-2 uppercase">Brownies</p>
+            </div>
+            <div class="text-center group">
+                <div class="aspect-square bg-white rounded-full flex items-center justify-center text-2xl shadow-sm group-hover:bg-pink-100 transition">🍪</div>
+                <p class="text-[9px] font-bold mt-2 uppercase">Cookies</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. SIGNATURE COLLECTION -->
+    <section class="py-20 px-6 max-w-7xl mx-auto">
+        <h2 class="serif text-4xl mb-12">Signature Collection</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="relative rounded-[50px] overflow-hidden h-[400px]">
+                <img src="https://images.unsplash.com/photo-1535254973040-607b474cb8c2?q=80" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/40 flex flex-col justify-end p-10 text-white">
+                    <h3 class="serif text-3xl mb-2">The Wedding Gallery</h3>
+                    <p class="text-sm mb-6 opacity-80">Tiered masterpieces for your biggest day.</p>
+                    <a href="https://wa.me/918218250432" class="w-fit border border-white px-6 py-2 rounded-full text-xs">Inquire Now</a>
+                </div>
+            </div>
+            <div class="relative rounded-[50px] overflow-hidden h-[400px]">
+                <img src="https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-pink-900/40 flex flex-col justify-end p-10 text-white">
+                    <h3 class="serif text-3xl mb-2">Designer Luxe</h3>
+                    <p class="text-sm mb-6 opacity-80">Customized theme cakes with 24K gold accents.</p>
+                    <a href="https://wa.me/918218250432" class="w-fit border border-white px-6 py-2 rounded-full text-xs">View Designs</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. SEASONAL SPECIALS & 9. SPECIAL OFFERS -->
+    <section class="py-20 px-6 bg-[#3E2723] text-white">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <span class="text-pink-300 uppercase tracking-widest text-xs font-bold">Limited Time</span>
+                <h2 class="serif text-5xl mt-4 mb-6">Festival Combo Deal</h2>
+                <p class="text-gray-300 mb-8">Get a 1KG Designer Cake + Imported Perfume Gift Set at 15% off. Use code <b>FESTIVE15</b> on WhatsApp.</p>
+                <a href="https://wa.me/918218250432" class="bg-pink-400 text-white px-10 py-4 rounded-full font-bold">Claim Deal</a>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white/10 p-6 rounded-3xl text-center">
+                    <p class="text-4xl mb-2">☕</p>
+                    <p class="text-xs font-bold uppercase">Holiday Drinks</p>
+                </div>
+                <div class="bg-white/10 p-6 rounded-3xl text-center">
+                    <p class="text-4xl mb-2">🌸</p>
+                    <p class="text-xs font-bold uppercase">Gift Boxes</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. GALLERY & INSTAGRAM -->
+    <section id="gallery" class="py-20 px-6">
+        <h2 class="serif text-4xl text-center mb-12">Gallery of Joy</h2>
+        <div class="columns-2 md:columns-4 gap-4 max-w-7xl mx-auto space-y-4">
+            <img src="https://images.unsplash.com/photo-1562773229-da4488414447?q=80" class="rounded-3xl shadow-sm">
+            <img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?q=80" class="rounded-3xl shadow-sm">
+            <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80" class="rounded-3xl shadow-sm">
+            <img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?q=80" class="rounded-3xl shadow-sm">
+        </div>
+    </section>
+
+    <!-- 8. REVIEWS -->
+    <section class="py-20 px-6 bg-pink-50">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="serif text-3xl mb-12 italic text-[#3E2723]">Our Happy Customers</h2>
+            <div class="bg-white p-10 rounded-[50px] shadow-sm">
+                <div class="text-yellow-400 text-xl mb-4">★★★★★</div>
+                <p class="text-gray-500 italic mb-6">"Mom's Bakery made my wedding cake and it was the highlight of the event. The taste was as premium as the design!"</p>
+                <div class="flex items-center justify-center gap-4">
+                    <div class="w-10 h-10 bg-gray-200 rounded-full"></div>
+                    <span class="font-bold text-sm">— Rahul S. (Najibabad)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. DELIVERY & 11. FAQ -->
+    <section class="py-20 px-6 max-w-4xl mx-auto">
+        <h2 class="serif text-4xl text-center mb-12">Ordering Information</h2>
         <div class="space-y-4">
-            <!-- FAQ 1 -->
-            <div class="bg-white rounded-3xl p-6 border border-pink-50 shadow-sm" @click="openFaq = (openFaq === 1 ? null : 1)">
-                <div class="flex justify-between items-center cursor-pointer">
-                    <h4 class="font-bold text-sm">How do I order?</h4>
-                    <span x-text="openFaq === 1 ? '−' : '+'" class="text-xl"></span>
+            <div class="glass p-6 rounded-3xl" @click="openFaq = (openFaq === 1 ? null : 1)">
+                <div class="flex justify-between items-center cursor-pointer font-bold text-sm">
+                    <span>How to order & Payment?</span>
+                    <span x-text="openFaq === 1 ? '−' : '+'"></span>
                 </div>
-                <div x-show="openFaq === 1" x-collapse class="mt-4 text-xs text-gray-500 leading-relaxed">
-                    Simply browse our products, click 'Order on WhatsApp', and send us your selection. We will confirm your order and delivery time instantly.
+                <div x-show="openFaq === 1" class="mt-4 text-xs text-gray-500 leading-relaxed">
+                    Choose your item and tap 'Order on WhatsApp'. We accept GPay, PhonePe, and Cash on Delivery in Najibabad.
                 </div>
             </div>
-            <!-- FAQ 2 -->
-            <div class="bg-white rounded-3xl p-6 border border-pink-50 shadow-sm" @click="openFaq = 2">
-                <div class="flex justify-between items-center cursor-pointer">
-                    <h4 class="font-bold text-sm">Payment Methods</h4>
+            <div class="glass p-6 rounded-3xl" @click="openFaq = 2">
+                <div class="flex justify-between items-center cursor-pointer font-bold text-sm">
+                    <span>Delivery & Pickup?</span>
                     <span class="text-xl">+</span>
                 </div>
                 <div x-show="openFaq === 2" class="mt-4 text-xs text-gray-500">
-                    We accept Google Pay, PhonePe, Paytm, and Cash on Delivery in Najibabad.
+                    We deliver across Najibabad. You can also pick up your order from Mota Aam, near Pooja Hospital. Delivery is free for orders over ₹999.
                 </div>
             </div>
-            <!-- FAQ 3 -->
-            <div class="bg-white rounded-3xl p-6 border border-pink-50 shadow-sm" @click="openFaq = 3">
-                <div class="flex justify-between items-center cursor-pointer">
-                    <h4 class="font-bold text-sm">Custom Cake Policy</h4>
+            <div class="glass p-6 rounded-3xl" @click="openFaq = 3">
+                <div class="flex justify-between items-center cursor-pointer font-bold text-sm">
+                    <span>Customization & Cancellation?</span>
                     <span class="text-xl">+</span>
                 </div>
                 <div x-show="openFaq === 3" class="mt-4 text-xs text-gray-500">
-                    For custom theme cakes, please order at least 24 hours in advance to ensure the highest quality.
+                    Custom cakes need 24-48 hours notice. Cancellations are only accepted 12 hours before the delivery time.
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CONTACT & ADDRESS -->
-    <section class="py-20 px-6 bg-pink-50">
-        <div class="max-w-4xl mx-auto glass p-10 rounded-[60px] text-center border-4 border-white">
-            <h2 class="serif text-4xl mb-6">Come Visit Us</h2>
-            <p class="text-gray-600 mb-8 text-sm">
-                <b>Mom's Bakery & Cake Corner</b><br>
-                Mota aam, near pooja hospital,<br>
-                Najibabad, Uttar Pradesh.<br><br>
-                <span class="text-pink-500 font-bold">Call: +91 8218250432</span>
-            </p>
+    <!-- 12. CONTACT US -->
+    <section id="contact" class="py-20 px-6 bg-white">
+        <div class="max-w-7xl mx-auto glass p-10 rounded-[60px] border-4 border-pink-50 flex flex-col md:flex-row gap-12 items-center">
+            <div class="flex-1">
+                <h2 class="serif text-5xl text-[#3E2723] mb-6">Let's Celebrate Together</h2>
+                <div class="space-y-6">
+                    <p class="text-sm leading-relaxed text-gray-600">
+                        <b>Location:</b> Mota aam, near pooja hospital, Najibabad, UP.<br>
+                        <b>Phone:</b> +91 8218250432<br>
+                        <b>Instagram:</b> @momsbakeryandcakecorner
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="https://wa.me/918218250432" class="bg-green-600 text-white px-8 py-3 rounded-full text-xs font-bold">WhatsApp Us</a>
+                        <a href="mailto:momsbakery@gmail.com" class="border border-[#3E2723] px-8 py-3 rounded-full text-xs font-bold">Email Us</a>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 h-80 rounded-[40px] overflow-hidden shadow-2xl">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3485.456!2d78.33!3d29.6!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjnCsDM2JzAwLjAiTiA3OMKwMjAnMDAuMCJF!5e0!3m2!1sen!2sin!4v12345678" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
         </div>
     </section>
 
     <!-- FOOTER -->
-    <footer class="py-12 bg-[#3E2723] text-white/40 text-[9px] text-center uppercase tracking-[0.5em]">
-        Made with ❤️ by Mom's Bakery Najibabad © 2026
+    <footer class="py-10 bg-[#3E2723] text-white text-center text-[10px] uppercase tracking-[0.4em]">
+        Mom's Bakery & Cake Corner Najibabad © 2026
     </footer>
 
 </body>
