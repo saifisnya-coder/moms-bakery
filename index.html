@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MOM'S BAKERY | 3D Luxury Dark-Bright Edition</title>
+    <title>Mom's Bakery | 3D Luxury Edition</title>
     
+    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,400&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,400&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
@@ -14,12 +15,7 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { 
-                        darkest: '#080808', 
-                        bright: '#FF2D55', /* Electric Pink */
-                        gold: '#FFD700',   /* Bright Gold */
-                        surface: '#151515' 
-                    },
+                    colors: { darkest: '#050505', surface: '#121212', accent: '#B89150', muted: '#2A2A2A', silver: '#A1A1A1' },
                     fontFamily: { serif: ['Playfair Display', 'serif'], sans: ['Inter', 'sans-serif'] }
                 }
             }
@@ -27,197 +23,175 @@
     </script>
 
     <style>
-        body { background-color: #080808; color: #FFFFFF; scroll-behavior: smooth; overflow-x: hidden; }
-        .glass { background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        body { background-color: #050505; color: #FFFFFF; scroll-behavior: smooth; overflow-x: hidden; }
+        .glass { background: rgba(12, 12, 12, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
         
-        /* Animated Big Title */
-        .hero-title {
-            background: linear-gradient(to right, #FFD700, #FF2D55, #FFD700);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-size: 200% auto;
-            animation: shine 3s linear infinite;
-        }
-        @keyframes shine { to { background-position: 200% center; } }
-
+        /* 3D Perspective Container */
+        .perspective-container { perspective: 1000px; }
+        
+        /* 3D Tilt Card Effect */
         .card-3d { 
-            background: #151515; 
-            border: 1px solid rgba(255, 215, 0, 0.1); 
-            transition: all 0.3s ease-out;
+            background: #121212; 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            transition: transform 0.2s ease-out, border-color 0.4s ease;
             transform-style: preserve-3d;
         }
-        .card-3d:hover { border-color: #FF2D55; box-shadow: 0 0 30px rgba(255, 45, 85, 0.2); }
+        .card-3d:hover { border-color: #B89150; }
         
-        .new-launch-glow { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); border: 2px solid #FFD700; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        /* Floating Animation for 3D feel */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
     </style>
 </head>
 
 <body x-data="{ wishlist: 0, openFaq: null }">
 
-    <!-- 3D BACKGROUND NEON -->
+    <!-- 3D BACKGROUND ORBS -->
     <div class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none">
-        <div class="absolute top-[5%] right-[-10%] w-[50%] h-[50%] bg-gold/10 rounded-full blur-[150px] animate-pulse"></div>
-        <div class="absolute bottom-[5%] left-[-10%] w-[40%] h-[40%] bg-bright/10 rounded-full blur-[130px]"></div>
+        <div class="absolute top-[10%] left-[-5%] w-[40%] h-[40%] bg-accent/10 rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-white/5 rounded-full blur-[100px]"></div>
     </div>
 
     <!-- NAVIGATION -->
-    <nav class="fixed w-full z-50 glass py-5 px-8 flex justify-between items-center" data-aos="fade-down">
-        <div class="font-black text-xs tracking-[0.5em] text-gold uppercase">Najibabad Store</div>
+    <nav class="fixed w-full z-50 glass py-4 px-8 flex justify-between items-center" data-aos="fade-down">
+        <div class="font-serif text-xl font-black tracking-tighter uppercase italic text-accent">Mom's.</div>
         <div class="flex items-center gap-6">
-            <span class="text-xs font-bold">FAV <b class="text-bright" x-text="wishlist">0</b></span>
-            <a href="https://wa.me/918218250432" class="bg-gold text-black px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest">Order</a>
+            <div class="text-[10px] font-bold text-silver">WISH <span class="text-accent" x-text="wishlist">0</span></div>
+            <a href="https://wa.me/918218250432" class="bg-accent text-darkest px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-accent/20">Order</a>
         </div>
     </nav>
 
-    <!-- 1. HERO SECTION: BIG ANIMATED TITLE -->
-    <section class="min-h-screen flex flex-col justify-center items-center text-center px-6">
-        <div data-aos="zoom-in" data-aos-duration="1500">
-            <p class="text-bright uppercase tracking-[0.6em] text-[10px] font-bold mb-4">Welcome to the Future of Taste</p>
-            <h1 class="hero-title font-serif text-[15vw] md:text-[10vw] font-black leading-none mb-6 tracking-tighter">
-                MOM'S <br> BAKERY.
+    <!-- 1. HERO SECTION (3D Entry) -->
+    <section class="min-h-screen flex flex-col justify-center px-8 md:px-20 pt-20 relative">
+        <div data-aos="zoom-out-up" data-aos-duration="1500">
+            <span class="text-accent uppercase tracking-[0.4em] text-[10px] font-black mb-6 block">Mota Aam, Najibabad</span>
+            <h1 class="font-serif text-[12vw] md:text-[8vw] leading-[0.9] mb-8 font-black tracking-tighter">
+                PURE <br> <span class="italic font-light text-silver">Artistry.</span>
             </h1>
-            <p class="text-gray-400 text-sm max-w-lg mx-auto mb-10 font-light">Mota Aam, Near Pooja Hospital. Handcrafting 3D cakes & luxury gifts with a mother's touch.</p>
-            <div class="flex gap-4 justify-center">
-                <a href="#new-launches" class="bg-bright text-white px-10 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-bright/30">New Launches</a>
-                <a href="#video-shop" class="border border-gold text-gold px-10 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest">Video Shop</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- 2. NEW LAUNCHES SECTION (Bright Glow) -->
-    <section id="new-launches" class="py-32 px-8 bg-surface/50">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16">
-                <h2 class="serif text-5xl font-black italic text-gold" data-aos="fade-right">New Arrivals.</h2>
-                <p class="text-gray-500 text-xs font-bold uppercase tracking-widest">Dropped This Week</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                <!-- New Item 1 -->
-                <div class="card-3d p-8 rounded-[40px] new-launch-glow relative" data-aos="fade-up">
-                    <span class="absolute top-6 left-6 bg-gold text-black text-[9px] font-black px-3 py-1 rounded-full z-10">NEW</span>
-                    <div class="aspect-square rounded-3xl overflow-hidden mb-8">
-                        <img src="https://images.unsplash.com/photo-1562773229-da4488414447?q=80" class="w-full h-full object-cover">
-                    </div>
-                    <h3 class="serif text-2xl mb-2 italic">Electric Velvet</h3>
-                    <p class="text-xs text-gray-500 mb-6 uppercase tracking-widest">Bento Collection</p>
-                    <div class="flex justify-between items-center pt-6 border-t border-white/5">
-                        <span class="text-gold font-black">₹499</span>
-                        <button @click="wishlist++" class="text-bright">❤️</button>
-                    </div>
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
+                <p class="max-w-md text-sm text-silver font-light leading-relaxed">
+                    Elevating the standard of celebration. Experience 3D custom cakes, luxury perfumes, and global gifts.
+                </p>
+                <div class="flex gap-4">
+                    <a href="#categories" class="bg-white text-darkest px-10 py-4 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition">Catalog</a>
+                    <a href="#video-reels" class="border border-white/10 px-10 py-4 rounded-xl text-[10px] font-bold uppercase tracking-widest">Reels</a>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- 3. VIDEO-TO-ORDER SECTION (The "Attached Cake" Logic) -->
-    <section id="video-shop" class="py-32 px-8">
-        <h2 class="serif text-4xl text-center mb-16 text-white" data-aos="fade-up">Watch & Order.</h2>
-        <div class="max-w-6xl mx-auto space-y-20">
-            
-            <!-- Video Order Block 1 -->
-            <div class="flex flex-col md:flex-row gap-10 items-center bg-surface p-6 rounded-[50px] border border-white/5" data-aos="zoom-in">
-                <!-- Video Side -->
-                <div class="w-full md:w-1/2 aspect-[9/16] bg-black rounded-[40px] overflow-hidden relative border-2 border-bright/20 shadow-2xl">
-                    <div class="absolute inset-0 flex items-center justify-center bg-black/40">
-                        <span class="text-white text-4xl">▶</span>
-                    </div>
-                    <!-- Replace with your real IG video thumbnail -->
-                    <img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?q=80" class="w-full h-full object-cover opacity-60">
-                </div>
-                <!-- Product Side (The "Attached Cake") -->
-                <div class="w-full md:w-1/2 p-4 text-center md:text-left">
-                    <span class="text-gold text-[10px] font-bold uppercase tracking-widest mb-4 block">As seen in video</span>
-                    <h3 class="serif text-4xl mb-4 italic">The Royal Tiered Cake</h3>
-                    <p class="text-gray-400 text-sm mb-8 leading-relaxed">Featured in our latest reel. This 3-layer masterpiece is crafted with white chocolate ganache and real gold leaf.</p>
-                    
-                    <!-- Order Logic -->
-                    <div class="bg-darkest p-6 rounded-3xl mb-8">
-                        <div class="flex justify-between text-xs font-bold text-gray-500 mb-4">
-                            <span>CHOOSE SIZE:</span>
-                            <span class="text-gold">₹1,200 Starting</span>
-                        </div>
-                        <select class="w-full bg-surface border border-white/10 p-3 rounded-xl text-sm outline-none mb-4">
-                            <option>1.0 KG - ₹1,200</option>
-                            <option>2.0 KG - ₹2,200</option>
-                        </select>
-                        <input type="text" placeholder="Name on Cake..." class="w-full bg-surface border border-white/10 p-3 rounded-xl text-sm outline-none">
-                    </div>
-                    
-                    <a href="https://wa.me/918218250432?text=I want to order the Royal Tiered Cake from your Video!" 
-                       class="inline-block w-full bg-bright text-white py-5 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-bright/20">
-                        Order This Cake
-                    </a>
-                </div>
-            </div>
-            <!-- More Video Blocks can be duplicated -->
-
+        <!-- Floating 3D Element Placeholder -->
+        <div class="absolute right-10 top-1/2 -translate-y-1/2 hidden lg:block animate-float opacity-20">
+            <span class="text-[200px]">🍰</span>
         </div>
     </section>
 
-    <!-- 4. SIZE GUIDE & PRICE -->
-    <section class="py-32 px-8" data-aos="fade-up">
-        <div class="max-w-5xl mx-auto bg-surface p-12 rounded-[60px] border border-white/10" x-data="{ size: '1.0 KG', price: '₹999' }">
-            <h2 class="serif text-3xl text-center mb-16 text-gold italic">Precision Sizing.</h2>
+    <!-- 4. SHOP BY CATEGORY (Staggered 3D Animation) -->
+    <section id="categories" class="py-32 px-8">
+        <div class="grid grid-cols-3 md:grid-cols-9 gap-6 max-w-7xl mx-auto">
+            <template x-for="(cat, i) in ['Birthday', 'Wedding', 'Anniversary', 'Kids', 'Bento', 'Cupcakes', 'Pastries', 'Brownies', 'Cookies']">
+                <div class="text-center" data-aos="flip-left" :data-aos-delay="i * 100">
+                    <div class="aspect-square rounded-3xl bg-surface border border-white/5 flex items-center justify-center hover:border-accent transition-all duration-500 cursor-pointer group">
+                        <span class="text-2xl group-hover:scale-125 transition duration-500">✨</span>
+                    </div>
+                    <p class="text-[8px] font-black uppercase mt-3 tracking-widest text-silver" x-text="cat"></p>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <!-- 4.5 SIZE GUIDE (3D Flip Section) -->
+    <section id="size-guide" class="py-32 px-8" data-aos="fade-up">
+        <div class="max-w-5xl mx-auto bg-surface p-12 rounded-[60px] border border-white/5 shadow-2xl" x-data="{ size: '1.0 KG', price: '₹999', guests: '10-12 People' }">
             <div class="flex flex-col md:flex-row gap-20 items-center">
-                <div class="flex-1 flex items-end gap-6 h-64 border-b border-white/5 pb-4 w-full">
-                    <div @click="size='0.5 KG'; price='₹550'" :class="size==='0.5 KG' ? 'h-32 bg-bright shadow-[0_0_30px_rgba(255,45,85,0.4)]' : 'h-16 bg-muted'" class="w-full rounded-t-xl transition-all cursor-pointer"></div>
-                    <div @click="size='1.0 KG'; price='₹999'" :class="size==='1.0 KG' ? 'h-48 bg-bright shadow-[0_0_40px_rgba(255,45,85,0.4)]' : 'h-16 bg-muted'" class="w-full rounded-t-xl transition-all cursor-pointer"></div>
-                    <div @click="size='2.0 KG'; price='₹1899'" :class="size==='2.0 KG' ? 'h-64 bg-bright shadow-[0_0_50px_rgba(255,45,85,0.4)]' : 'h-16 bg-muted'" class="w-full rounded-t-xl transition-all cursor-pointer"></div>
+                <div class="flex-1 flex items-end gap-6 h-64 border-b border-white/10 pb-4 w-full">
+                    <div @click="size='0.5 KG'; price='₹550'; guests='4-6 People'" :class="size==='0.5 KG' ? 'h-32 bg-accent shadow-[0_0_30px_rgba(184,145,80,0.3)]' : 'h-16 bg-muted'" class="w-full rounded-t-2xl transition-all cursor-pointer"></div>
+                    <div @click="size='1.0 KG'; price='₹999'; guests='10-12 People'" :class="size==='1.0 KG' ? 'h-48 bg-accent shadow-[0_0_40px_rgba(184,145,80,0.3)]' : 'h-16 bg-muted'" class="w-full rounded-t-2xl transition-all cursor-pointer"></div>
+                    <div @click="size='2.0 KG'; price='₹1899'; guests='20-25 People'" :class="size==='2.0 KG' ? 'h-64 bg-accent shadow-[0_0_50px_rgba(184,145,80,0.3)]' : 'h-16 bg-muted'" class="w-full rounded-t-2xl transition-all cursor-pointer"></div>
                 </div>
-                <div class="flex-1 space-y-6">
-                    <p class="text-gold uppercase tracking-widest text-[10px] font-black">Selection</p>
-                    <h3 class="font-serif text-6xl font-black italic" x-text="size"></h3>
-                    <div class="text-3xl font-light text-white" x-text="price"></div>
-                    <a href="https://wa.me/918218250432" class="inline-block bg-white text-black px-10 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest">WhatsApp Order</a>
+                <div class="flex-1 text-center md:text-left" data-aos="zoom-in-left">
+                    <h3 class="font-serif text-6xl font-black italic mb-2 text-accent" x-text="size"></h3>
+                    <p class="text-silver text-sm mb-6 uppercase tracking-widest">Serves <span class="text-white" x-text="guests"></span></p>
+                    <div class="text-2xl font-light mb-8" x-text="price"></div>
+                    <a :href="'https://wa.me/918218250432?text=Order '+size" class="bg-white text-darkest px-12 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest">Select</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 5. CONTACT & ADDRESS (Najibabad) -->
+    <!-- 3/5. SIGNATURE PRODUCTS (With 3D Tilt) -->
+    <section class="py-32 px-8 max-w-7xl mx-auto">
+        <h2 class="font-serif text-4xl mb-16 italic text-accent" data-aos="fade-right">Signature Gems.</h2>
+        <div class="grid md:grid-cols-3 gap-10 perspective-container">
+            <!-- 3D Card 1 -->
+            <div class="card-3d p-6 rounded-[40px]" data-aos="zoom-in-up" x-data="{ liked: false }">
+                <div class="relative aspect-square mb-8 overflow-hidden rounded-[30px]">
+                    <img src="https://images.unsplash.com/photo-1562773229-da4488414447?q=80" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-700">
+                    <button @click="liked=!liked; wishlist+=(liked?1:-1)" class="absolute top-6 right-6 text-2xl" :class="liked?'text-accent':'text-white/20'">❤️</button>
+                </div>
+                <h3 class="font-serif text-2xl mb-6">Midnight Truffle</h3>
+                <div class="flex justify-between items-center border-t border-white/5 pt-6">
+                    <span class="text-accent font-bold">₹799</span>
+                    <a href="https://wa.me/918218250432" class="text-[9px] font-black uppercase tracking-widest text-silver">Order</a>
+                </div>
+            </div>
+            <!-- More cards can be added here -->
+        </div>
+    </section>
+
+    <!-- 12. CONTACT (Najibabad) -->
     <section id="contact" class="py-32 px-8 border-t border-white/5">
         <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center">
             <div data-aos="fade-up">
-                <h2 class="serif text-7xl mb-10 tracking-tighter text-gold">Visit Us.</h2>
-                <div class="space-y-10">
-                    <div>
-                        <p class="text-bright text-[10px] font-black uppercase tracking-[0.4em] mb-4">Location</p>
-                        <p class="text-gray-400 font-light text-lg">Mota Aam, Near Pooja Hospital,<br>Najibabad, Uttar Pradesh.</p>
+                <h2 class="font-serif text-6xl mb-10 tracking-tighter">The Corner.</h2>
+                <div class="space-y-8">
+                    <div class="border-l-2 border-accent pl-6">
+                        <p class="text-accent text-[10px] font-black uppercase tracking-widest mb-2">Najibabad Store</p>
+                        <p class="text-silver font-light">Mota Aam, Near Pooja Hospital,<br>Uttar Pradesh.</p>
                     </div>
-                    <div>
-                        <p class="text-bright text-[10px] font-black uppercase tracking-[0.4em] mb-4">Inquiry</p>
-                        <p class="text-4xl font-black">+91 8218250432</p>
-                        <p class="text-xs text-gray-600 mt-2 tracking-widest uppercase">Instagram: @momsbakeryandcakecorner</p>
+                    <div class="border-l-2 border-accent pl-6">
+                        <p class="text-accent text-[10px] font-black uppercase tracking-widest mb-2">WhatsApp Direct</p>
+                        <p class="text-3xl font-black text-white">+91 8218250432</p>
                     </div>
                 </div>
             </div>
-            <div class="rounded-[50px] overflow-hidden grayscale border border-white/10 h-[450px] opacity-60">
+            <div class="rounded-[50px] overflow-hidden grayscale border border-white/10 h-96" data-aos="zoom-in">
                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3485.456!2d78.33!3d29.6!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjnCsDM2JzAwLjAiTiA3OMKwMjAnMDAuMCJF!5e0!3m2!1sen!2sin!4v12345678" width="100%" height="100%" style="border:0; filter: invert(90%);" allowfullscreen="" loading="lazy"></iframe>
             </div>
         </div>
     </section>
 
     <!-- FOOTER -->
-    <footer class="py-20 border-t border-white/5 text-center">
-        <div class="font-serif text-3xl font-black italic text-gold tracking-tighter mb-4">MOM'S.</div>
-        <p class="text-[8px] font-black uppercase tracking-[0.6em] text-gray-700">Najibabad Luxury Boutique • 2026</p>
+    <footer class="py-20 text-center border-t border-white/5">
+        <div class="font-serif text-3xl font-black italic text-accent tracking-tighter mb-4">Mom's.</div>
+        <p class="text-[8px] font-black uppercase tracking-[0.6em] opacity-30">Luxury 3D Standard • 2026</p>
     </footer>
 
-    <!-- Scripts -->
+    <!-- Scripts for 3D Motion -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
+        // Initialize Scroll Animations
         AOS.init({ duration: 1000, once: false });
 
-        // 3D Tilt Script
+        // 3D Parallax Tilt Script for Product Cards
         const cards = document.querySelectorAll('.card-3d');
         cards.forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
-                const rotateX = (e.clientY - rect.top - rect.height/2) / 10;
-                const rotateY = (rect.width/2 - (e.clientX - rect.left)) / 10;
-                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+                
+                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
             });
+            
             card.addEventListener('mouseleave', () => {
                 card.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
             });
