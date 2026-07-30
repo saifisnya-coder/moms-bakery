@@ -860,6 +860,35 @@
                                 </button>
                             </div>
                         </form>
+                        <!-- CHANGE ADMIN PASSWORD FORM -->
+<div class="bg-cream p-5 rounded-2xl border border-amber-300/60 space-y-4 text-xs mt-6">
+    <h4 class="font-serif font-bold text-base text-bakery-brown flex items-center gap-2">
+        <i class="fa-solid fa-shield-halved text-honey-gold"></i> Change Admin Password
+    </h4>
+    
+    <form id="changePasswordForm" onsubmit="handleChangeAdminPassword(event)" class="space-y-3 max-w-md">
+        <div>
+            <label class="block font-medium text-bakery-brown mb-1">Current Password *</label>
+            <input type="password" id="currentAdminPass" required placeholder="Enter current password" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white focus:outline-none focus:border-honey-gold">
+        </div>
+
+        <div>
+            <label class="block font-medium text-bakery-brown mb-1">New Password *</label>
+            <input type="password" id="newAdminPass" required placeholder="Enter new password (min 4 chars)" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white focus:outline-none focus:border-honey-gold">
+        </div>
+
+        <div>
+            <label class="block font-medium text-bakery-brown mb-1">Confirm New Password *</label>
+            <input type="password" id="confirmAdminPass" required placeholder="Re-enter new password" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white focus:outline-none focus:border-honey-gold">
+        </div>
+
+        <div class="pt-2">
+            <button type="submit" class="bg-honey-gold hover:bg-amber-600 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition-all">
+                Update Password
+            </button>
+        </div>
+    </form>
+</div>
                     </div>
                 </div>
 
@@ -1349,17 +1378,63 @@
         function openAdminModal() { document.getElementById('adminModal').classList.remove('hidden'); }
         function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
 
-        function verifyAdminPassword() {
-            const pass = document.getElementById('adminPassword').value;
-            if (pass === 'admin123' || pass === 'admin') {
-                document.getElementById('adminLoginSection').classList.add('hidden');
-                document.getElementById('adminDashboardSection').classList.remove('hidden');
-                renderAdminProducts();
-                renderAdminOrders();
-            } else {
-                alert('Incorrect password! Default is: admin123');
-            }
-        }
+       // 1. GET SAVED PASSWORD (OR DEFAULT TO 'admin123')
+function getAdminPassword() {
+    return localStorage.getItem('moms_bakery_admin_pass') || 'admin123';
+}
+
+// 2. VERIFY PASSWORD ON LOGIN
+function verifyAdminPassword() {
+    const enteredPass = document.getElementById('adminPassword').value;
+    const currentSavedPass = getAdminPassword();
+
+    if (enteredPass === currentSavedPass) {
+        document.getElementById('adminLoginSection').classList.add('hidden');
+        document.getElementById('adminDashboardSection').classList.remove('hidden');
+        document.getElementById('adminPassword').value = ''; // clear password field
+        renderAdminProducts();
+        renderAdminOrders();
+        showToast('Welcome Back, Admin! 🔓');
+    } else {
+        alert('Incorrect admin password! Please try again.');
+    }
+}
+
+// 3. CHANGE PASSWORD HANDLER
+function handleChangeAdminPassword(e) {
+    e.preventDefault();
+    
+    const currentInput = document.getElementById('currentAdminPass').value;
+    const newPass = document.getElementById('newAdminPass').value;
+    const confirmPass = document.getElementById('confirmAdminPass').value;
+    const actualCurrentPass = getAdminPassword();
+
+    // Check 1: Verify current password
+    if (currentInput !== actualCurrentPass) {
+        showToast('Current password is incorrect! ❌');
+        return;
+    }
+
+    // Check 2: Minimum length requirement
+    if (newPass.length < 4) {
+        showToast('New password must be at least 4 characters long!');
+        return;
+    }
+
+    // Check 3: Confirm new password match
+    if (newPass !== confirmPass) {
+        showToast('New passwords do not match! ❌');
+        return;
+    }
+
+    // Save new password in localStorage
+    localStorage.setItem('moms_bakery_admin_pass', newPass);
+    
+    // Clear form inputs
+    document.getElementById('changePasswordForm').reset();
+    
+    showToast('Admin password updated successfully! 🔐');
+} 
 
         function switchAdminTab(tab) {
             document.getElementById('tabContentProducts').classList.add('hidden');
