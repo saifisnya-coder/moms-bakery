@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mom's Bakery & Monster Energy Refreshments | Handcrafted 3D Experience</title>
+    <title>Mom's Bakery & Refreshments | Handcrafted 3D Experience</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Playfair Display & Outfit -->
@@ -39,262 +39,86 @@
     </script>
 
     <style>
-        body {
-            background-color: #FAF6F0;
-            color: #2C1A14;
-            font-family: 'Outfit', sans-serif;
-            overflow-x: hidden;
-        }
-
-        /* 3D Perspective and Card Tilt Effect */
-        .tilt-card {
-            transform-style: preserve-3d;
-            transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
-            perspective: 1200px;
-        }
-
-        .tilt-card:hover {
-            box-shadow: 0 25px 35px -12px rgba(44, 26, 20, 0.25);
-        }
-
-        /* Continuous Floating 3D Graphic Canvas Container */
-        #floating3dStage {
-            position: fixed;
-            top: 25%;
-            right: 3%;
-            z-index: 30;
-            pointer-events: none;
-            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;
-        }
-
-        @keyframes bobbing3d {
-            0%, 100% { transform: translateY(0px) rotateY(0deg) rotateX(0deg); }
-            50% { transform: translateY(-22px) rotateY(18deg) rotateX(12deg); }
-        }
-
-        .animate-bobbing {
-            animation: bobbing3d 6s ease-in-out infinite;
-        }
-
-        @keyframes floatParticle {
-            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.6; }
-            50% { transform: translateY(-35px) rotate(180deg); opacity: 1; }
-        }
-
-        @keyframes floatBubble {
-            0% { transform: translateY(120px) scale(0.4); opacity: 0; }
-            50% { opacity: 0.8; }
-            100% { transform: translateY(-140px) scale(1.3); opacity: 0; }
-        }
-
-        @keyframes slowRotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes monsterPulse {
-            0%, 100% { filter: drop-shadow(0 0 12px #00FF66); transform: scale(1); }
-            50% { filter: drop-shadow(0 0 30px #00FF66); transform: scale(1.05); }
-        }
-
+        body { background-color: #FAF6F0; color: #2C1A14; font-family: 'Outfit', sans-serif; overflow-x: hidden; }
+        .tilt-card { transform-style: preserve-3d; transition: transform 0.25s ease-out, box-shadow 0.25s ease-out; perspective: 1200px; }
+        .tilt-card:hover { box-shadow: 0 25px 35px -12px rgba(44, 26, 20, 0.25); }
+        #floating3dStage { position: fixed; top: 25%; right: 3%; z-index: 30; pointer-events: none; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease; }
+        @keyframes bobbing3d { 0%, 100% { transform: translateY(0px) rotateY(0deg); } 50% { transform: translateY(-22px) rotateY(18deg); } }
+        .animate-bobbing { animation: bobbing3d 6s ease-in-out infinite; }
+        @keyframes floatParticle { 0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.6; } 50% { transform: translateY(-35px) rotate(180deg); opacity: 1; } }
+        @keyframes floatBubble { 0% { transform: translateY(120px) scale(0.4); opacity: 0; } 50% { opacity: 0.8; } 100% { transform: translateY(-140px) scale(1.3); opacity: 0; } }
+        @keyframes slowRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes monsterPulse { 0%, 100% { filter: drop-shadow(0 0 12px #00FF66); transform: scale(1); } 50% { filter: drop-shadow(0 0 30px #00FF66); transform: scale(1.05); } }
         .animate-slow-rotate { animation: slowRotate 28s linear infinite; }
         .animate-particle { animation: floatParticle 4s ease-in-out infinite; }
         .monster-glow { animation: monsterPulse 2s infinite ease-in-out; }
-
-        .fizz-bubble {
-            position: absolute;
-            background: rgba(0, 255, 102, 0.3);
-            border-radius: 50%;
-            border: 1px solid rgba(0, 255, 102, 0.7);
-            animation: floatBubble 4.5s linear infinite;
-        }
-
-        /* Scroll Reveal Utility */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #FAF6F0; }
-        ::-webkit-scrollbar-thumb { background: #D97706; border-radius: 4px; }
-
-        @media (max-width: 1024px) {
-            #floating3dStage {
-                top: auto;
-                bottom: 20px;
-                right: 20px;
-                scale: 0.75;
-            }
-        }
-
-        @media @media (prefers-reduced-motion: reduce) {
-            .animate-float-3d, .animate-slow-rotate, .whatsapp-glow, .animate-particle {
-                animation: none !important;
-            }
-            .reveal {
-                transition: none !important;
-                opacity: 1 !important;
-                transform: none !important;
-            }
-            .tilt-card {
-                transform: none !important;
-            }
-        }
-
-        /* 🔽 PASTE THIS NEW CSS CODE RIGHT HERE 🔽 */
-        #scrollBgContainer {
-            will-change: transform;
-            transform: translateZ(0); /* Enables hardware acceleration */
-        }
-
-        .dust-particle, .fizz-particle {
-            position: absolute;
-            will-change: transform, opacity;
-            pointer-events: none;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            #scrollBgContainer *,
-            #bgGradientOverlay,
-            .dust-particle,
-            .fizz-particle {
-                animation: none !important;
-                transform: none !important;
-                transition: none !important;
-            }
-            #scrollBgContainer {
-                position: absolute;
-            }
-        }
-        /* 🔼 END OF NEW CSS CODE 🔼 */
-
+        .fizz-bubble { position: absolute; background: rgba(0, 255, 102, 0.3); border-radius: 50%; border: 1px solid rgba(0, 255, 102, 0.7); animation: floatBubble 4.5s linear infinite; }
+        #scrollBgContainer { will-change: transform; transform: translateZ(0); }
+        .dust-particle, .fizz-particle { position: absolute; will-change: transform, opacity; pointer-events: none; }
+        .weight-pill { transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .weight-pill.active-weight { background-color: #D97706 !important; color: #ffffff !important; border-color: #F59E0B !important; box-shadow: 0 10px 20px -5px rgba(217, 119, 6, 0.5) !important; transform: scale(1.05) translateY(-2px) !important; }
+        .weight-pill.active-weight span { color: #ffffff !important; }
+        .btn-enabled { background-color: #D97706 !important; color: #ffffff !important; cursor: pointer !important; opacity: 1 !important; box-shadow: 0 10px 25px -5px rgba(217, 119, 6, 0.4) !important; }
+        .btn-enabled:hover { background-color: #B45309 !important; transform: translateY(-2px); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: #FAF6F0; } ::-webkit-scrollbar-thumb { background: #D97706; border-radius: 4px; }
+        @media (max-width: 1024px) { #floating3dStage { top: auto; bottom: 20px; right: 20px; scale: 0.75; } }
+        @media (prefers-reduced-motion: reduce) { .animate-bobbing, .animate-slow-rotate, .animate-particle, .monster-glow { animation: none !important; } #scrollBgContainer *, #bgGradientOverlay, .dust-particle, .fizz-particle { animation: none !important; transform: none !important; transition: none !important; } .reveal { transition: none !important; opacity: 1 !important; transform: none !important; } .tilt-card { transform: none !important; } }
     </style>
 </head>
-<body <body class="antialiased selection:bg-honey-gold selection:text-white relative">
+<body class="antialiased selection:bg-honey-gold selection:text-white relative">
 
-    <!-- 🔽 1. PASTE THIS BACKGROUND LAYER HERE 🔽 -->
+    <!-- SCROLL-LINKED PARALLAX BACKGROUND LAYER -->
     <div id="scrollBgContainer" class="fixed inset-0 pointer-events-none z-[-1] overflow-hidden select-none" aria-hidden="true">
-        
-        <!-- Dynamic Shifting Background Layer -->
         <div id="bgGradientOverlay" class="absolute inset-0 bg-gradient-to-b from-cream via-amber-50/80 to-cream transition-colors duration-700 opacity-90"></div>
-
-        <!-- Flour Dust & Wheat Particles -->
         <div id="motifFlourParticles" class="absolute inset-0 will-change-transform">
             <div class="dust-particle particle-1 top-[12%] left-[8%] w-3 h-3 bg-amber-400/20 rounded-full blur-[1px]"></div>
             <div class="dust-particle particle-2 top-[22%] left-[85%] w-4 h-4 bg-amber-300/25 rounded-full blur-[2px]"></div>
             <div class="dust-particle particle-3 top-[35%] left-[15%] w-2 h-2 bg-amber-500/20 rounded-full"></div>
             <div class="dust-particle particle-4 top-[48%] left-[78%] w-5 h-5 bg-orange-300/15 rounded-full blur-[2px]"></div>
         </div>
-
-        <!-- Rotating Bakery Icons Motif -->
-        <div id="motifWhisk" class="absolute top-[28%] left-[5%] text-amber-900/5 text-7xl will-change-transform opacity-60">
-            <i class="fa-solid fa-wheat-awn"></i>
-        </div>
-        <div id="motifRollingPin" class="absolute top-[45%] right-[4%] text-amber-900/5 text-8xl will-change-transform opacity-60">
-            <i class="fa-solid fa-cookie-bite"></i>
-        </div>
-
-        <!-- Monster Energy Fizz Bubbles Motif -->
+        <div id="motifWhisk" class="absolute top-[28%] left-[5%] text-amber-900/5 text-7xl will-change-transform opacity-60"><i class="fa-solid fa-wheat-awn"></i></div>
+        <div id="motifRollingPin" class="absolute top-[45%] right-[4%] text-amber-900/5 text-8xl will-change-transform opacity-60"><i class="fa-solid fa-cookie-bite"></i></div>
         <div id="motifEnergyGlow" class="absolute top-[58%] left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-monster-green/10 rounded-full blur-3xl opacity-0 transition-opacity duration-700 will-change-transform"></div>
         <div id="motifDrinksFizz" class="absolute inset-0 opacity-0 transition-opacity duration-700 will-change-transform">
             <div class="fizz-particle top-[62%] left-[20%] w-3 h-3 border border-monster-green/40 rounded-full"></div>
             <div class="fizz-particle top-[66%] left-[80%] w-4 h-4 border border-monster-green/50 rounded-full"></div>
             <div class="fizz-particle top-[72%] left-[35%] w-2 h-2 bg-monster-green/30 rounded-full"></div>
         </div>
-
-        <!-- Golden Sparkles Motif -->
-        <div id="motifGiftsSparkles" class="absolute top-[78%] right-[10%] text-amber-500/15 text-9xl will-change-transform opacity-0 transition-opacity duration-700">
-            ✨
-        </div>
-
-    </div>
-    <!-- 🔼 END OF BACKGROUND LAYER 🔼 -->
-
-
-    <body class="antialiased selection:bg-honey-gold selection:text-white relative">
-
-    <!-- 🔽 PASTE THIS BACKGROUND LAYER RIGHT HERE 🔽 -->
-    <div id="scrollBgContainer" class="fixed inset-0 pointer-events-none z-[-1] overflow-hidden select-none" aria-hidden="true">
-        <div id="bgGradientOverlay" class="absolute inset-0 bg-gradient-to-b from-cream via-amber-50/80 to-cream transition-colors duration-700 opacity-90"></div>
-
-        <div id="motifFlourParticles" class="absolute inset-0 will-change-transform">
-            <div class="dust-particle particle-1 top-[12%] left-[8%] w-3 h-3 bg-amber-400/20 rounded-full blur-[1px]"></div>
-            <div class="dust-particle particle-2 top-[22%] left-[85%] w-4 h-4 bg-amber-300/25 rounded-full blur-[2px]"></div>
-        </div>
-
-        <div id="motifWhisk" class="absolute top-[28%] left-[5%] text-amber-900/5 text-7xl will-change-transform opacity-60">
-            <i class="fa-solid fa-wheat-awn"></i>
-        </div>
-        <div id="motifRollingPin" class="absolute top-[45%] right-[4%] text-amber-900/5 text-8xl will-change-transform opacity-60">
-            <i class="fa-solid fa-cookie-bite"></i>
-        </div>
-
-        <div id="motifEnergyGlow" class="absolute top-[58%] left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-monster-green/10 rounded-full blur-3xl opacity-0 transition-opacity duration-700 will-change-transform"></div>
-        <div id="motifDrinksFizz" class="absolute inset-0 opacity-0 transition-opacity duration-700 will-change-transform">
-            <div class="fizz-particle top-[62%] left-[20%] w-3 h-3 border border-monster-green/40 rounded-full"></div>
-            <div class="fizz-particle top-[66%] left-[80%] w-4 h-4 border border-monster-green/50 rounded-full"></div>
-        </div>
-
         <div id="motifGiftsSparkles" class="absolute top-[78%] right-[10%] text-amber-500/15 text-9xl will-change-transform opacity-0 transition-opacity duration-700">✨</div>
     </div>
-    <!-- 🔼 END OF BACKGROUND LAYER 🔼 -->
 
-    <!-- TOP ANNOUNCEMENT BAR -->
-    <div class="bg-bakery-brown text-honey-light text-xs sm:text-sm py-2 px-4 text-center font-medium flex items-center justify-center gap-2">
-        <span>✨ Free home delivery on orders above ₹799!</span>
-        <span class="hidden md:inline">| Fresh batches baked daily at 8 AM & 3 PM</span>
-        <a href="#menu" class="underline hover:text-honey-gold transition-colors ml-1">Order Now</a>
-    </div> class="animate-bobbing relative">
-            
-            <!-- CAKE STATE -->
+    <!-- FLOATING 3D STAGE (CAKE <-> MONSTER DRINK MORPH) -->
+    <div id="floating3dStage" class="hidden sm:block pointer-events-none">
+        <div class="animate-bobbing relative">
             <div id="morphCakeVisual" class="w-44 h-44 sm:w-56 sm:h-56 bg-gradient-to-tr from-amber-200/90 via-orange-100 to-amber-50 rounded-3xl p-4 shadow-2xl border-2 border-amber-400/80 backdrop-blur-md flex flex-col items-center justify-center transition-all duration-700">
                 <span class="bg-white/90 text-amber-900 text-[10px] font-extrabold px-3 py-0.5 rounded-full shadow-md mb-1 transform -rotate-3">✨ Handcrafted Cake</span>
-                
                 <svg viewBox="0 0 200 200" fill="none" class="w-28 h-28 sm:w-36 sm:h-36 drop-shadow-2xl">
                     <ellipse cx="100" cy="180" rx="65" ry="12" fill="#2C1A14" fill-opacity="0.18" />
-                    <path d="M70 170 H130 L125 180 H75 Z" fill="#D97706" />
-                    <path d="M95 155 H105 V170 H95 Z" fill="#B45309" />
-                    <ellipse cx="100" cy="155" rx="55" ry="8" fill="#FEF3C7" />
                     <rect x="55" y="115" width="90" height="38" rx="6" fill="#78350F" />
                     <path d="M55 125 C 70 132, 90 120, 100 128 C 110 120, 130 132, 145 125 V 115 H 55 Z" fill="#FFFDF9" />
                     <rect x="65" y="80" width="70" height="38" rx="6" fill="#991B1B" />
                     <path d="M65 90 C 75 96, 90 86, 100 93 C 110 86, 125 96, 135 90 V 80 H 65 Z" fill="#FFFDF9" />
-                    <circle cx="80" cy="74" r="9" fill="#DC2626" />
                     <circle cx="100" cy="70" r="11" fill="#DC2626" />
-                    <circle cx="120" cy="74" r="9" fill="#DC2626" />
                 </svg>
-
                 <p class="font-serif italic text-bakery-brown font-bold text-xs mt-1">Mom's Bakery</p>
             </div>
-
-            <!-- MONSTER ENERGY DRINK MORPHED STATE -->
             <div id="morphMonsterVisual" class="hidden w-44 h-52 sm:w-56 sm:h-64 bg-monster-dark/95 rounded-3xl p-4 shadow-2xl border-2 border-monster-green/80 backdrop-blur-md flex flex-col items-center justify-center transition-all duration-700 monster-glow">
                 <span class="bg-monster-green text-black text-[10px] font-black px-3 py-0.5 rounded-full shadow-md mb-2 uppercase tracking-widest">⚡ Monster Energy</span>
-                
                 <div class="w-20 h-32 sm:w-24 sm:h-40 relative">
                     <svg viewBox="0 0 100 160" class="w-full h-full">
                         <rect x="15" y="10" width="70" height="140" rx="14" fill="#000000" stroke="#00FF66" stroke-width="4" />
-                        <!-- Monster M Claw Logo -->
                         <path d="M28 35 L38 125 M50 25 L50 135 M72 35 L62 125" stroke="#00FF66" stroke-width="8" stroke-linecap="round" />
                         <rect x="30" y="4" width="40" height="8" rx="3" fill="#A0A0A0" />
                     </svg>
                 </div>
-
                 <p class="text-[11px] font-extrabold text-monster-green tracking-wider uppercase mt-2">Chilled & Ready</p>
             </div>
-
         </div>
     </div>
 
-    <!-- TOP ANNOUNCEMENT BAR -->
+    <!-- ANNOUNCEMENT BAR -->
     <div class="bg-bakery-brown text-honey-light text-xs sm:text-sm py-2 px-4 text-center font-medium flex items-center justify-center gap-2 z-40 relative">
         <span>✨ Free home delivery on orders above ₹799!</span>
         <span class="hidden md:inline">| Fresh batches baked daily at 8 AM & Chilled Monster Energy In Stock</span>
@@ -304,7 +128,6 @@
     <!-- NAVIGATION BAR -->
     <nav class="sticky top-0 z-40 bg-cream-light/90 backdrop-blur-md border-b border-amber-900/10 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <!-- Logo -->
             <a href="#" class="flex items-center gap-3 group">
                 <div class="w-12 h-12 rounded-full bg-honey-gold text-white flex items-center justify-center text-2xl shadow-lg group-hover:scale-105 transition-transform duration-300">
                     <i class="fa-solid font-serif italic text-xl">M</i>
@@ -314,8 +137,6 @@
                     <span class="text-xs font-sans tracking-widest uppercase text-honey-gold font-semibold">& Monster Drinks</span>
                 </div>
             </a>
-
-            <!-- Desktop Nav Links -->
             <div class="hidden lg:flex items-center space-x-6 font-medium text-sm text-bakery-brown">
                 <a href="#hero" class="hover:text-honey-gold transition-colors">Our Story</a>
                 <a href="#menu" class="hover:text-honey-gold transition-colors">Menu</a>
@@ -330,29 +151,22 @@
                     <i class="fa-solid fa-lock mr-1"></i> Admin
                 </button>
             </div>
-
-            <!-- Cart Trigger Button -->
             <div class="flex items-center gap-3">
                 <button onclick="toggleCartDrawer()" class="relative bg-honey-gold hover:bg-amber-600 text-white p-3 rounded-full shadow-lg hover:shadow-amber-600/30 transition-all duration-300 hover:scale-105 flex items-center justify-center">
                     <i class="fa-solid fa-basket-shopping text-lg"></i>
                     <span id="cartBadge" class="absolute -top-1 -right-1 bg-berry-red text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white transform scale-0 transition-transform duration-300">0</span>
                 </button>
-
-                <!-- Mobile Menu Toggle Button -->
                 <button onclick="toggleMobileNav()" class="lg:hidden text-bakery-brown text-2xl focus:outline-none p-1">
                     <i id="mobileMenuIcon" class="fa-solid fa-bars"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Mobile Navigation Menu -->
         <div id="mobileNav" class="hidden lg:hidden bg-cream-light border-b border-amber-900/10 px-6 py-4 space-y-3 font-medium text-bakery-brown">
             <a href="#hero" onclick="toggleMobileNav()" class="block hover:text-honey-gold py-1">Our Story</a>
             <a href="#menu" onclick="toggleMobileNav()" class="block hover:text-honey-gold py-1">Bakery Menu</a>
             <a href="#imported" onclick="toggleMobileNav()" class="block hover:text-honey-gold py-1">Imported Items</a>
-            <a href="#drinks" onclick="toggleMobileNav()" class="block font-bold py-1 text-emerald-800 flex items-center gap-2">
-                <i class="fa-solid fa-bolt text-monster-green"></i> Monster Drinks Section
-            </a>
+            <a href="#drinks" onclick="toggleMobileNav()" class="block font-bold py-1 text-emerald-800 flex items-center gap-2"><i class="fa-solid fa-bolt text-monster-green"></i> Monster Drinks Section</a>
             <a href="#custom" onclick="toggleMobileNav()" class="block hover:text-honey-gold py-1">Specialties & Savory</a>
             <a href="#gifts" onclick="toggleMobileNav()" class="block hover:text-honey-gold py-1">Gift Hampers</a>
             <a href="#contact" onclick="toggleMobileNav()" class="block hover:text-honey-gold py-1">Visit Us</a>
@@ -364,124 +178,81 @@
         </div>
     </nav>
 
-    <!-- SECTION 1: HERO SECTION -->
+    <!-- HERO SECTION -->
     <section id="hero" class="relative pt-10 pb-16 md:pt-16 md:pb-28 overflow-hidden">
-        <!-- Floating Particles Backdrop -->
         <div class="absolute top-12 left-10 text-amber-500/40 text-2xl animate-particle pointer-events-none">✨</div>
         <div class="absolute bottom-20 left-1/4 text-rose-500/30 text-xl animate-particle pointer-events-none" style="animation-delay: 1.5s;">🌾</div>
         <div class="absolute top-24 right-1/3 text-amber-600/30 text-3xl animate-particle pointer-events-none" style="animation-delay: 2.5s;">🎂</div>
-        <div class="absolute top-1/2 left-8 text-emerald-500/30 text-2xl animate-particle pointer-events-none" style="animation-delay: 3s;">⚡</div>
-
-        <!-- Radial Glow -->
-        <div class="absolute top-10 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-amber-200/25 rounded-full blur-3xl -z-10 pointer-events-none"></div>
-
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                
-                <!-- Hero Left Content -->
                 <div class="lg:col-span-7 space-y-6 reveal">
                     <div class="inline-flex items-center gap-2 bg-amber-100/90 border border-amber-300 text-bakery-brown text-xs sm:text-sm font-semibold px-4 py-1.5 rounded-full shadow-sm">
                         <i class="fa-solid fa-wheat-awn text-honey-gold"></i>
                         <span>100% Organic Bakes & Ice-Cold Monster Energy</span>
                     </div>
-
                     <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-bakery-brown leading-tight">
                         Warm Oven Delights <br>
                         <span class="italic text-honey-gold font-normal">& Chilled Monster Energy</span> Fresh Daily.
                     </h1>
-
                     <p class="text-base sm:text-lg text-bakery-brown/80 max-w-2xl leading-relaxed font-light">
                         Welcome to <strong>Mom’s Bakery</strong> — crafting sourdough breads, artisanal cakes, cookies, luxury gift trunks, and chilled Monster Energy drinks to fuel your day!
                     </p>
-
-                    <!-- SEARCH BAR -->
                     <div class="pt-2 max-w-lg">
                         <div class="relative flex items-center">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 text-amber-700/60 text-lg"></i>
                             <input type="text" id="heroSearchInput" oninput="handleSearch(this.value)" placeholder="Search cakes, Monster energy, croissants..." class="w-full pl-12 pr-28 py-3.5 rounded-2xl border-2 border-amber-300/80 bg-white shadow-lg focus:outline-none focus:border-honey-gold text-sm font-medium text-bakery-brown transition-all">
-                            <a href="#menu" class="absolute right-2 bg-honey-gold hover:bg-amber-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow">
-                                Search Food
-                            </a>
+                            <a href="#menu" class="absolute right-2 bg-honey-gold hover:bg-amber-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow">Find Food</a>
                         </div>
                     </div>
-
                     <div class="pt-2 flex flex-wrap items-center gap-4">
-                        <a href="#menu" class="bg-honey-gold hover:bg-amber-600 text-white font-semibold px-7 py-3.5 rounded-xl shadow-lg hover:shadow-amber-600/30 transition-all duration-300 hover:-translate-y-1 flex items-center gap-3 text-sm sm:text-base">
-                            <span>Explore Menu</span>
-                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        <a href="#menu" class="bg-honey-gold hover:bg-amber-600 text-white font-semibold px-7 py-3.5 rounded-xl shadow-lg hover:shadow-amber-600/30 transition-all flex items-center gap-3 text-sm sm:text-base">
+                            <span>Explore Menu</span><i class="fa-solid fa-arrow-right text-xs"></i>
                         </a>
-                        <a href="#drinks" class="bg-monster-dark hover:bg-black text-monster-green border border-monster-green/60 font-bold px-6 py-3.5 rounded-xl shadow-lg transition-all duration-300 hover:-translate-y-1 flex items-center gap-2 text-sm sm:text-base">
-                            <i class="fa-solid fa-bolt text-lg"></i>
-                            <span>Monster Drinks</span>
+                        <a href="#drinks" class="bg-monster-dark hover:bg-black text-monster-green border border-monster-green/60 font-bold px-6 py-3.5 rounded-xl shadow-lg transition-all flex items-center gap-2 text-sm sm:text-base">
+                            <i class="fa-solid fa-bolt text-lg"></i><span>Monster Drinks</span>
                         </a>
-                        <a href="#" id="heroWhatsappBtn" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3.5 rounded-xl shadow-md hover:shadow-emerald-600/30 transition-all duration-300 hover:-translate-y-1 flex items-center gap-2 text-sm sm:text-base">
-                            <i class="fa-brands fa-whatsapp text-lg"></i>
-                            <span>WhatsApp Order</span>
+                        <a href="#" id="heroWhatsappBtn" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3.5 rounded-xl shadow-md transition-all flex items-center gap-2 text-sm sm:text-base">
+                            <i class="fa-brands fa-whatsapp text-lg"></i><span>WhatsApp Order</span>
                         </a>
                     </div>
-
-                    <!-- Highlight Badges -->
                     <div class="pt-6 grid grid-cols-3 gap-4 border-t border-amber-900/10">
-                        <div>
-                            <p class="font-serif text-2xl font-bold text-bakery-brown">4.9 ★</p>
-                            <p class="text-xs text-bakery-brown/70 font-medium">1,200+ Happy Customers</p>
-                        </div>
-                        <div>
-                            <p class="font-serif text-2xl font-bold text-bakery-brown">100%</p>
-                            <p class="text-xs text-bakery-brown/70 font-medium">Eggless & Chilled Drinks</p>
-                        </div>
-                        <div>
-                            <p class="font-serif text-2xl font-bold text-bakery-brown">60 Mins</p>
-                            <p class="text-xs text-bakery-brown/70 font-medium">Express Local Delivery</p>
-                        </div>
+                        <div><p class="font-serif text-2xl font-bold text-bakery-brown">4.9 ★</p><p class="text-xs text-bakery-brown/70 font-medium">1,200+ Customers</p></div>
+                        <div><p class="font-serif text-2xl font-bold text-bakery-brown">100%</p><p class="text-xs text-bakery-brown/70 font-medium">Eggless Options</p></div>
+                        <div><p class="font-serif text-2xl font-bold text-bakery-brown">60 Mins</p><p class="text-xs text-bakery-brown/70 font-medium">Express Local Delivery</p></div>
                     </div>
                 </div>
-
-                <!-- Hero Right Static Visual -->
                 <div class="lg:col-span-5 flex justify-center relative reveal">
                     <div class="w-72 h-72 sm:w-88 sm:h-88 bg-gradient-to-tr from-amber-200/80 via-orange-100 to-amber-50 rounded-3xl p-6 shadow-2xl flex flex-col items-center justify-center border-2 border-amber-300/70 relative overflow-hidden backdrop-blur-sm">
                         <span class="absolute top-4 left-5 bg-white/95 text-amber-900 text-xs font-bold px-3 py-1 rounded-full shadow-md transform -rotate-6">✨ Baked With Heart</span>
                         <span class="absolute bottom-5 right-5 bg-berry-red text-white text-xs font-bold px-3 py-1 rounded-full shadow-md transform rotate-6">❤️ Fresh Batches</span>
-
                         <div class="w-44 h-44 sm:w-52 sm:h-52 drop-shadow-2xl">
                             <svg viewBox="0 0 200 200" fill="none" class="w-full h-full">
                                 <ellipse cx="100" cy="180" rx="65" ry="12" fill="#2C1A14" fill-opacity="0.18" />
-                                <path d="M70 170 H130 L125 180 H75 Z" fill="#D97706" />
-                                <path d="M95 155 H105 V170 H95 Z" fill="#B45309" />
-                                <ellipse cx="100" cy="155" rx="55" ry="8" fill="#FEF3C7" />
                                 <rect x="55" y="115" width="90" height="38" rx="6" fill="#78350F" />
                                 <path d="M55 125 C 70 132, 90 120, 100 128 C 110 120, 130 132, 145 125 V 115 H 55 Z" fill="#FFFDF9" />
                                 <rect x="65" y="80" width="70" height="38" rx="6" fill="#991B1B" />
                                 <path d="M65 90 C 75 96, 90 86, 100 93 C 110 86, 125 96, 135 90 V 80 H 65 Z" fill="#FFFDF9" />
-                                <circle cx="80" cy="74" r="9" fill="#DC2626" />
                                 <circle cx="100" cy="70" r="11" fill="#DC2626" />
-                                <circle cx="120" cy="74" r="9" fill="#DC2626" />
                             </svg>
                         </div>
                         <p class="font-serif italic text-bakery-brown font-bold text-lg mt-1">Mom's Red Velvet</p>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
 
-    <!-- SECTION 2: MAIN MENU (2 ITEMS PER LINE ON MOBILE) -->
+    <!-- SECTION 2: MENU (2 ITEMS PER LINE ON MOBILE) -->
     <section id="menu" class="py-12 md:py-20 bg-cream-light border-y border-amber-900/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            
             <div class="text-center max-w-3xl mx-auto mb-10 reveal">
                 <span class="text-xs font-bold uppercase tracking-widest text-honey-gold bg-amber-100 px-3.5 py-1.5 rounded-full">Fresh From Oven</span>
                 <h2 class="font-serif text-3xl sm:text-4xl font-bold text-bakery-brown mt-3">Our Bakery Menu</h2>
                 <p class="text-bakery-brown/70 mt-2 text-sm font-light">Select from our freshly baked options. Filter or search items below!</p>
-
-                <!-- Search Input -->
                 <div class="mt-6 max-w-md mx-auto relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-amber-700/60 text-sm"></i>
                     <input type="text" id="menuSearchInput" oninput="handleSearch(this.value)" placeholder="Search menu items..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-amber-300/80 bg-white shadow-sm focus:outline-none focus:border-honey-gold text-xs font-medium text-bakery-brown">
                 </div>
-
-                <!-- Filters -->
                 <div class="flex flex-wrap items-center justify-center gap-2 mt-6" id="categoryFilters">
                     <button onclick="filterCategory('all')" class="cat-btn active bg-honey-gold text-white px-4 py-1.5 rounded-full text-xs font-semibold transition-all shadow-sm">All Items</button>
                     <button onclick="filterCategory('Cakes')" class="cat-btn bg-amber-100 text-bakery-brown hover:bg-amber-200 px-4 py-1.5 rounded-full text-xs font-semibold transition-all">Cakes</button>
@@ -490,19 +261,13 @@
                     <button onclick="filterCategory('Cupcakes')" class="cat-btn bg-amber-100 text-bakery-brown hover:bg-amber-200 px-4 py-1.5 rounded-full text-xs font-semibold transition-all">Cupcakes</button>
                 </div>
             </div>
-
-            <!-- Grid 2 Per Line Mobile -->
-            <div id="mainMenuGrid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
-                <!-- JS Populated -->
-            </div>
-
+            <div id="mainMenuGrid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8"></div>
         </div>
     </section>
 
-    <!-- SECTION 3: IMPORTED ITEMS SECTION -->
+    <!-- SECTION 3: IMPORTED ITEMS -->
     <section id="imported" class="py-12 md:py-20 bg-gradient-to-b from-cream to-amber-50/60">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 reveal">
                 <div>
                     <span class="text-xs font-bold uppercase tracking-widest text-berry-red bg-berry-light px-3.5 py-1.5 rounded-full">✈️ Hand-Picked Specialties</span>
@@ -510,61 +275,15 @@
                     <p class="text-bakery-brown/70 mt-1 text-xs sm:text-sm font-light max-w-xl">European chocolates and famous imported bakes.</p>
                 </div>
             </div>
-
-            <div id="importedGrid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
-                <!-- JS Populated -->
-            </div>
-
+            <div id="importedGrid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8"></div>
         </div>
     </section>
 
-    <!-- SECTION 4: MONSTER ENERGY & DRINKS SECTION (JUST BELOW IMPORTED ITEMS) -->
+    <!-- SECTION 4: MONSTER ENERGY & DRINKS (DIRECTLY BELOW IMPORTED) -->
     <section id="drinks" class="py-16 md:py-24 bg-gradient-to-br from-monster-dark via-black to-emerald-950 text-white relative overflow-hidden border-y border-emerald-500/40">
-        <!-- Floating Green Carbonation Bubbles -->
         <div class="fizz-bubble w-10 h-10 left-12" style="animation-delay: 0s;"></div>
         <div class="fizz-bubble w-16 h-16 left-1/3" style="animation-delay: 1.2s;"></div>
         <div class="fizz-bubble w-8 h-8 right-1/4" style="animation-delay: 2.2s;"></div>
-        <div class="fizz-bubble w-20 h-20 right-12" style="animation-delay: 3.2s;"></div>
-
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center max-w-3xl mx-auto mb-12 reveal">
-                <span class="text-xs font-black uppercase tracking-widest text-monster-green bg-emerald-950/90 px-4 py-1.5 rounded-full border border-monster-green/60 shadow-inner inline-flex items-center gap-2">
-                    <i class="fa-solid fa-bolt text-monster-green animate-pulse"></i> Monster Energy Drinks & Beverages
-                </span>
-                <h2 class="font-serif text-3xl sm:text-5xl font-bold text-white mt-4 leading-tight">
-                    Ice-Cold Monster Energy Boost
-                </h2>
-                <p class="text-emerald-100/80 text-sm sm:text-base mt-2 font-light">
-                    Supercharge your favorite bakery treats with authentic, ice-cold Monster Energy drinks and gourmet cold brews!
-                </p>
-            </div>
-
-            <div id="drinksGrid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
-                <!-- JS Populated -->
-            </div>
-        </div>
-    </section>
-
-    <!-- SECTION 5: SAVORY & CUSTOM SPECIALTIES (ADDITIONAL SECTION) -->
-    <section id="custom" class="py-12 md:py-20 bg-cream border-b border-amber-900/10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-10 reveal">
-                <span class="text-xs font-bold uppercase tracking-widest text-amber-800 bg-amber-200/70 px-3.5 py-1.5 rounded-full">✨ Chef's Creations</span>
-                <h2 class="font-serif text-3xl sm:text-4xl font-bold text-bakery-brown mt-3">Specialties & Savory Bites</h2>
-                <p class="text-bakery-brown/70 mt-2 text-sm font-light">Custom artisan bakes, savory sandwiches, garlic focaccia, and special kitchen creations!</p>
-            </div>
-
-            <div id="customGrid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
-                <!-- JS Populated -->
-            </div>
-        </div>
-        </section>
-
-    <!-- 🔽 PASTE SECTION 4: MONSTER ENERGY & DRINKS SECTION 🔽 -->
-    <section id="drinks" class="py-16 md:py-24 bg-gradient-to-br from-monster-dark via-black to-emerald-950 text-white relative overflow-hidden border-y border-emerald-500/40">
-        <div class="fizz-bubble w-10 h-10 left-12" style="animation-delay: 0s;"></div>
-        <div class="fizz-bubble w-16 h-16 left-1/3" style="animation-delay: 1.2s;"></div>
-
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center max-w-3xl mx-auto mb-12 reveal">
                 <span class="text-xs font-black uppercase tracking-widest text-monster-green bg-emerald-950/90 px-4 py-1.5 rounded-full border border-monster-green/60 shadow-inner inline-flex items-center gap-2">
@@ -577,37 +296,27 @@
         </div>
     </section>
 
-    <!-- 🔽 PASTE SECTION 5: SAVORY & CUSTOM SPECIALTIES 🔽 -->
+    <!-- SECTION 5: SAVORY & CUSTOM SPECIALTIES -->
     <section id="custom" class="py-12 md:py-20 bg-cream border-b border-amber-900/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto mb-10 reveal">
                 <span class="text-xs font-bold uppercase tracking-widest text-amber-800 bg-amber-200/70 px-3.5 py-1.5 rounded-full">✨ Chef's Creations</span>
                 <h2 class="font-serif text-3xl sm:text-4xl font-bold text-bakery-brown mt-3">Specialties & Savory Bites</h2>
-                <p class="text-bakery-brown/70 mt-2 text-sm font-light">Custom artisan bakes, savory sandwiches, and special kitchen creations!</p>
+                <p class="text-bakery-brown/70 mt-2 text-sm font-light">Custom artisan bakes, savory sandwiches, garlic focaccia, and kitchen creations!</p>
             </div>
             <div id="customGrid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8"></div>
         </div>
     </section>
 
-    <!-- SECTION 6: GIFT HAMPER SECTION -->
-    <section id="gifts" ...
-    </ class="py-16 md:py-24 bg-gradient-to-br from-amber-950 via-bakery-brown to-amber-900 text-cream relative overflow-hidden border-y border-amber-700/40">
+    <!-- SECTION 6: GIFT HAMPERS -->
+    <section id="gifts" class="py-16 md:py-24 bg-gradient-to-br from-amber-950 via-bakery-brown to-amber-900 text-cream relative overflow-hidden border-y border-amber-700/40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center max-w-3xl mx-auto mb-12 reveal">
-                <span class="text-xs font-bold uppercase tracking-widest text-honey-light bg-amber-800/80 px-4 py-1.5 rounded-full border border-amber-600/50 shadow-inner">
-                    🎁 Luxury Unboxing Experience
-                </span>
-                <h2 class="font-serif text-3xl sm:text-5xl font-bold text-cream mt-4 leading-tight">
-                    Curated Gift Hampers & Trunks
-                </h2>
-                <p class="text-cream/80 text-sm sm:text-base mt-2 font-light">
-                    Hand-packaged in golden trunks with customized greeting tags for Birthdays, Anniversaries & Festivals.
-                </p>
+                <span class="text-xs font-bold uppercase tracking-widest text-honey-light bg-amber-800/80 px-4 py-1.5 rounded-full border border-amber-600/50 shadow-inner">🎁 Luxury Unboxing Experience</span>
+                <h2 class="font-serif text-3xl sm:text-5xl font-bold text-cream mt-4 leading-tight">Curated Gift Hampers & Trunks</h2>
+                <p class="text-cream/80 text-sm sm:text-base mt-2 font-light">Hand-packaged in golden trunks with customized greeting tags.</p>
             </div>
-
-            <div id="giftsGrid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
-                <!-- JS Populated -->
-            </div>
+            <div id="giftsGrid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8"></div>
         </div>
     </section>
 
@@ -615,69 +324,38 @@
     <section id="contact" class="py-16 md:py-24 bg-cream border-t border-amber-900/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                
                 <div class="lg:col-span-6 space-y-6 reveal">
                     <span class="text-xs font-bold uppercase tracking-widest text-honey-gold bg-amber-100 px-3.5 py-1.5 rounded-full">Visit Our Kitchen</span>
                     <h2 class="font-serif text-3xl sm:text-4xl font-bold text-bakery-brown">Warm Baker's Corner</h2>
-                    <p class="text-bakery-brown/80 font-light text-sm sm:text-base leading-relaxed">
-                        Stop by for morning croissants or grab your chilled Monster energy drink on the go!
-                    </p>
-
+                    <p class="text-bakery-brown/80 font-light text-sm sm:text-base leading-relaxed">Stop by for morning croissants or grab your chilled Monster energy drink on the go!</p>
                     <div class="space-y-4 pt-2">
                         <div class="flex items-start gap-4">
-                            <div class="w-10 h-10 rounded-xl bg-amber-200/60 text-honey-gold flex items-center justify-center shrink-0 mt-1">
-                                <i class="fa-solid fa-location-dot"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-bakery-brown text-sm">Location Address</h4>
-                                <p id="contactAddressDisplay" class="text-xs sm:text-sm text-bakery-brown/80">Loading address...</p>
-                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-amber-200/60 text-honey-gold flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-location-dot"></i></div>
+                            <div><h4 class="font-bold text-bakery-brown text-sm">Location Address</h4><p id="contactAddressDisplay" class="text-xs sm:text-sm text-bakery-brown/80">Loading address...</p></div>
                         </div>
-
                         <div class="flex items-start gap-4">
-                            <div class="w-10 h-10 rounded-xl bg-amber-200/60 text-honey-gold flex items-center justify-center shrink-0 mt-1">
-                                <i class="fa-solid fa-clock"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-bakery-brown text-sm">Working Hours</h4>
-                                <p id="contactHoursDisplay" class="text-xs sm:text-sm text-bakery-brown/80">Loading hours...</p>
-                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-amber-200/60 text-honey-gold flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-clock"></i></div>
+                            <div><h4 class="font-bold text-bakery-brown text-sm">Working Hours</h4><p id="contactHoursDisplay" class="text-xs sm:text-sm text-bakery-brown/80">Loading hours...</p></div>
                         </div>
-
                         <div class="flex items-start gap-4">
-                            <div class="w-10 h-10 rounded-xl bg-amber-200/60 text-honey-gold flex items-center justify-center shrink-0 mt-1">
-                                <i class="fa-solid fa-truck-fast"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-bakery-brown text-sm">Delivery Info</h4>
-                                <p id="contactDeliveryDisplay" class="text-xs sm:text-sm text-bakery-brown/80">Loading delivery info...</p>
-                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-amber-200/60 text-honey-gold flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-truck-fast"></i></div>
+                            <div><h4 class="font-bold text-bakery-brown text-sm">Delivery Info</h4><p id="contactDeliveryDisplay" class="text-xs sm:text-sm text-bakery-brown/80">Loading delivery info...</p></div>
                         </div>
                     </div>
                 </div>
-
                 <div class="lg:col-span-6 reveal">
                     <div class="bg-bakery-brown p-6 sm:p-8 rounded-3xl text-cream shadow-2xl space-y-5 border border-amber-800/40">
                         <h3 class="font-serif text-2xl font-bold">Have a Custom Order Inquiry?</h3>
                         <p class="text-xs sm:text-sm text-cream/80">Need custom cakes or bulk Monster energy & hamper orders? Talk directly with us!</p>
-                        
                         <div class="p-4 bg-bakery-dark rounded-2xl border border-amber-900/60 flex items-center justify-between">
-                            <div>
-                                <p class="text-[10px] text-amber-400 font-semibold uppercase">Helpline Number</p>
-                                <p id="contactPhoneDisplay" class="font-mono text-base sm:text-lg font-bold text-white">+91 8218250432</p>
-                            </div>
-                            <a id="contactCallBtn" href="tel:+918218250432" class="bg-honey-gold hover:bg-amber-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all">
-                                Call Now
-                            </a>
+                            <div><p class="text-[10px] text-amber-400 font-semibold uppercase">Helpline Number</p><p id="contactPhoneDisplay" class="font-mono text-base sm:text-lg font-bold text-white">+91 8218250432</p></div>
+                            <a id="contactCallBtn" href="tel:+918218250432" class="bg-honey-gold hover:bg-amber-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all">Call Now</a>
                         </div>
-
                         <a id="contactWhatsappBtn" href="#" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm">
-                            <i class="fa-brands fa-whatsapp text-lg"></i>
-                            <span>Chat on WhatsApp</span>
+                            <i class="fa-brands fa-whatsapp text-lg"></i><span>Chat on WhatsApp</span>
                         </a>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
@@ -688,28 +366,19 @@
             <span class="text-xs font-bold uppercase tracking-widest text-honey-gold bg-amber-100 px-3.5 py-1.5 rounded-full">@MomsBakeryOfficial</span>
             <h2 class="font-serif text-3xl font-bold text-bakery-brown mt-3 mb-2">Follow Our Baking Journey</h2>
             <p class="text-bakery-brown/70 text-xs sm:text-sm max-w-lg mx-auto mb-8">Daily fresh batch alerts & sweet giveaways!</p>
-
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
-                <a id="instagramLink" href="https://instagram.com" target="_blank" class="p-5 bg-cream rounded-2xl border border-amber-900/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col items-center">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform">
-                        <i class="fa-brands fa-instagram"></i>
-                    </div>
+                <a id="instagramLink" href="https://instagram.com" target="_blank" class="p-5 bg-cream rounded-2xl border border-amber-900/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col items-center">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white flex items-center justify-center text-xl mb-2"><i class="fa-brands fa-instagram"></i></div>
                     <h4 class="font-bold text-bakery-brown text-sm">Instagram</h4>
                     <p class="text-xs text-bakery-brown/60">@MomsBakeryFresh</p>
                 </a>
-
-                <a id="facebookLink" href="https://facebook.com" target="_blank" class="p-5 bg-cream rounded-2xl border border-amber-900/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col items-center">
-                    <div class="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform">
-                        <i class="fa-brands fa-facebook-f"></i>
-                    </div>
+                <a id="facebookLink" href="https://facebook.com" target="_blank" class="p-5 bg-cream rounded-2xl border border-amber-900/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col items-center">
+                    <div class="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl mb-2"><i class="fa-brands fa-facebook-f"></i></div>
                     <h4 class="font-bold text-bakery-brown text-sm">Facebook</h4>
                     <p class="text-xs text-bakery-brown/60">Mom's Bakery Official</p>
                 </a>
-
-                <a id="socialWhatsappLink" href="#" target="_blank" class="p-5 bg-cream rounded-2xl border border-amber-900/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col items-center">
-                    <div class="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition-transform">
-                        <i class="fa-brands fa-whatsapp"></i>
-                    </div>
+                <a id="socialWhatsappLink" href="#" target="_blank" class="p-5 bg-cream rounded-2xl border border-amber-900/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col items-center">
+                    <div class="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xl mb-2"><i class="fa-brands fa-whatsapp"></i></div>
                     <h4 class="font-bold text-bakery-brown text-sm">WhatsApp Direct</h4>
                     <p id="socialWhatsappDisplay" class="text-xs text-bakery-brown/60">+91 8218250432</p>
                 </a>
@@ -735,220 +404,134 @@
     </footer>
 
     <!-- FLOATING WHATSAPP BUTTON -->
-    <a id="floatingWhatsappBtn" href="#" target="_blank" class="fixed bottom-6 right-6 z-40 bg-emerald-500 hover:bg-emerald-600 text-white p-3.5 sm:p-4 rounded-full shadow-2xl whatsapp-glow hover:scale-110 transition-all duration-300 flex items-center justify-center group" title="Order via WhatsApp">
+    <a id="floatingWhatsappBtn" href="#" target="_blank" class="fixed bottom-6 right-6 z-40 bg-emerald-500 hover:bg-emerald-600 text-white p-3.5 sm:p-4 rounded-full shadow-2xl whatsapp-glow hover:scale-110 transition-all flex items-center justify-center group" title="Order via WhatsApp">
         <i class="fa-brands fa-whatsapp text-2xl sm:text-3xl"></i>
-        <span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 ease-in-out text-xs font-bold pl-0 group-hover:pl-2">Order on WhatsApp</span>
+        <span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all text-xs font-bold pl-0 group-hover:pl-2">Order on WhatsApp</span>
     </a>
 
     <!-- CART DRAWER / CHECKOUT MODAL -->
     <div id="cartDrawerBackdrop" onclick="toggleCartDrawer()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
-    
-    <div id="cartDrawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-cream-light shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+    <div id="cartDrawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-cream-light shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
         <div class="p-5 bg-bakery-brown text-cream flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <i class="fa-solid fa-basket-shopping text-honey-gold text-lg"></i>
                 <h3 class="font-serif text-lg font-bold">Your Fresh Cart</h3>
             </div>
-            <button onclick="toggleCartDrawer()" class="text-cream/70 hover:text-white text-lg">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+            <button onclick="toggleCartDrawer()" class="text-cream/70 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
         </div>
-
-        <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-5 space-y-3">
-            <!-- JS Populated -->
-        </div>
-
+        <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-5 space-y-3"></div>
         <div id="cartFooter" class="p-5 bg-cream border-t border-amber-900/10 space-y-3">
             <div class="space-y-1 text-xs sm:text-sm">
-                <div class="flex justify-between text-bakery-brown/80">
-                    <span>Subtotal</span>
-                    <span id="cartSubtotal" class="font-semibold">₹0</span>
-                </div>
-                <div class="flex justify-between text-bakery-brown/80">
-                    <span>Packaging & Delivery</span>
-                    <span class="font-semibold text-emerald-700">FREE</span>
-                </div>
-                <div class="flex justify-between text-base font-bold text-bakery-brown pt-2 border-t border-amber-900/10">
-                    <span>Total Amount</span>
-                    <span id="cartTotal" class="text-honey-gold">₹0</span>
-                </div>
+                <div class="flex justify-between text-bakery-brown/80"><span>Subtotal</span><span id="cartSubtotal" class="font-semibold">₹0</span></div>
+                <div class="flex justify-between text-bakery-brown/80"><span>Packaging & Delivery</span><span class="font-semibold text-emerald-700">FREE</span></div>
+                <div class="flex justify-between text-base font-bold text-bakery-brown pt-2 border-t border-amber-900/10"><span>Total Amount</span><span id="cartTotal" class="text-honey-gold">₹0</span></div>
             </div>
-
             <button onclick="orderCartViaWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl shadow transition-all flex items-center justify-center gap-2 text-xs sm:text-sm">
-                <i class="fa-brands fa-whatsapp text-base"></i>
-                <span>Order Cart via WhatsApp</span>
+                <i class="fa-brands fa-whatsapp text-base"></i><span>Order Cart via WhatsApp</span>
             </button>
-
-            <button onclick="showCheckoutForm()" class="w-full bg-honey-gold hover:bg-amber-600 text-white font-semibold py-2.5 rounded-xl shadow transition-all text-xs sm:text-sm">
-                Proceed to Checkout
-            </button>
+            <button onclick="showCheckoutForm()" class="w-full bg-honey-gold hover:bg-amber-600 text-white font-semibold py-2.5 rounded-xl shadow transition-all text-xs sm:text-sm">Proceed to Checkout</button>
         </div>
-
-        <!-- Checkout Form Area -->
         <div id="checkoutFormArea" class="hidden flex-1 overflow-y-auto p-5 bg-cream border-t border-amber-900/10 space-y-3">
             <div class="flex items-center justify-between border-b border-amber-900/10 pb-2">
                 <h4 class="font-serif font-bold text-base text-bakery-brown">Delivery Details</h4>
                 <button onclick="hideCheckoutForm()" class="text-xs text-honey-gold font-bold underline">Back to Cart</button>
             </div>
-
             <form id="orderForm" onsubmit="handlePlaceOrder(event)" class="space-y-3 text-xs">
-                <div>
-                    <label class="block font-medium text-bakery-brown mb-1">Full Name *</label>
-                    <input type="text" id="custName" required placeholder="e.g. Ananya Sharma" class="w-full px-3 py-2 rounded-lg border border-amber-300 focus:outline-none focus:border-honey-gold bg-white">
-                </div>
-
-                <div>
-                    <label class="block font-medium text-bakery-brown mb-1">Phone Number *</label>
-                    <input type="tel" id="custPhone" required placeholder="e.g. 9876543210" class="w-full px-3 py-2 rounded-lg border border-amber-300 focus:outline-none focus:border-honey-gold bg-white">
-                </div>
-
-                <div>
-                    <label class="block font-medium text-bakery-brown mb-1">Delivery Address *</label>
-                    <textarea id="custAddress" required rows="2" placeholder="House no, Street, Landmark" class="w-full px-3 py-2 rounded-lg border border-amber-300 focus:outline-none focus:border-honey-gold bg-white"></textarea>
-                </div>
-
-                <div>
-                    <label class="block font-medium text-bakery-brown mb-1">Payment Method</label>
-                    <select id="paymentMethod" class="w-full px-3 py-2 rounded-lg border border-amber-300 focus:outline-none focus:border-honey-gold bg-white">
+                <div><label class="block font-medium text-bakery-brown mb-1">Full Name *</label><input type="text" id="custName" required placeholder="e.g. Ananya Sharma" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                <div><label class="block font-medium text-bakery-brown mb-1">Phone Number *</label><input type="tel" id="custPhone" required placeholder="e.g. 9876543210" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                <div><label class="block font-medium text-bakery-brown mb-1">Delivery Address *</label><textarea id="custAddress" required rows="2" placeholder="House no, Street, Landmark" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></textarea></div>
+                <div><label class="block font-medium text-bakery-brown mb-1">Payment Method</label>
+                    <select id="paymentMethod" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white">
                         <option value="Cash on Delivery">Cash on Delivery (COD)</option>
                         <option value="UPI / QR Code">UPI (GPay, PhonePe, Paytm)</option>
                         <option value="Credit / Debit Card">Credit / Debit Card</option>
                     </select>
                 </div>
-
-                <div class="pt-2">
-                    <button type="submit" class="w-full bg-honey-gold hover:bg-amber-600 text-white font-bold py-3 rounded-xl shadow transition-all text-xs sm:text-sm">
-                        Confirm & Place Order (₹<span id="checkoutTotalAmount">0</span>)
-                    </button>
-                </div>
+                <div class="pt-2"><button type="submit" class="w-full bg-honey-gold hover:bg-amber-600 text-white font-bold py-3 rounded-xl shadow text-xs sm:text-sm">Confirm Order (₹<span id="checkoutTotalAmount">0</span>)</button></div>
             </form>
         </div>
     </div>
 
-    <!-- ADMIN PANEL MODAL -->
-    <!-- 🔽 PASTE PRODUCT DETAIL & WEIGHT SELECTION MODAL RIGHT HERE 🔽 -->
+    <!-- PRODUCT DETAIL & WEIGHT SELECTION MODAL -->
     <div id="productDetailModalBackdrop" onclick="closeProductDetailModal()" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
-
     <div id="productDetailModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] max-w-2xl bg-cream-light/95 backdrop-blur-xl border-2 border-amber-300/70 rounded-3xl shadow-2xl z-50 opacity-0 pointer-events-none transition-all duration-300 scale-95 overflow-hidden text-bakery-brown">
-        <button onclick="closeProductDetailModal()" class="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/10 hover:bg-black/20 text-bakery-brown flex items-center justify-center">
-            <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
-
+        <button onclick="closeProductDetailModal()" class="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/10 hover:bg-black/20 text-bakery-brown flex items-center justify-center"><i class="fa-solid fa-xmark text-lg"></i></button>
         <div class="grid grid-cols-1 md:grid-cols-12 gap-6 p-5 sm:p-7 items-center max-h-[85vh] overflow-y-auto">
             <div class="md:col-span-5 relative group">
                 <div class="h-56 sm:h-72 rounded-2xl overflow-hidden shadow-lg border border-amber-900/10">
-                    <img id="modalProductImg" src="" alt="Cake Image" class="w-full h-full object-cover">
+                    <img id="modalProductImg" src="" alt="Cake Image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 </div>
+                <span id="modalProductBadge" class="absolute top-3 left-3 bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm">✨ Handcrafted</span>
             </div>
-
             <div class="md:col-span-7 space-y-4">
                 <div>
-                    <span id="modalProductCategory" class="text-xs text-honey-gold font-bold uppercase block">Cakes</span>
+                    <span id="modalProductCategory" class="text-xs text-honey-gold font-bold uppercase tracking-widest block">Cakes</span>
                     <h3 id="modalProductName" class="font-serif text-2xl sm:text-3xl font-bold text-bakery-brown leading-tight">Cake Title</h3>
-                    <p id="modalProductDesc" class="text-xs sm:text-sm text-bakery-brown/75 mt-1 font-light">Cake description</p>
+                    <p id="modalProductDesc" class="text-xs sm:text-sm text-bakery-brown/75 mt-1 font-light leading-relaxed">Delicious bake.</p>
                 </div>
-
-                <!-- Weight Selection -->
                 <div class="space-y-2 pt-2 border-t border-amber-900/10">
                     <div class="flex items-center justify-between">
-                        <label class="text-xs font-bold text-bakery-brown uppercase tracking-wider flex items-center gap-1.5">
-                            <i class="fa-solid fa-weight-scale text-honey-gold"></i> Select Cake Weight:
-                        </label>
-                        <span id="weightRequiredBadge" class="text-[10px] text-berry-red font-bold italic animate-pulse">* Please select weight</span>
+                        <label class="text-xs font-bold text-bakery-brown uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-weight-scale text-honey-gold"></i> Select Cake Weight:</label>
+                        <span id="weightRequiredBadge" class="text-[10px] text-berry-red font-bold italic animate-pulse">* Please select a weight</span>
                     </div>
-
-                    <div class="grid grid-cols-3 gap-2.5">
-                        <button type="button" onclick="selectWeight('250 g')" id="pill-250g" class="weight-pill py-2.5 px-3 rounded-xl border border-amber-300 text-xs font-bold text-bakery-brown bg-white/80 flex flex-col items-center justify-center">
-                            <span>250 g</span>
-                            <span id="price-250g" class="text-[10px] opacity-75 mt-0.5">₹399</span>
+                    <div class="grid grid-cols-3 gap-2.5" id="weightPillContainer">
+                        <button type="button" onclick="selectWeight('250 g')" id="pill-250g" class="weight-pill py-2.5 px-3 rounded-xl border border-amber-300 text-xs font-bold text-bakery-brown bg-white/80 hover:bg-amber-100 flex flex-col items-center justify-center transition-all">
+                            <span>250 g</span><span id="price-250g" class="text-[10px] opacity-75 mt-0.5">₹399</span>
                         </button>
-                        <button type="button" onclick="selectWeight('500 g')" id="pill-500g" class="weight-pill py-2.5 px-3 rounded-xl border border-amber-300 text-xs font-bold text-bakery-brown bg-white/80 flex flex-col items-center justify-center">
-                            <span>500 g</span>
-                            <span id="price-500g" class="text-[10px] opacity-75 mt-0.5">₹699</span>
+                        <button type="button" onclick="selectWeight('500 g')" id="pill-500g" class="weight-pill py-2.5 px-3 rounded-xl border border-amber-300 text-xs font-bold text-bakery-brown bg-white/80 hover:bg-amber-100 flex flex-col items-center justify-center transition-all">
+                            <span>500 g</span><span id="price-500g" class="text-[10px] opacity-75 mt-0.5">₹699</span>
                         </button>
-                        <button type="button" onclick="selectWeight('1 kg')" id="pill-1kg" class="weight-pill py-2.5 px-3 rounded-xl border border-amber-300 text-xs font-bold text-bakery-brown bg-white/80 flex flex-col items-center justify-center">
-                            <span>1 kg</span>
-                            <span id="price-1kg" class="text-[10px] opacity-75 mt-0.5">₹1299</span>
+                        <button type="button" onclick="selectWeight('1 kg')" id="pill-1kg" class="weight-pill py-2.5 px-3 rounded-xl border border-amber-300 text-xs font-bold text-bakery-brown bg-white/80 hover:bg-amber-100 flex flex-col items-center justify-center transition-all">
+                            <span>1 kg</span><span id="price-1kg" class="text-[10px] opacity-75 mt-0.5">₹1299</span>
                         </button>
                     </div>
                 </div>
-
                 <div class="pt-3 border-t border-amber-900/10 flex items-center justify-between gap-4">
                     <div>
                         <span class="text-[10px] text-bakery-brown/60 font-bold uppercase block">Total Price</span>
-                        <p id="modalDisplayPrice" class="font-serif text-2xl sm:text-3xl font-bold text-honey-gold">₹0</p>
+                        <p id="modalDisplayPrice" class="font-serif text-2xl sm:text-3xl font-bold text-honey-gold transition-all">₹0</p>
                     </div>
-                    <button id="modalAddToCartBtn" disabled onclick="addModalItemToCart()" class="flex-1 bg-gray-300 text-gray-500 font-bold py-3 px-5 rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 cursor-not-allowed opacity-60">
-                        <i class="fa-solid fa-basket-shopping"></i>
-                        <span id="modalBtnText">Select Weight First</span>
+                    <button id="modalAddToCartBtn" disabled onclick="addModalItemToCart()" class="flex-1 bg-gray-300 text-gray-500 font-bold py-3 px-5 rounded-2xl text-xs sm:text-sm shadow transition-all duration-300 flex items-center justify-center gap-2 cursor-not-allowed opacity-60">
+                        <i class="fa-solid fa-basket-shopping"></i><span id="modalBtnText">Select Weight First</span>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- SECTION 8: ADMIN PANEL MODAL -->
-    <div id="adminModal" ... class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <!-- ADMIN PANEL MODAL -->
+    <div id="adminModal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="bg-cream-light w-full max-w-4xl rounded-3xl shadow-2xl border border-amber-300/50 overflow-hidden flex flex-col max-h-[92vh]">
-            
             <div class="bg-bakery-brown text-cream p-5 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-full bg-honey-gold flex items-center justify-center text-white">
-                        <i class="fa-solid fa-user-gear text-sm"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-serif text-lg font-bold">Mom's Bakery - Admin Portal</h3>
-                        <p class="text-[11px] text-amber-300">Live Item Management & Site Settings</p>
-                    </div>
+                    <div class="w-9 h-9 rounded-full bg-honey-gold flex items-center justify-center text-white"><i class="fa-solid fa-user-gear text-sm"></i></div>
+                    <div><h3 class="font-serif text-lg font-bold">Mom's Bakery - Admin Portal</h3><p class="text-[11px] text-amber-300">Live Item Management & Site Settings</p></div>
                 </div>
-                <button onclick="closeAdminModal()" class="text-cream/70 hover:text-white text-xl">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+                <button onclick="closeAdminModal()" class="text-cream/70 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
             </div>
-
-            <!-- Login Box -->
             <div id="adminLoginSection" class="p-8 text-center space-y-4 max-w-md mx-auto my-auto">
                 <i class="fa-solid fa-lock text-3xl text-honey-gold"></i>
                 <h4 class="font-serif text-xl font-bold text-bakery-brown">Admin Authentication</h4>
-                <p class="text-xs text-bakery-brown/70">Enter bakery key to unlock dashboard controls.</p>
+                <p class="text-xs text-bakery-brown/70">Enter password to manage products and site details.</p>
                 <div class="space-y-3">
                     <input type="password" id="adminPassword" placeholder="Enter password (default: admin123)" class="w-full px-4 py-2.5 rounded-xl border border-amber-300 focus:outline-none focus:border-honey-gold text-center text-xs bg-white">
-                    <button onclick="verifyAdminPassword()" class="w-full bg-honey-gold hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-xs transition-all">
-                        Unlock Admin Dashboard
-                    </button>
+                    <button onclick="verifyAdminPassword()" class="w-full bg-honey-gold hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-xs transition-all">Unlock Admin Dashboard</button>
                     <p class="text-[11px] text-amber-700 italic">Hint: Password is <strong>admin123</strong></p>
                 </div>
             </div>
-
-            <!-- Admin Dashboard -->
             <div id="adminDashboardSection" class="hidden flex-1 overflow-y-auto p-5 space-y-5">
-                
                 <div class="flex border-b border-amber-900/10 space-x-6 font-semibold text-xs sm:text-sm">
-                    <button id="tabBtnProducts" onclick="switchAdminTab('products')" class="pb-2.5 border-b-2 border-honey-gold text-honey-gold">
-                        <i class="fa-solid fa-utensils mr-1"></i> Manage Products
-                    </button>
-                    <button id="tabBtnOrders" onclick="switchAdminTab('orders')" class="pb-2.5 text-bakery-brown/60 hover:text-honey-gold">
-                        <i class="fa-solid fa-receipt mr-1"></i> Customer Orders (<span id="adminOrdersCount">0</span>)
-                    </button>
-                    <button id="tabBtnSettings" onclick="switchAdminTab('settings')" class="pb-2.5 text-bakery-brown/60 hover:text-honey-gold">
-                        <i class="fa-solid fa-sliders mr-1"></i> Site Settings & Contact
-                    </button>
+                    <button id="tabBtnProducts" onclick="switchAdminTab('products')" class="pb-2.5 border-b-2 border-honey-gold text-honey-gold"><i class="fa-solid fa-utensils mr-1"></i> Manage Products</button>
+                    <button id="tabBtnOrders" onclick="switchAdminTab('orders')" class="pb-2.5 text-bakery-brown/60 hover:text-honey-gold"><i class="fa-solid fa-receipt mr-1"></i> Customer Orders (<span id="adminOrdersCount">0</span>)</button>
+                    <button id="tabBtnSettings" onclick="switchAdminTab('settings')" class="pb-2.5 text-bakery-brown/60 hover:text-honey-gold"><i class="fa-solid fa-sliders mr-1"></i> Settings & Security</button>
                 </div>
-
-                <!-- TAB 1: MANAGE PRODUCTS WITH PHOTO UPLOADER -->
                 <div id="tabContentProducts" class="space-y-5">
                     <div class="bg-cream p-4 rounded-2xl border border-amber-300/60 space-y-3">
                         <h4 id="adminFormTitle" class="font-serif font-bold text-base text-bakery-brown">Add New Item</h4>
                         <form id="productForm" onsubmit="handleSaveProduct(event)" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                             <input type="hidden" id="editProductId" value="">
-                            
-                            <div>
-                                <label class="block font-medium text-bakery-brown mb-1">Item Title *</label>
-                                <input type="text" id="prodName" required placeholder="e.g. Monster Energy Original" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white">
-                            </div>
-
-                            <div>
-                                <label class="block font-medium text-bakery-brown mb-1">Section *</label>
+                            <div><label class="block font-medium text-bakery-brown mb-1">Item Title *</label><input type="text" id="prodName" required placeholder="e.g. Monster Energy Original" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                            <div><label class="block font-medium text-bakery-brown mb-1">Section *</label>
                                 <select id="prodSection" required class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white">
                                     <option value="menu">Main Bakery Menu</option>
                                     <option value="imported">Imported Items Section</option>
@@ -957,175 +540,72 @@
                                     <option value="gifts">Special Gift Hampers</option>
                                 </select>
                             </div>
-
-                            <div>
-                                <label class="block font-medium text-bakery-brown mb-1">Category / Tag *</label>
-                                <input type="text" id="prodCategory" required placeholder="e.g. Energy Drink, Cakes, Savory" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white">
-                            </div>
-
-                            <div>
-                                <label class="block font-medium text-bakery-brown mb-1">Price (₹) *</label>
-                                <input type="number" id="prodPrice" required placeholder="e.g. 125" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white">
-                            </div>
-
-                            <div class="md:col-span-2">
-                                <label class="block font-medium text-bakery-brown mb-1">Description *</label>
-                                <input type="text" id="prodDesc" required placeholder="Brief appetizing description" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white">
-                            </div>
-
-                            <div>
-                                <label class="block font-medium text-bakery-brown mb-1">📷 Upload Photo From Gallery</label>
-                                <input type="file" id="prodImageFile" accept="image/*" onchange="handleImageFileUpload(event)" class="w-full text-xs text-bakery-brown file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-honey-gold file:text-white cursor-pointer bg-white border border-amber-300 rounded-lg">
-                            </div>
-
-                            <div>
-                                <label class="block font-medium text-bakery-brown mb-1">Or Paste Image URL</label>
-                                <input type="url" id="prodImage" placeholder="https://..." class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white">
-                            </div>
-
+                            <div><label class="block font-medium text-bakery-brown mb-1">Category / Tag *</label><input type="text" id="prodCategory" required placeholder="e.g. Energy Drink, Cakes" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                            <div><label class="block font-medium text-bakery-brown mb-1">Price (₹) *</label><input type="number" id="prodPrice" required placeholder="e.g. 699" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                            <div class="md:col-span-2"><label class="block font-medium text-bakery-brown mb-1">Description *</label><input type="text" id="prodDesc" required placeholder="Brief description" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                            <div><label class="block font-medium text-bakery-brown mb-1">📷 Upload Photo From Gallery</label><input type="file" id="prodImageFile" accept="image/*" onchange="handleImageFileUpload(event)" class="w-full text-xs text-bakery-brown file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-honey-gold file:text-white cursor-pointer bg-white border border-amber-300 rounded-lg"></div>
+                            <div><label class="block font-medium text-bakery-brown mb-1">Or Paste Image URL</label><input type="url" id="prodImage" placeholder="https://..." class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
                             <div id="imagePreviewContainer" class="hidden md:col-span-2 flex items-center gap-3 bg-white p-2 rounded-lg border border-amber-200">
-                                <img id="prodImagePreview" src="" class="w-12 h-12 object-cover rounded-lg border">
-                                <span class="text-xs text-emerald-700 font-semibold">Photo ready to attach!</span>
+                                <img id="prodImagePreview" src="" class="w-12 h-12 object-cover rounded-lg border"><span class="text-xs text-emerald-700 font-semibold">Photo ready!</span>
                             </div>
-
                             <div class="md:col-span-2 flex justify-end gap-3 pt-2">
-                                <button type="button" onclick="resetProductForm()" class="px-3 py-1.5 text-xs font-semibold text-bakery-brown/70 hover:text-bakery-brown">Clear</button>
-                                <button type="submit" class="bg-honey-gold hover:bg-amber-600 text-white font-bold px-5 py-2 rounded-lg text-xs transition-all">
-                                    Save Product
-                                </button>
+                                <button type="button" onclick="resetProductForm()" class="px-3 py-1.5 text-xs font-semibold text-bakery-brown/70">Clear</button>
+                                <button type="submit" class="bg-honey-gold hover:bg-amber-600 text-white font-bold px-5 py-2 rounded-lg text-xs transition-all">Save Product</button>
                             </div>
                         </form>
                     </div>
-
-                    <div class="space-y-2">
-                        <h4 class="font-serif font-bold text-base text-bakery-brown">All Active Products</h4>
-                        <div id="adminProductsList" class="space-y-2"></div>
-                    </div>
+                    <div class="space-y-2"><h4 class="font-serif font-bold text-base text-bakery-brown">All Active Products</h4><div id="adminProductsList" class="space-y-2"></div></div>
                 </div>
-
-                <!-- TAB 2: ORDERS -->
-                <div id="tabContentOrders" class="hidden space-y-3">
-                    <h4 class="font-serif font-bold text-base text-bakery-brown">Customer Placed Orders</h4>
-                    <div id="adminOrdersList" class="space-y-3"></div>
-                </div>
-
-                <!-- TAB 3: SETTINGS -->
+                <div id="tabContentOrders" class="hidden space-y-3"><h4 class="font-serif font-bold text-base text-bakery-brown">Customer Placed Orders</h4><div id="adminOrdersList" class="space-y-3"></div></div>
                 <div id="tabContentSettings" class="hidden space-y-4">
                     <div class="bg-cream p-5 rounded-2xl border border-amber-300/60 space-y-4 text-xs">
                         <h4 class="font-serif font-bold text-base text-bakery-brown">Edit Bakery Contact & Social Accounts</h4>
                         <form id="settingsForm" onsubmit="handleSaveSettings(event)" class="space-y-3">
-                            <div>
-                                <label class="block font-medium text-bakery-brown mb-1">Bakery Address *</label>
-                                <textarea id="setAddress" required rows="2" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></textarea>
-                            </div>
-
+                            <div><label class="block font-medium text-bakery-brown mb-1">Bakery Address *</label><textarea id="setAddress" required rows="2" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></textarea></div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block font-medium text-bakery-brown mb-1">Helpline Phone Number *</label>
-                                    <input type="text" id="setPhone" required class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white">
-                                </div>
-                                <div>
-                                    <label class="block font-medium text-bakery-brown mb-1">WhatsApp Number (with country code, no +) *</label>
-                                    <input type="text" id="setWhatsapp" required placeholder="e.g. 918218250432" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white">
-                                </div>
+                                <div><label class="block font-medium text-bakery-brown mb-1">Helpline Phone Number *</label><input type="text" id="setPhone" required class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                                <div><label class="block font-medium text-bakery-brown mb-1">WhatsApp Number (with country code, no +) *</label><input type="text" id="setWhatsapp" required placeholder="e.g. 918218250432" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
                             </div>
-
-                            <div>
-                                <label class="block font-medium text-bakery-brown mb-1">Working Hours *</label>
-                                <input type="text" id="setHours" required class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white">
-                            </div>
-
-                            <div>
-                                <label class="block font-medium text-bakery-brown mb-1">Delivery Info *</label>
-                                <input type="text" id="setDelivery" required class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white">
-                            </div>
-
+                            <div><label class="block font-medium text-bakery-brown mb-1">Working Hours *</label><input type="text" id="setHours" required class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                            <div><label class="block font-medium text-bakery-brown mb-1">Delivery Info *</label><input type="text" id="setDelivery" required class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block font-medium text-bakery-brown mb-1">Instagram Profile URL</label>
-                                    <input type="url" id="setInstagram" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white">
-                                </div>
-                                <div>
-                                    <label class="block font-medium text-bakery-brown mb-1">Facebook Page URL</label>
-                                    <input type="url" id="setFacebook" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white">
-                                </div>
+                                <div><label class="block font-medium text-bakery-brown mb-1">Instagram Profile URL</label><input type="url" id="setInstagram" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                                <div><label class="block font-medium text-bakery-brown mb-1">Facebook Page URL</label><input type="url" id="setFacebook" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
                             </div>
-
-                            <div class="pt-2 flex justify-end">
-                                <button type="submit" class="bg-honey-gold hover:bg-amber-600 text-white font-bold px-6 py-2.5 rounded-xl text-xs shadow transition-all">
-                                    Save Site Settings
-                                </button>
-                            </div>
+                            <div class="pt-2 flex justify-end"><button type="submit" class="bg-honey-gold hover:bg-amber-600 text-white font-bold px-6 py-2.5 rounded-xl text-xs shadow transition-all">Save Site Settings</button></div>
                         </form>
-                        <!-- CHANGE ADMIN PASSWORD FORM -->
-<div class="bg-cream p-5 rounded-2xl border border-amber-300/60 space-y-4 text-xs mt-6">
-    <h4 class="font-serif font-bold text-base text-bakery-brown flex items-center gap-2">
-        <i class="fa-solid fa-shield-halved text-honey-gold"></i> Change Admin Password
-    </h4>
-    
-    <form id="changePasswordForm" onsubmit="handleChangeAdminPassword(event)" class="space-y-3 max-w-md">
-        <div>
-            <label class="block font-medium text-bakery-brown mb-1">Current Password *</label>
-            <input type="password" id="currentAdminPass" required placeholder="Enter current password" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white focus:outline-none focus:border-honey-gold">
-        </div>
-
-        <div>
-            <label class="block font-medium text-bakery-brown mb-1">New Password *</label>
-            <input type="password" id="newAdminPass" required placeholder="Enter new password (min 4 chars)" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white focus:outline-none focus:border-honey-gold">
-        </div>
-
-        <div>
-            <label class="block font-medium text-bakery-brown mb-1">Confirm New Password *</label>
-            <input type="password" id="confirmAdminPass" required placeholder="Re-enter new password" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white focus:outline-none focus:border-honey-gold">
-        </div>
-
-        <div class="pt-2">
-            <button type="submit" class="bg-honey-gold hover:bg-amber-600 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition-all">
-                Update Password
-            </button>
-        </div>
-    </form>
-</div>
+                        <div class="border-t border-amber-900/10 pt-4 mt-4">
+                            <h4 class="font-serif font-bold text-base text-bakery-brown mb-3 flex items-center gap-2"><i class="fa-solid fa-shield-halved text-honey-gold"></i> Change Admin Password</h4>
+                            <form id="changePasswordForm" onsubmit="handleChangeAdminPassword(event)" class="space-y-3 max-w-md">
+                                <div><label class="block font-medium text-bakery-brown mb-1">Current Password *</label><input type="password" id="currentAdminPass" required placeholder="Current password" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                                <div><label class="block font-medium text-bakery-brown mb-1">New Password *</label><input type="password" id="newAdminPass" required placeholder="New password (min 4 chars)" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                                <div><label class="block font-medium text-bakery-brown mb-1">Confirm New Password *</label><input type="password" id="confirmAdminPass" required placeholder="Re-enter new password" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                                <button type="submit" class="bg-honey-gold hover:bg-amber-600 text-white font-bold px-5 py-2 rounded-xl text-xs">Update Password</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 
-    <!-- TOAST NOTIFICATION -->
     <div id="toastContainer" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- JAVASCRIPT STATE & SCROLL MORPH LOGIC -->
     <script>
-        // DEFAULT INITIAL PRODUCTS WITH MONSTER DRINKS AND SAVORY CREATIONS
         const DEFAULT_PRODUCTS = [
-            // BAKERY MENU
-            { id: 'm1', section: 'menu', category: 'Cakes', name: 'Classic Red Velvet Cake', price: 850, desc: 'Rich velvet cocoa cake layers with organic cream cheese frosting.', img: 'https://images.unsplash.com/photo-1586788680434-30d324b2d46f?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
+            { id: 'm1', section: 'menu', category: 'Cakes', name: 'Classic Red Velvet Cake', price: 699, desc: 'Rich velvet cocoa cake layers with organic cream cheese frosting.', img: 'https://images.unsplash.com/photo-1586788680434-30d324b2d46f?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
             { id: 'm2', section: 'menu', category: 'Breads', name: 'Sourdough Country Loaf', price: 220, desc: 'Naturally fermented sourdough with crisp golden crust.', img: 'https://images.unsplash.com/photo-1585478259715-876acc5be8eb?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
             { id: 'm3', section: 'menu', category: 'Cookies', name: 'Belgian Choco-Chip Cookies', price: 340, desc: 'Loaded with 70% dark Belgian chocolate chips.', img: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
             { id: 'm4', section: 'menu', category: 'Cupcakes', name: 'Honey Cinnamon Cupcakes', price: 380, desc: 'Moist honey cupcakes topped with cinnamon buttercream swirl.', img: 'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
-            
-            // IMPORTED
-            { id: 'i1', section: 'imported', category: 'Imported', name: 'Belgian Dark Truffle Collection', price: 1250, desc: 'Authentic melt-in-mouth cocoa truffles imported directly from Brussels.', img: 'https://images.unsplash.com/photo-1548907040-4baa42d10919?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
-            { id: 'i2', section: 'imported', category: 'Imported', name: 'French Butter Croissants', price: 580, desc: 'Traditional 81-layer flaky croissants made with Normandy butter.', img: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
-
-            // MONSTER ENERGY DRINKS (RIGHT BELOW IMPORTED SECTION)
-            { id: 'd1', section: 'drinks', category: 'Energy Drink', name: 'Monster Energy Original Green (500ml)', price: 125, desc: 'The iconic energy drink blend with taurine & caffeine boost.', img: 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
-            { id: 'd2', section: 'drinks', category: 'Energy Drink', name: 'Monster Ultra Zero Sugar White', price: 130, desc: 'Crisp, refreshing zero-sugar energy recharge.', img: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
-            { id: 'd3', section: 'drinks', category: 'Energy Drink', name: 'Monster Mango Loco Juice', price: 135, desc: 'Exotic mango juice blended with full energy boost punch.', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
-            { id: 'd4', section: 'drinks', category: 'Cold Brew', name: 'Hazelnut Iced Cold Brew Coffee', price: 180, desc: 'Steeped 18 hours with roasted hazelnut & oat milk.', img: 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
-
-            // SAVORY & CUSTOM SPECIALTIES (ADDITIONAL SECTION)
-            { id: 'c1', section: 'custom', category: 'Savory', name: 'Smoked Cheese & Jalapeño Croissant', price: 210, desc: 'Warm flaky croissant stuffed with melted cheddar & pickled jalapeños.', img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
-            { id: 'c2', section: 'custom', category: 'Custom Bakes', name: 'Artisan Garlic Butter Focaccia', price: 290, desc: 'Fresh rosemary, cherry tomatoes, and extra virgin olive oil.', img: 'https://images.unsplash.com/photo-1589367920969-ab8e050bbb04?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
-
-            // GIFTS
-            { id: 'g1', section: 'gifts', category: 'Gift Hampers', name: "Mom's Grand Celebration Trunk", price: 2200, desc: 'Includes mini cake, 6 cookies, 4 cupcakes & herbal tea in a reusable golden trunk.', img: 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
-            { id: 'g2', section: 'gifts', category: 'Gift Hampers', name: 'Festive Cookie & Brownie Box', price: 1650, desc: 'Vintage tin with 4 artisanal cookie variants & custom greeting card.', img: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80', isSoldOut: false }
+            { id: 'i1', section: 'imported', category: 'Imported', name: 'Belgian Dark Truffle Collection', price: 1250, desc: 'Authentic cocoa truffles imported directly from Brussels.', img: 'https://images.unsplash.com/photo-1548907040-4baa42d10919?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
+            { id: 'i2', section: 'imported', category: 'Imported', name: 'French Butter Croissants', price: 580, desc: 'Traditional flaky croissants made with Normandy butter.', img: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
+            { id: 'd1', section: 'drinks', category: 'Energy Drink', name: 'Monster Energy Original Green (500ml)', price: 125, desc: 'Iconic energy drink blend with taurine & caffeine boost.', img: 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
+            { id: 'd2', section: 'drinks', category: 'Energy Drink', name: 'Monster Ultra Zero Sugar White', price: 130, desc: 'Crisp zero-sugar energy recharge.', img: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
+            { id: 'd3', section: 'drinks', category: 'Energy Drink', name: 'Monster Mango Loco Juice', price: 135, desc: 'Exotic mango juice blended with full energy boost.', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
+            { id: 'c1', section: 'custom', category: 'Savory', name: 'Smoked Cheese Croissant', price: 210, desc: 'Flaky croissant stuffed with melted cheddar & pickled jalapeños.', img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
+            { id: 'g1', section: 'gifts', category: 'Gift Hampers', name: "Mom's Grand Celebration Trunk", price: 2200, desc: 'Includes mini cake, cookies & tea in a golden trunk.', img: 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=600&q=80', isSoldOut: false }
         ];
 
-        // DEFAULT SITE SETTINGS
         const DEFAULT_SETTINGS = {
             address: "12 Baker's Lane, Sector 15, City Center, PIN 282002",
             phone: "+91 8218250432",
@@ -1136,7 +616,6 @@
             facebookUrl: "https://facebook.com"
         };
 
-        // STATE APP
         let products = JSON.parse(localStorage.getItem('moms_bakery_products')) || DEFAULT_PRODUCTS;
         let settings = JSON.parse(localStorage.getItem('moms_bakery_settings')) || DEFAULT_SETTINGS;
         let cart = JSON.parse(localStorage.getItem('moms_bakery_cart')) || [];
@@ -1145,7 +624,10 @@
         let searchQuery = '';
         let uploadedBase64Image = '';
 
-        // INIT APP ON LOAD
+        let currentModalProduct = null;
+        let selectedModalWeight = null;
+        let selectedModalPrice = 0;
+
         document.addEventListener('DOMContentLoaded', () => {
             applySiteSettings();
             renderAllSections();
@@ -1155,7 +637,6 @@
             initScrollMorphEffect();
         });
 
-        // SAVE STATE
         function saveState() {
             localStorage.setItem('moms_bakery_products', JSON.stringify(products));
             localStorage.setItem('moms_bakery_settings', JSON.stringify(settings));
@@ -1163,7 +644,91 @@
             localStorage.setItem('moms_bakery_orders', JSON.stringify(orders));
         }
 
-        // SCROLL MORPH WIDGET LOGIC (CAKE <-> MONSTER ENERGY DRINK CAN)
+        function getAdminPassword() { return localStorage.getItem('moms_bakery_admin_pass') || 'admin123'; }
+
+        function verifyAdminPassword() {
+            const enteredPass = document.getElementById('adminPassword').value;
+            if (enteredPass === getAdminPassword()) {
+                document.getElementById('adminLoginSection').classList.add('hidden');
+                document.getElementById('adminDashboardSection').classList.remove('hidden');
+                document.getElementById('adminPassword').value = ''; 
+                renderAdminProducts();
+                renderAdminOrders();
+                showToast('Welcome Back, Admin! 🔓');
+            } else { alert('Incorrect admin password!'); }
+        }
+
+        function handleChangeAdminPassword(e) {
+            e.preventDefault();
+            const currentInput = document.getElementById('currentAdminPass').value;
+            const newPass = document.getElementById('newAdminPass').value;
+            const confirmPass = document.getElementById('confirmAdminPass').value;
+
+            if (currentInput !== getAdminPassword()) return showToast('Current password incorrect! ❌');
+            if (newPass.length < 4) return showToast('Min 4 chars required!');
+            if (newPass !== confirmPass) return showToast('Passwords do not match! ❌');
+
+            localStorage.setItem('moms_bakery_admin_pass', newPass);
+            document.getElementById('changePasswordForm').reset();
+            showToast('Admin password updated! 🔐');
+        }
+
+        (function initScrollParallaxBackground() {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const bgGradientOverlay = document.getElementById('bgGradientOverlay');
+            const motifFlour = document.getElementById('motifFlourParticles');
+            const motifWhisk = document.getElementById('motifWhisk');
+            const motifRollingPin = document.getElementById('motifRollingPin');
+            const motifEnergyGlow = document.getElementById('motifEnergyGlow');
+            const motifDrinksFizz = document.getElementById('motifDrinksFizz');
+            const motifGiftsSparkles = document.getElementById('motifGiftsSparkles');
+            const drinksSec = document.getElementById('drinks');
+            const giftsSec = document.getElementById('gifts');
+            let ticking = false;
+
+            function onScrollUpdate() {
+                const scrollY = window.scrollY || window.pageYOffset;
+                const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+                const scrollProgress = Math.min(Math.max(scrollY / (maxScroll || 1), 0), 1);
+
+                if (motifFlour) motifFlour.style.transform = `translate3d(0, ${scrollY * -0.15}px, 0)`;
+                if (motifWhisk) motifWhisk.style.transform = `translate3d(0, ${scrollY * -0.2}px, 0) rotate(${(scrollY * 0.08) % 360}deg)`;
+                if (motifRollingPin) motifRollingPin.style.transform = `translate3d(0, ${scrollY * -0.25}px, 0) rotate(${(scrollY * -0.06) % 360}deg)`;
+                if (motifGiftsSparkles) motifGiftsSparkles.style.transform = `translate3d(0, ${scrollY * -0.1}px, 0) scale(${1 + Math.sin(scrollProgress * Math.PI * 4) * 0.15})`;
+
+                if (drinksSec) {
+                    const drinksRect = drinksSec.getBoundingClientRect();
+                    const inDrinksZone = drinksRect.top < window.innerHeight && drinksRect.bottom > 0;
+                    if (inDrinksZone) {
+                        if (motifEnergyGlow) motifEnergyGlow.style.opacity = '0.8';
+                        if (motifDrinksFizz) {
+                            motifDrinksFizz.style.opacity = '1';
+                            motifDrinksFizz.style.transform = `translate3d(0, ${(drinksRect.top - window.innerHeight) * 0.12}px, 0)`;
+                        }
+                    } else {
+                        if (motifEnergyGlow) motifEnergyGlow.style.opacity = '0';
+                        if (motifDrinksFizz) motifDrinksFizz.style.opacity = '0';
+                    }
+                }
+
+                if (giftsSec) {
+                    const giftsRect = giftsSec.getBoundingClientRect();
+                    if (motifGiftsSparkles) motifGiftsSparkles.style.opacity = (giftsRect.top < window.innerHeight && giftsRect.bottom > 0) ? '1' : '0';
+                }
+
+                if (bgGradientOverlay) {
+                    if (scrollProgress < 0.25) bgGradientOverlay.style.backgroundColor = '#FAF6F0';
+                    else if (scrollProgress < 0.55) bgGradientOverlay.style.backgroundColor = '#FFFBF5';
+                    else if (scrollProgress < 0.80) bgGradientOverlay.style.backgroundColor = '#0A120A';
+                    else bgGradientOverlay.style.backgroundColor = '#1C100B';
+                }
+                ticking = false;
+            }
+
+            window.addEventListener('scroll', () => { if (!ticking) { window.requestAnimationFrame(onScrollUpdate); ticking = true; } }, { passive: true });
+            onScrollUpdate();
+        })();
+
         function initScrollMorphEffect() {
             const cakeVisual = document.getElementById('morphCakeVisual');
             const monsterVisual = document.getElementById('morphMonsterVisual');
@@ -1172,19 +737,106 @@
             window.addEventListener('scroll', () => {
                 if (!drinksSection) return;
                 const drinksRect = drinksSection.getBoundingClientRect();
-                
-                // When scrolling near or into the Monster Drinks section
                 if (drinksRect.top <= window.innerHeight / 2 && drinksRect.bottom >= 100) {
-                    cakeVisual.classList.add('hidden');
-                    monsterVisual.classList.remove('hidden');
+                    cakeVisual.classList.add('hidden'); monsterVisual.classList.remove('hidden');
                 } else {
-                    cakeVisual.classList.remove('hidden');
-                    monsterVisual.classList.add('hidden');
+                    cakeVisual.classList.remove('hidden'); monsterVisual.classList.add('hidden');
                 }
             });
         }
 
-        // APPLY SITE SETTINGS TO DOM
+        function openProductDetailModal(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            currentModalProduct = product;
+            selectedModalWeight = null;
+            selectedModalPrice = 0;
+
+            document.getElementById('modalProductImg').src = product.img || 'https://images.unsplash.com/photo-1586788680434-30d324b2d46f?auto=format&fit=crop&w=600&q=80';
+            document.getElementById('modalProductName').innerText = product.name;
+            document.getElementById('modalProductCategory').innerText = product.category || 'Bakery';
+            document.getElementById('modalProductDesc').innerText = product.desc;
+            document.getElementById('modalDisplayPrice').innerText = '₹0';
+
+            const base = product.price || 500;
+            const price250 = Math.round(base * 0.58);
+            const price500 = base;
+            const price1kg = Math.round(base * 1.8);
+
+            product.weightPrices = { '250 g': price250, '500 g': price500, '1 kg': price1kg };
+
+            document.getElementById('price-250g').innerText = `₹${price250}`;
+            document.getElementById('price-500g').innerText = `₹${price500}`;
+            document.getElementById('price-1kg').innerText = `₹${price1kg}`;
+
+            resetWeightPills();
+
+            const backdrop = document.getElementById('productDetailModalBackdrop');
+            const modal = document.getElementById('productDetailModal');
+            backdrop.classList.remove('opacity-0', 'pointer-events-none');
+            modal.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
+            modal.classList.add('scale-100');
+        }
+
+        function closeProductDetailModal() {
+            const backdrop = document.getElementById('productDetailModalBackdrop');
+            const modal = document.getElementById('productDetailModal');
+            backdrop.classList.add('opacity-0', 'pointer-events-none');
+            modal.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
+            modal.classList.remove('scale-100');
+        }
+
+        function selectWeight(weight) {
+            if (!currentModalProduct) return;
+            selectedModalWeight = weight;
+            selectedModalPrice = currentModalProduct.weightPrices[weight];
+
+            resetWeightPills();
+
+            const pillId = weight === '250 g' ? 'pill-250g' : weight === '500 g' ? 'pill-500g' : 'pill-1kg';
+            const activePill = document.getElementById(pillId);
+            if (activePill) activePill.classList.add('active-weight');
+
+            document.getElementById('modalDisplayPrice').innerText = `₹${selectedModalPrice}`;
+
+            const btn = document.getElementById('modalAddToCartBtn');
+            const badge = document.getElementById('weightRequiredBadge');
+            btn.disabled = false;
+            btn.classList.add('btn-enabled');
+            btn.classList.remove('cursor-not-allowed', 'opacity-60', 'bg-gray-300', 'text-gray-500');
+            document.getElementById('modalBtnText').innerText = `Add (${weight}) to Cart`;
+            if (badge) badge.classList.add('hidden');
+        }
+
+        function resetWeightPills() {
+            document.querySelectorAll('.weight-pill').forEach(pill => pill.classList.remove('active-weight'));
+            const btn = document.getElementById('modalAddToCartBtn');
+            const badge = document.getElementById('weightRequiredBadge');
+            btn.disabled = true;
+            btn.classList.remove('btn-enabled');
+            btn.classList.add('cursor-not-allowed', 'opacity-60', 'bg-gray-300', 'text-gray-500');
+            document.getElementById('modalBtnText').innerText = 'Select Weight First';
+            if (badge) badge.classList.remove('hidden');
+        }
+
+        function addModalItemToCart() {
+            if (!currentModalProduct || !selectedModalWeight) return showToast('Please select a weight first! ⚠️');
+
+            const cartItemId = `${currentModalProduct.id}_${selectedModalWeight.replace(/\s+/g, '')}`;
+            const existing = cart.find(c => c.cartItemId === cartItemId);
+
+            if (existing) existing.qty++;
+            else {
+                cart.push({
+                    cartItemId: cartItemId, id: currentModalProduct.id, name: currentModalProduct.name,
+                    weight: selectedModalWeight, price: selectedModalPrice, img: currentModalProduct.img, qty: 1
+                });
+            }
+            saveState(); updateCartUI(); closeProductDetailModal();
+            showToast(`Added ${currentModalProduct.name} (${selectedModalWeight}) to cart! 🎂`);
+        }
+
         function applySiteSettings() {
             document.getElementById('contactAddressDisplay').innerText = settings.address;
             document.getElementById('contactHoursDisplay').innerText = settings.hours;
@@ -1204,7 +856,6 @@
             if (settings.instagramUrl) document.getElementById('instagramLink').href = settings.instagramUrl;
             if (settings.facebookUrl) document.getElementById('facebookLink').href = settings.facebookUrl;
 
-            // Populate Admin Settings Form
             document.getElementById('setAddress').value = settings.address;
             document.getElementById('setPhone').value = settings.phone;
             document.getElementById('setWhatsapp').value = settings.whatsappNumber;
@@ -1214,34 +865,19 @@
             document.getElementById('setFacebook').value = settings.facebookUrl;
         }
 
-        // RENDER PRODUCTS
-        function renderAllSections() {
-            renderMenuGrid();
-            renderImportedGrid();
-            renderDrinksGrid();
-            renderCustomGrid();
-            renderGiftsGrid();
-        }
+        function renderAllSections() { renderMenuGrid(); renderImportedGrid(); renderDrinksGrid(); renderCustomGrid(); renderGiftsGrid(); }
 
         function filterProductBySearchAndCat(p, targetSection) {
             if (p.section !== targetSection) return false;
-            
             const matchesCategory = targetSection !== 'menu' || currentFilter === 'all' || p.category === currentFilter;
-            const matchesSearch = !searchQuery || 
-                p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                p.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                p.category.toLowerCase().includes(searchQuery.toLowerCase());
-
+            const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.desc.toLowerCase().includes(searchQuery.toLowerCase()) || p.category.toLowerCase().includes(searchQuery.toLowerCase());
             return matchesCategory && matchesSearch;
         }
 
         function renderMenuGrid() {
             const container = document.getElementById('mainMenuGrid');
             const filtered = products.filter(p => filterProductBySearchAndCat(p, 'menu'));
-            if (filtered.length === 0) {
-                container.innerHTML = `<p class="col-span-full text-center py-10 text-bakery-brown/60 text-xs font-semibold">No menu items matched.</p>`;
-                return;
-            }
+            if (filtered.length === 0) { container.innerHTML = `<p class="col-span-full text-center py-10 text-bakery-brown/60 text-xs font-semibold">No items matched.</p>`; return; }
             container.innerHTML = filtered.map(item => createCompactProductCardHTML(item)).join('');
             init3DTilt();
         }
@@ -1256,10 +892,7 @@
         function renderDrinksGrid() {
             const container = document.getElementById('drinksGrid');
             const filtered = products.filter(p => filterProductBySearchAndCat(p, 'drinks'));
-            if (filtered.length === 0) {
-                container.innerHTML = `<p class="col-span-full text-center py-10 text-emerald-300 text-xs font-semibold">No drinks found.</p>`;
-                return;
-            }
+            if (filtered.length === 0) { container.innerHTML = `<p class="col-span-full text-center py-10 text-emerald-300 text-xs font-semibold">No drinks found.</p>`; return; }
             container.innerHTML = filtered.map(item => createDrinkCardHTML(item)).join('');
             init3DTilt();
         }
@@ -1278,83 +911,59 @@
             init3DTilt();
         }
 
-        // COMPACT PRODUCT CARD (2 ITEMS PER ROW ON MOBILE)
         function createCompactProductCardHTML(item, specialBadge = '') {
-            const cartItem = cart.find(c => c.id === item.id);
-            const qty = cartItem ? cartItem.qty : 0;
-
             return `
-                <div class="tilt-card bg-cream-light rounded-2xl overflow-hidden border border-amber-900/10 shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group relative">
+                <div class="tilt-card bg-cream-light rounded-2xl overflow-hidden border border-amber-900/10 shadow-sm hover:shadow-2xl transition-all flex flex-col justify-between group relative">
                     ${item.isSoldOut ? `<div class="absolute top-2 left-2 z-20 bg-berry-red text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow">SOLD OUT</div>` : ''}
                     ${specialBadge && !item.isSoldOut ? `<div class="absolute top-2 left-2 z-20 bg-amber-100 text-amber-900 border border-amber-300 text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm">${specialBadge}</div>` : ''}
-                    
-                    <div>
+                    <div onclick="openProductDetailModal('${item.id}')" class="cursor-pointer">
                         <div class="h-32 sm:h-48 overflow-hidden relative">
-                            <img src="${item.img || 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80'}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <img src="${item.img || 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80'}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         </div>
-
                         <div class="p-3 sm:p-4">
                             <span class="text-[9px] sm:text-xs text-honey-gold font-bold uppercase tracking-wider block mb-0.5">${item.category}</span>
                             <h3 class="font-serif text-xs sm:text-base font-bold text-bakery-brown leading-snug group-hover:text-honey-gold transition-colors line-clamp-1">${item.name}</h3>
                             <p class="text-[10px] sm:text-xs text-bakery-brown/70 mt-1 line-clamp-2 leading-tight font-light">${item.desc}</p>
                         </div>
                     </div>
-
                     <div class="p-3 sm:p-4 pt-0 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-amber-900/5 mt-1">
-                        <div>
-                            <p class="font-serif text-sm sm:text-lg font-bold text-bakery-brown">₹${item.price}</p>
-                        </div>
-
-                        ${item.isSoldOut ? `
-                            <button disabled class="bg-gray-200 text-gray-500 font-semibold px-2 py-1 rounded-lg text-[10px]">Unavailable</button>
-                        ` : qty > 0 ? `
-                            <div class="flex items-center bg-amber-100 rounded-lg p-0.5 border border-amber-300">
-                                <button onclick="updateQty('${item.id}', -1)" class="w-6 h-6 rounded bg-white font-bold text-xs">-</button>
-                                <span class="px-2 font-bold text-xs">${qty}</span>
-                                <button onclick="updateQty('${item.id}', 1)" class="w-6 h-6 rounded bg-white font-bold text-xs">+</button>
-                            </div>
-                        ` : `
-                          <button onclick="openProductDetailModal('${item.id}')" class="bg-honey-gold hover:bg-amber-600 text-white font-semibold px-3 py-1.5 rounded-lg text-xs shadow hover:shadow-amber-600/30 transition-all flex items-center justify-center gap-1">
-    <i class="fa-solid fa-weight-scale text-[10px]"></i> Select Weight
-</button>  
+                        <p class="font-serif text-xs sm:text-base font-bold text-bakery-brown">From ₹${Math.round((item.price || 500) * 0.58)}</p>
+                        ${item.isSoldOut ? `<button disabled class="bg-gray-200 text-gray-500 font-semibold px-2 py-1 rounded-lg text-[10px]">Unavailable</button>` : `
+                            <button onclick="openProductDetailModal('${item.id}')" class="bg-honey-gold hover:bg-amber-600 text-white font-semibold px-3 py-1.5 rounded-lg text-xs shadow transition-all flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-weight-scale text-[10px]"></i> Select Weight
+                            </button>
                         `}
                     </div>
                 </div>
             `;
         }
 
-        // DRINK CARD HTML (NEON MONSTER GLOW)
         function createDrinkCardHTML(item) {
             const cartItem = cart.find(c => c.id === item.id);
             const qty = cartItem ? cartItem.qty : 0;
-
             return `
-                <div class="tilt-card bg-monster-dark/90 rounded-2xl overflow-hidden border border-emerald-500/40 shadow-xl hover:shadow-monster-green/30 transition-all duration-300 flex flex-col justify-between group relative">
+                <div class="tilt-card bg-monster-dark/90 rounded-2xl overflow-hidden border border-emerald-500/40 shadow-xl hover:shadow-monster-green/30 transition-all flex flex-col justify-between group relative">
                     <span class="absolute top-2 left-2 z-20 bg-monster-green text-black font-black text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider shadow">⚡ Energy</span>
-                    
                     <div>
                         <div class="h-36 sm:h-48 overflow-hidden relative">
                             <img src="${item.img || 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?auto=format&fit=crop&w=600&q=80'}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                         </div>
-
                         <div class="p-3 sm:p-4">
                             <span class="text-[9px] sm:text-xs text-monster-green font-mono font-bold block mb-0.5">${item.category}</span>
                             <h3 class="font-serif text-xs sm:text-base font-bold text-white leading-snug group-hover:text-monster-green transition-colors line-clamp-1">${item.name}</h3>
                             <p class="text-[10px] sm:text-xs text-emerald-100/70 mt-1 line-clamp-2 leading-tight font-light">${item.desc}</p>
                         </div>
                     </div>
-
                     <div class="p-3 sm:p-4 pt-0 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-emerald-500/20 mt-1">
                         <p class="font-serif text-base sm:text-lg font-bold text-monster-green">₹${item.price}</p>
-
                         ${qty > 0 ? `
                             <div class="flex items-center bg-emerald-950 rounded-lg p-0.5 border border-monster-green">
-                                <button onclick="updateQty('${item.id}', -1)" class="w-6 h-6 rounded bg-black text-monster-green font-bold text-xs">-</button>
+                                <button onclick="updateQty('${item.cartItemId || item.id}', -1)" class="w-6 h-6 rounded bg-black text-monster-green font-bold text-xs">-</button>
                                 <span class="px-2 font-bold text-xs text-white">${qty}</span>
-                                <button onclick="updateQty('${item.id}', 1)" class="w-6 h-6 rounded bg-black text-monster-green font-bold text-xs">+</button>
+                                <button onclick="updateQty('${item.cartItemId || item.id}', 1)" class="w-6 h-6 rounded bg-black text-monster-green font-bold text-xs">+</button>
                             </div>
                         ` : `
-                            <button onclick="addToCart('${item.id}')" class="bg-monster-green hover:bg-emerald-400 text-black font-extrabold px-3 py-1.5 rounded-lg text-xs shadow-lg transition-all flex items-center justify-center gap-1">
+                            <button onclick="addDirectToCart('${item.id}')" class="bg-monster-green hover:bg-emerald-400 text-black font-extrabold px-3 py-1.5 rounded-lg text-xs shadow-lg transition-all flex items-center justify-center gap-1">
                                 <i class="fa-solid fa-bolt text-[10px]"></i> Add Drink
                             </button>
                         `}
@@ -1363,45 +972,38 @@
             `;
         }
 
-        // GIFT HAMPER CARD HTML
         function createHamperCardHTML(item) {
-            const cartItem = cart.find(c => c.id === item.id);
-            const qty = cartItem ? cartItem.qty : 0;
-
             return `
-                <div class="tilt-card bg-cream-light/95 text-bakery-brown rounded-3xl p-3 sm:p-5 shadow-2xl border-2 border-amber-500/40 hover:border-amber-400 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden">
-                    <div>
+                <div class="tilt-card bg-cream-light/95 text-bakery-brown rounded-3xl p-3 sm:p-5 shadow-2xl border-2 border-amber-500/40 hover:border-amber-400 transition-all flex flex-col justify-between group relative overflow-hidden">
+                    <div onclick="openProductDetailModal('${item.id}')" class="cursor-pointer">
                         <div class="h-36 sm:h-52 rounded-2xl overflow-hidden relative">
                             <img src="${item.img || 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=600&q=80'}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                             <span class="absolute top-2 left-2 bg-amber-950/90 text-amber-300 text-[9px] font-bold px-2.5 py-1 rounded-full border border-amber-500">🎁 Luxury Trunk</span>
                         </div>
-
                         <div class="mt-3">
                             <h3 class="font-serif text-sm sm:text-lg font-bold text-bakery-brown leading-snug group-hover:text-honey-gold transition-colors line-clamp-1">${item.name}</h3>
                             <p class="text-[10px] sm:text-xs text-bakery-brown/70 mt-1 line-clamp-2 leading-tight font-light">${item.desc}</p>
                         </div>
                     </div>
-
                     <div class="mt-4 pt-2 border-t border-amber-900/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <p class="font-serif text-base sm:text-xl font-bold text-honey-gold">₹${item.price}</p>
-
-                        ${qty > 0 ? `
-                            <div class="flex items-center bg-amber-100 rounded-lg p-0.5 border border-amber-300">
-                                <button onclick="updateQty('${item.id}', -1)" class="w-6 h-6 rounded bg-white font-bold text-xs">-</button>
-                                <span class="px-2 font-bold text-xs">${qty}</span>
-                                <button onclick="updateQty('${item.id}', 1)" class="w-6 h-6 rounded bg-white font-bold text-xs">+</button>
-                            </div>
-                        ` : `
-                            <button onclick="addToCart('${item.id}')" class="bg-honey-gold hover:bg-amber-600 text-white font-bold px-4 py-1.5 rounded-xl text-xs shadow-md transition-all flex items-center justify-center gap-1">
-                                <i class="fa-solid fa-gift text-xs"></i> Order Hamper
-                            </button>
-                        `}
+                        <button onclick="openProductDetailModal('${item.id}')" class="bg-honey-gold hover:bg-amber-600 text-white font-bold px-4 py-1.5 rounded-xl text-xs shadow transition-all flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-gift text-xs"></i> Order Hamper
+                        </button>
                     </div>
                 </div>
             `;
         }
 
-        // SEARCH HANDLER
+        function addDirectToCart(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+            const existing = cart.find(c => c.cartItemId === product.id || c.id === id);
+            if (existing) existing.qty++;
+            else cart.push({ cartItemId: product.id, id: product.id, name: product.name, price: product.price, img: product.img, qty: 1 });
+            saveState(); updateCartUI(); renderAllSections(); showToast(`Added "${product.name}" to cart! 🛒`);
+        }
+
         function handleSearch(val) {
             searchQuery = val;
             document.getElementById('heroSearchInput').value = val;
@@ -1409,7 +1011,6 @@
             renderAllSections();
         }
 
-        // CATEGORY FILTER
         function filterCategory(cat) {
             currentFilter = cat;
             document.querySelectorAll('.cat-btn').forEach(btn => {
@@ -1421,34 +1022,12 @@
             renderMenuGrid();
         }
 
-        // CART LOGIC
-        function addToCart(id) {
-            const product = products.find(p => p.id === id);
-            if (!product) return;
-
-            const existing = cart.find(c => c.id === id);
-            if (existing) {
-                existing.qty++;
-            } else {
-                cart.push({ id: product.id, name: product.name, price: product.price, img: product.img, qty: 1 });
-            }
-            saveState();
-            updateCartUI();
-            renderAllSections();
-            showToast(`Added "${product.name}" to cart! 🛒`);
-        }
-
-        function updateQty(id, change) {
-            const item = cart.find(c => c.id === id);
+        function updateQty(cartKey, change) {
+            const item = cart.find(c => c.cartItemId === cartKey || c.id === cartKey);
             if (!item) return;
-
             item.qty += change;
-            if (item.qty <= 0) {
-                cart = cart.filter(c => c.id !== id);
-            }
-            saveState();
-            updateCartUI();
-            renderAllSections();
+            if (item.qty <= 0) cart = cart.filter(c => c !== item);
+            saveState(); updateCartUI(); renderAllSections();
         }
 
         function updateCartUI() {
@@ -1456,14 +1035,8 @@
             const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
             const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
 
-            if (totalCount > 0) {
-                badge.innerText = totalCount;
-                badge.classList.remove('scale-0');
-                badge.classList.add('scale-100');
-            } else {
-                badge.classList.remove('scale-100');
-                badge.classList.add('scale-0');
-            }
+            if (totalCount > 0) { badge.innerText = totalCount; badge.classList.remove('scale-0'); badge.classList.add('scale-100'); }
+            else { badge.classList.remove('scale-100'); badge.classList.add('scale-0'); }
 
             document.getElementById('cartSubtotal').innerText = `₹${totalAmount}`;
             document.getElementById('cartTotal').innerText = `₹${totalAmount}`;
@@ -1471,24 +1044,20 @@
 
             const container = document.getElementById('cartItemsContainer');
             if (cart.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-12 text-bakery-brown/60 space-y-2">
-                        <i class="fa-solid fa-cookie-bite text-4xl text-amber-300"></i>
-                        <p class="font-serif text-sm font-semibold">Your cart is empty</p>
-                    </div>
-                `;
+                container.innerHTML = `<div class="text-center py-12 text-bakery-brown/60 space-y-2"><i class="fa-solid fa-cookie-bite text-4xl text-amber-300"></i><p class="font-serif text-sm font-semibold">Your cart is empty</p></div>`;
             } else {
                 container.innerHTML = cart.map(item => `
                     <div class="flex items-center justify-between bg-white p-2.5 rounded-xl border border-amber-900/10 shadow-sm text-xs">
                         <img src="${item.img || 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80'}" class="w-12 h-12 rounded-lg object-cover">
                         <div class="flex-1 px-3">
                             <h4 class="font-bold text-bakery-brown leading-tight">${item.name}</h4>
+                            ${item.weight ? `<span class="inline-block bg-amber-100 text-amber-900 text-[10px] font-extrabold px-2 py-0.5 rounded-full mt-0.5">Weight: ${item.weight}</span>` : ''}
                             <p class="text-honey-gold font-semibold mt-0.5">₹${item.price} × ${item.qty} = ₹${item.price * item.qty}</p>
                         </div>
                         <div class="flex items-center bg-amber-50 rounded-lg p-0.5 border border-amber-200">
-                            <button onclick="updateQty('${item.id}', -1)" class="w-5 h-5 rounded bg-white font-bold text-xs">-</button>
+                            <button onclick="updateQty('${item.cartItemId || item.id}', -1)" class="w-5 h-5 rounded bg-white font-bold text-xs">-</button>
                             <span class="px-2 font-bold text-xs text-bakery-brown">${item.qty}</span>
-                            <button onclick="updateQty('${item.id}', 1)" class="w-5 h-5 rounded bg-white font-bold text-xs">+</button>
+                            <button onclick="updateQty('${item.cartItemId || item.id}', 1)" class="w-5 h-5 rounded bg-white font-bold text-xs">+</button>
                         </div>
                     </div>
                 `).join('');
@@ -1518,14 +1087,13 @@
 
         function orderCartViaWhatsApp() {
             if (cart.length === 0) return showToast('Your cart is empty!');
-
             let text = "Hi Mom's Bakery! I would like to place an order:\n\n";
             cart.forEach((item, idx) => {
-                text += `${idx + 1}. ${item.name} x ${item.qty} = ₹${item.price * item.qty}\n`;
+                const weightLabel = item.weight ? ` [${item.weight}]` : '';
+                text += `${idx + 1}. ${item.name}${weightLabel} x ${item.qty} = ₹${item.price * item.qty}\n`;
             });
             const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
             text += `\n*Total Amount: ₹${total}*\n\nPlease confirm availability.`;
-
             window.open(`https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(text)}`, '_blank');
         }
 
@@ -1549,18 +1117,14 @@
 
             orders.unshift(newOrder);
             cart = [];
-            saveState();
-            updateCartUI();
-            toggleCartDrawer();
+            saveState(); updateCartUI(); toggleCartDrawer();
             showToast(`Order #${newOrder.orderId} Placed! 🎉`);
-            alert(`Thank you ${name}! Your order #${newOrder.orderId} has been placed.`);
+            alert(`Thank you ${name}! Your order #${newOrder.orderId} has been placed successfully.`);
         }
 
-        // PHOTO UPLOAD FROM GALLERY (BASE64)
         function handleImageFileUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(evt) {
                 uploadedBase64Image = evt.target.result;
@@ -1571,73 +1135,13 @@
             reader.readAsDataURL(file);
         }
 
-        // ADMIN PANEL LOGIC
         function openAdminModal() { document.getElementById('adminModal').classList.remove('hidden'); }
         function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
-
-       // 1. GET SAVED PASSWORD (OR DEFAULT TO 'admin123')
-function getAdminPassword() {
-    return localStorage.getItem('moms_bakery_admin_pass') || 'admin123';
-}
-
-// 2. VERIFY PASSWORD ON LOGIN
-function verifyAdminPassword() {
-    const enteredPass = document.getElementById('adminPassword').value;
-    const currentSavedPass = getAdminPassword();
-
-    if (enteredPass === currentSavedPass) {
-        document.getElementById('adminLoginSection').classList.add('hidden');
-        document.getElementById('adminDashboardSection').classList.remove('hidden');
-        document.getElementById('adminPassword').value = ''; // clear password field
-        renderAdminProducts();
-        renderAdminOrders();
-        showToast('Welcome Back, Admin! 🔓');
-    } else {
-        alert('Incorrect admin password! Please try again.');
-    }
-}
-
-// 3. CHANGE PASSWORD HANDLER
-function handleChangeAdminPassword(e) {
-    e.preventDefault();
-    
-    const currentInput = document.getElementById('currentAdminPass').value;
-    const newPass = document.getElementById('newAdminPass').value;
-    const confirmPass = document.getElementById('confirmAdminPass').value;
-    const actualCurrentPass = getAdminPassword();
-
-    // Check 1: Verify current password
-    if (currentInput !== actualCurrentPass) {
-        showToast('Current password is incorrect! ❌');
-        return;
-    }
-
-    // Check 2: Minimum length requirement
-    if (newPass.length < 4) {
-        showToast('New password must be at least 4 characters long!');
-        return;
-    }
-
-    // Check 3: Confirm new password match
-    if (newPass !== confirmPass) {
-        showToast('New passwords do not match! ❌');
-        return;
-    }
-
-    // Save new password in localStorage
-    localStorage.setItem('moms_bakery_admin_pass', newPass);
-    
-    // Clear form inputs
-    document.getElementById('changePasswordForm').reset();
-    
-    showToast('Admin password updated successfully! 🔐');
-} 
 
         function switchAdminTab(tab) {
             document.getElementById('tabContentProducts').classList.add('hidden');
             document.getElementById('tabContentOrders').classList.add('hidden');
             document.getElementById('tabContentSettings').classList.add('hidden');
-
             document.getElementById('tabBtnProducts').className = "pb-2.5 text-bakery-brown/60 hover:text-honey-gold";
             document.getElementById('tabBtnOrders').className = "pb-2.5 text-bakery-brown/60 hover:text-honey-gold";
             document.getElementById('tabBtnSettings').className = "pb-2.5 text-bakery-brown/60 hover:text-honey-gold";
@@ -1660,10 +1164,7 @@ function handleChangeAdminPassword(e) {
                 <div class="flex items-center justify-between bg-white p-2.5 rounded-xl border border-amber-900/10 text-xs">
                     <div class="flex items-center gap-3">
                         <img src="${item.img || 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80'}" class="w-10 h-10 rounded-lg object-cover">
-                        <div>
-                            <span class="font-bold text-bakery-brown">${item.name}</span>
-                            <p class="text-bakery-brown/60">₹${item.price} • Section: ${item.section}</p>
-                        </div>
+                        <div><span class="font-bold text-bakery-brown">${item.name}</span><p class="text-bakery-brown/60">₹${item.price} • Section: ${item.section}</p></div>
                     </div>
                     <div class="flex items-center gap-1.5">
                         <button onclick="toggleSoldOut('${item.id}')" class="px-2 py-0.5 rounded text-[10px] font-bold ${item.isSoldOut ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-800'}">${item.isSoldOut ? 'Sold Out' : 'Available'}</button>
@@ -1677,12 +1178,7 @@ function handleChangeAdminPassword(e) {
         function renderAdminOrders() {
             const container = document.getElementById('adminOrdersList');
             document.getElementById('adminOrdersCount').innerText = orders.length;
-
-            if (orders.length === 0) {
-                container.innerHTML = `<p class="text-center py-6 text-bakery-brown/60 text-xs">No customer orders yet.</p>`;
-                return;
-            }
-
+            if (orders.length === 0) { container.innerHTML = `<p class="text-center py-6 text-bakery-brown/60 text-xs">No customer orders yet.</p>`; return; }
             container.innerHTML = orders.map(ord => `
                 <div class="bg-white p-3 rounded-xl border border-amber-900/10 text-xs space-y-2">
                     <div class="flex items-center justify-between border-b pb-1">
@@ -1712,30 +1208,20 @@ function handleChangeAdminPassword(e) {
             const price = parseFloat(document.getElementById('prodPrice').value);
             const desc = document.getElementById('prodDesc').value;
             const imgUrl = document.getElementById('prodImage').value;
-
             const finalImage = uploadedBase64Image || imgUrl;
 
             if (editId) {
                 const index = products.findIndex(p => p.id === editId);
-                if (index !== -1) {
-                    products[index] = { ...products[index], name, section, category, price, desc, img: finalImage || products[index].img };
-                    showToast('Product updated!');
-                }
+                if (index !== -1) products[index] = { ...products[index], name, section, category, price, desc, img: finalImage || products[index].img };
             } else {
                 products.push({ id: 'p-' + Date.now(), name, section, category, price, desc, img: finalImage, isSoldOut: false });
-                showToast('New product added!');
             }
-
-            saveState();
-            renderAllSections();
-            renderAdminProducts();
-            resetProductForm();
+            saveState(); renderAllSections(); renderAdminProducts(); resetProductForm(); showToast('Product saved!');
         }
 
         function editProduct(id) {
             const prod = products.find(p => p.id === id);
             if (!prod) return;
-
             document.getElementById('editProductId').value = prod.id;
             document.getElementById('prodName').value = prod.name;
             document.getElementById('prodSection').value = prod.section;
@@ -1743,7 +1229,6 @@ function handleChangeAdminPassword(e) {
             document.getElementById('prodPrice').value = prod.price;
             document.getElementById('prodDesc').value = prod.desc;
             document.getElementById('prodImage').value = prod.img.startsWith('data:') ? '' : prod.img;
-            
             if (prod.img) {
                 uploadedBase64Image = prod.img;
                 document.getElementById('prodImagePreview').src = prod.img;
@@ -1763,31 +1248,18 @@ function handleChangeAdminPassword(e) {
         function deleteProduct(id) {
             if (confirm('Delete this product?')) {
                 products = products.filter(p => p.id !== id);
-                saveState();
-                renderAllSections();
-                renderAdminProducts();
-                showToast('Product deleted.');
+                saveState(); renderAllSections(); renderAdminProducts(); showToast('Product deleted.');
             }
         }
 
         function toggleSoldOut(id) {
             const prod = products.find(p => p.id === id);
-            if (prod) {
-                prod.isSoldOut = !prod.isSoldOut;
-                saveState();
-                renderAllSections();
-                renderAdminProducts();
-                showToast('Status updated.');
-            }
+            if (prod) { prod.isSoldOut = !prod.isSoldOut; saveState(); renderAllSections(); renderAdminProducts(); showToast('Status updated.'); }
         }
 
         function updateOrderStatus(orderId, status) {
             const ord = orders.find(o => o.orderId === orderId);
-            if (ord) {
-                ord.status = status;
-                saveState();
-                showToast(`Order marked as ${status}`);
-            }
+            if (ord) { ord.status = status; saveState(); showToast(`Order marked as ${status}`); }
         }
 
         function handleSaveSettings(e) {
@@ -1799,15 +1271,10 @@ function handleChangeAdminPassword(e) {
             settings.deliveryInfo = document.getElementById('setDelivery').value;
             settings.instagramUrl = document.getElementById('setInstagram').value;
             settings.facebookUrl = document.getElementById('setFacebook').value;
-
-            saveState();
-            applySiteSettings();
-            showToast('Bakery details updated!');
+            saveState(); applySiteSettings(); showToast('Bakery details updated!');
         }
 
-        function toggleMobileNav() {
-            document.getElementById('mobileNav').classList.toggle('hidden');
-        }
+        function toggleMobileNav() { document.getElementById('mobileNav').classList.toggle('hidden'); }
 
         function showToast(msg) {
             const container = document.getElementById('toastContainer');
@@ -1816,10 +1283,7 @@ function handleChangeAdminPassword(e) {
             toast.innerHTML = `<i class="fa-solid fa-circle-check text-honey-gold"></i> <span>${msg}</span>`;
             container.appendChild(toast);
             setTimeout(() => toast.classList.remove('translate-y-4', 'opacity-0'), 10);
-            setTimeout(() => {
-                toast.classList.add('opacity-0', '-translate-y-2');
-                setTimeout(() => toast.remove(), 300);
-            }, 2800);
+            setTimeout(() => { toast.classList.add('opacity-0', '-translate-y-2'); setTimeout(() => toast.remove(), 300); }, 2800);
         }
 
         function initScrollObserver() {
@@ -1836,106 +1300,12 @@ function handleChangeAdminPassword(e) {
                     const rect = card.getBoundingClientRect();
                     const x = e.clientX - rect.left - (rect.width / 2);
                     const y = e.clientY - rect.top - (rect.height / 2);
-                    card.style.transform = `perspective(1000px) rotateX(${-(y / rect.height) * 12}deg) rotateY(${(x / rect.width) * 12}deg) scale3d(1.02, 1.02, 1.02)`;
+                    card.style.transform = `perspective(1000px) rotateX(${-(y / rect.height) * 10}deg) rotateY(${(x / rect.width) * 10}deg) scale3d(1.02, 1.02, 1.02)`;
                 });
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-                });
+                card.addEventListener('mouseleave', () => { card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`; });
             });
         }
-
-
-        /* 🔽 PASTE THIS NEW JAVASCRIPT LOGIC RIGHT HERE 🔽 */
-        (function initScrollParallaxBackground() {
-            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-            const bgGradientOverlay = document.getElementById('bgGradientOverlay');
-            const motifFlour = document.getElementById('motifFlourParticles');
-            const motifWhisk = document.getElementById('motifWhisk');
-            const motifRollingPin = document.getElementById('motifRollingPin');
-            const motifEnergyGlow = document.getElementById('motifEnergyGlow');
-            const motifDrinksFizz = document.getElementById('motifDrinksFizz');
-            const motifGiftsSparkles = document.getElementById('motifGiftsSparkles');
-
-            const drinksSec = document.getElementById('drinks');
-            const giftsSec = document.getElementById('gifts');
-
-            let ticking = false;
-
-            function onScrollUpdate() {
-                const scrollY = window.scrollY || window.pageYOffset;
-                const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-                const scrollProgress = Math.min(Math.max(scrollY / (maxScroll || 1), 0), 1);
-
-                if (motifFlour) {
-                    motifFlour.style.transform = `translate3d(0, ${scrollY * -0.15}px, 0)`;
-                }
-
-                if (motifWhisk) {
-                    const rotWhisk = (scrollY * 0.08) % 360;
-                    motifWhisk.style.transform = `translate3d(0, ${scrollY * -0.2}px, 0) rotate(${rotWhisk}deg)`;
-                }
-
-                if (motifRollingPin) {
-                    const rotPin = (scrollY * -0.06) % 360;
-                    motifRollingPin.style.transform = `translate3d(0, ${scrollY * -0.25}px, 0) rotate(${rotPin}deg)`;
-                }
-
-                if (motifGiftsSparkles) {
-                    const scaleSparkle = 1 + Math.sin(scrollProgress * Math.PI * 4) * 0.15;
-                    motifGiftsSparkles.style.transform = `translate3d(0, ${scrollY * -0.1}px, 0) scale(${scaleSparkle})`;
-                }
-
-                if (drinksSec) {
-                    const drinksRect = drinksSec.getBoundingClientRect();
-                    const inDrinksZone = drinksRect.top < window.innerHeight && drinksRect.bottom > 0;
-
-                    if (inDrinksZone) {
-                        if (motifEnergyGlow) motifEnergyGlow.style.opacity = '0.8';
-                        if (motifDrinksFizz) {
-                            motifDrinksFizz.style.opacity = '1';
-                            motifDrinksFizz.style.transform = `translate3d(0, ${(drinksRect.top - window.innerHeight) * 0.12}px, 0)`;
-                        }
-                    } else {
-                        if (motifEnergyGlow) motifEnergyGlow.style.opacity = '0';
-                        if (motifDrinksFizz) motifDrinksFizz.style.opacity = '0';
-                    }
-                }
-
-                if (giftsSec) {
-                    const giftsRect = giftsSec.getBoundingClientRect();
-                    const inGiftsZone = giftsRect.top < window.innerHeight && giftsRect.bottom > 0;
-                    if (motifGiftsSparkles) {
-                        motifGiftsSparkles.style.opacity = inGiftsZone ? '1' : '0';
-                    }
-                }
-
-                if (bgGradientOverlay) {
-                    if (scrollProgress < 0.25) {
-                        bgGradientOverlay.style.backgroundColor = '#FAF6F0';
-                    } else if (scrollProgress < 0.55) {
-                        bgGradientOverlay.style.backgroundColor = '#FFFBF5';
-                    } else if (scrollProgress < 0.80) {
-                        bgGradientOverlay.style.backgroundColor = '#0A120A';
-                    } else {
-                        bgGradientOverlay.style.backgroundColor = '#1C100B';
-                    }
-                }
-
-                ticking = false;
-            }
-
-            window.addEventListener('scroll', () => {
-                if (!ticking) {
-                    window.requestAnimationFrame(onScrollUpdate);
-                    ticking = true;
-                }
-            }, { passive: true });
-
-            onScrollUpdate();
-        })();
-        /* 🔼 END OF NEW JAVASCRIPT LOGIC 🔼 */
-
     </script>
 </body>
 </html>
+```
