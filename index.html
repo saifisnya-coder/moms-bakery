@@ -3,14 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mom's Bakery | Admin Panel</title>
+    <title>Mom's Bakery | Master Admin Panel</title>
     
-    <!-- Professional Stack -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://unpkg.com/lenis@1.0.45/dist/lenis.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
-    <!-- Alpine.js Persist Plugin (Saves data to browser) -->
     <script defer src="https://unpkg.com/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
@@ -20,214 +17,233 @@
         body { font-family: 'Poppins', sans-serif; background-color: #FDF8F5; overflow-x: hidden; }
         .serif { font-family: 'Playfair Display', serif; }
         .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.4); }
-        .admin-glow { border: 2px dashed #ec4899 !important; box-shadow: 0 0 15px rgba(236, 72, 153, 0.2); }
         [x-cloak] { display: none !important; }
+        .edit-pill { background: #ec4899; color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; }
+        .admin-box { border: 2px dashed #ec4899; }
     </style>
 </head>
-<body x-data="bakeryAdmin" x-cloak>
+<body x-data="bakeryMaster" x-cloak>
 
-    <!-- ADMIN LOGIN MODAL -->
-    <div x-show="showLogin" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md">
-        <div class="bg-white p-10 rounded-[40px] max-w-sm w-full shadow-2xl text-center">
-            <h2 class="serif text-3xl mb-4">Master Access</h2>
-            <p class="text-xs text-gray-400 mb-6 uppercase tracking-widest">Enter Admin Password</p>
-            <input type="password" x-model="loginPass" class="w-full p-4 border-2 rounded-2xl mb-4 text-center text-xl focus:border-pink-500 outline-none">
-            <button @click="attemptLogin" class="w-full bg-black text-white py-4 rounded-2xl font-bold hover:bg-pink-600 transition">Login</button>
-            <button @click="showLogin = false" class="mt-4 text-gray-400 text-xs uppercase">Cancel</button>
+    <!-- ⚙️ MASTER ADMIN DASHBOARD -->
+    <div x-show="isAdmin && showDash" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md flex justify-end">
+        <div class="bg-white w-full md:w-[500px] h-full shadow-2xl p-6 overflow-y-auto" x-transition:enter="translate-x-full">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="serif text-3xl">Website Manager</h2>
+                <button @click="showDash = false" class="text-2xl">✕</button>
+            </div>
+
+            <!-- Tabbed Menu -->
+            <div class="space-y-6">
+                <!-- HERO EDIT -->
+                <div class="p-4 bg-gray-50 rounded-3xl">
+                    <p class="font-bold text-xs uppercase mb-3">1. Hero Section</p>
+                    <input type="text" x-model="db.hero.title" class="w-full p-3 border rounded-xl mb-2 text-sm">
+                    <p class="text-[10px] text-gray-400 mb-2">Change Image (Upload from phone):</p>
+                    <input type="file" @change="uploadImage($event, 'hero', 'bg')" class="text-xs">
+                </div>
+
+                <!-- CAKE LIBRARY EDIT -->
+                <div class="p-4 bg-gray-50 rounded-3xl">
+                    <p class="font-bold text-xs uppercase mb-3">3. Featured Cake Library</p>
+                    <div class="space-y-4">
+                        <template x-for="(cake, index) in db.cakes">
+                            <div class="bg-white p-3 rounded-xl border relative">
+                                <button @click="db.cakes.splice(index, 1)" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs">✕</button>
+                                <input type="text" x-model="cake.name" class="w-full font-bold text-sm mb-1 border-b">
+                                <input type="text" x-model="cake.price" class="w-full text-xs text-pink-500 border-b mb-2">
+                                <p class="text-[10px] text-gray-400 mb-1">Update Cake Photo:</p>
+                                <input type="file" @change="uploadItemImage($event, index, 'cakes')" class="text-[10px]">
+                            </div>
+                        </template>
+                        <button @click="db.cakes.push({name:'New Cake', price:'500', img:''})" class="w-full py-2 border-2 border-dashed border-pink-300 rounded-xl text-xs font-bold text-pink-500">+ Add New Cake</button>
+                    </div>
+                </div>
+
+                <!-- FAQ EDIT -->
+                <div class="p-4 bg-gray-50 rounded-3xl">
+                    <p class="font-bold text-xs uppercase mb-3">11. FAQ Editor</p>
+                    <template x-for="(faq, index) in db.faqs">
+                        <div class="mb-3">
+                            <input type="text" x-model="faq.q" class="w-full p-2 text-xs font-bold border rounded-t-lg">
+                            <textarea x-model="faq.a" class="w-full p-2 text-xs border rounded-b-lg"></textarea>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- SAVE BUTTON -->
+                <button @click="saveAll" class="w-full bg-green-600 text-white py-5 rounded-2xl font-bold text-lg shadow-xl shadow-green-100">SAVE ALL UPDATES</button>
+            </div>
         </div>
     </div>
 
-    <!-- ITEM EDITOR MODAL (Used for Adding & Editing) -->
-    <div x-show="showEditor" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md">
-        <div class="bg-white p-10 rounded-[50px] max-w-lg w-full">
-            <h2 class="serif text-3xl mb-6" x-text="editIndex === null ? 'Add New Item' : 'Edit Item'"></h2>
-            <div class="space-y-4">
-                <div>
-                    <label class="text-[10px] font-bold uppercase text-gray-400">Cake Name</label>
-                    <input type="text" x-model="form.name" class="w-full p-4 bg-gray-50 rounded-2xl border-none">
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold uppercase text-gray-400">Price (starting at)</label>
-                    <input type="text" x-model="form.price" class="w-full p-4 bg-gray-50 rounded-2xl border-none">
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold uppercase text-gray-400">Image URL</label>
-                    <input type="text" x-model="form.img" class="w-full p-4 bg-gray-50 rounded-2xl border-none">
-                </div>
-            </div>
-            <div class="flex gap-4 mt-8">
-                <button @click="saveItem" class="flex-1 bg-pink-500 text-white py-4 rounded-2xl font-bold">Save Item</button>
-                <button @click="showEditor = false" class="flex-1 bg-gray-100 py-4 rounded-2xl font-bold">Discard</button>
-            </div>
+    <!-- FLOATING ADMIN BUTTON -->
+    <button x-show="isAdmin" @click="showDash = true" class="fixed bottom-8 right-8 z-[110] bg-pink-500 text-white p-5 rounded-full shadow-2xl animate-pulse font-bold">
+        ⚙️ Edit Website
+    </button>
+
+    <!-- LOGIN MODAL -->
+    <div x-show="showLogin" class="fixed inset-0 z-[200] bg-black/90 flex items-center justify-center p-6">
+        <div class="bg-white p-10 rounded-[40px] max-w-sm w-full text-center">
+            <h2 class="serif text-3xl mb-4">Admin Login</h2>
+            <input type="password" x-model="passInput" placeholder="Password" class="w-full p-4 border rounded-2xl mb-4 text-center">
+            <button @click="checkLogin" class="w-full bg-black text-white py-4 rounded-2xl font-bold">Login</button>
+            <button @click="showLogin = false" class="mt-4 text-gray-400 text-xs">Cancel</button>
         </div>
     </div>
 
-    <!-- NAVIGATION -->
-    <nav class="fixed w-full z-50 glass py-4 px-8 md:px-16 flex justify-between items-center transition-all duration-500">
-        <div class="serif text-2xl font-bold text-[#3E2723]">Mom's Bakery</div>
-        <div class="flex items-center gap-6">
-            <div x-show="isAdmin" class="bg-pink-100 text-pink-600 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Admin Mode</div>
-            <a :href="'https://wa.me/918218250432'" class="bg-[#3E2723] text-white px-6 py-2 rounded-full text-[10px] font-bold">ORDER NOW</a>
+    <!-- MAIN WEBSITE -->
+    <nav class="fixed w-full z-50 glass py-4 px-6 md:px-16 flex justify-between items-center">
+        <div class="serif text-2xl font-bold">Mom's Bakery</div>
+        <div class="flex items-center gap-4">
+            <span x-show="isAdmin" class="edit-pill">Admin Mode</span>
+            <a :href="'https://wa.me/'+db.contact.phone" class="bg-black text-white px-6 py-2 rounded-full text-[10px] font-bold">ORDER NOW</a>
         </div>
     </nav>
 
-    <!-- HERO SECTION -->
+    <!-- 1. HERO -->
     <section class="h-screen relative flex items-center justify-center text-center overflow-hidden bg-black">
-        <img src="https://images.unsplash.com/photo-1535254973040-607b474cb8c2?q=80" class="absolute inset-0 w-full h-full object-cover opacity-60">
+        <img :src="db.hero.bg" class="absolute inset-0 w-full h-full object-cover opacity-60">
         <div class="relative z-10 px-6">
-            <span class="uppercase tracking-[0.6em] text-white text-[10px] mb-4 block">Handcrafted in Najibabad</span>
-            <h1 class="serif text-7xl md:text-9xl text-white leading-none">Mom's <br><span class="italic font-light">Bakery</span></h1>
-            <p class="text-white/70 mt-6 max-w-lg mx-auto italic">Pure homemade goodness, delivered to your doorstep.</p>
+            <h1 class="serif text-7xl md:text-9xl text-white leading-none mb-6" x-html="db.hero.title"></h1>
+            <p class="text-white/70 max-w-lg mx-auto italic" x-text="db.hero.subtitle"></p>
         </div>
     </section>
 
-    <!-- CAKE SECTION -->
-    <section class="py-24 px-6 md:px-16 max-w-7xl mx-auto">
-        <div class="flex justify-between items-end mb-16">
-            <div>
-                <h2 class="serif text-5xl text-[#3E2723]">Our Collection</h2>
-                <p class="text-gray-400 mt-2">Browse our freshly baked custom cakes</p>
-            </div>
-            <!-- ADMIN ADD BUTTON -->
-            <button x-show="isAdmin" @click="openAddModal" class="bg-pink-500 text-white px-8 py-4 rounded-full font-bold text-xs shadow-xl shadow-pink-200">+ Add New Cake</button>
+    <!-- 2. STORY -->
+    <section class="py-20 px-6 text-center">
+        <div class="max-w-3xl mx-auto" :class="isAdmin ? 'admin-box' : ''">
+            <h2 class="serif text-4xl mb-6">Our Story</h2>
+            <p class="text-gray-500 italic text-xl" x-text="db.story.text"></p>
         </div>
+    </section>
 
+    <!-- 3. FEATURED CAKES -->
+    <section class="py-20 px-6 max-w-7xl mx-auto">
+        <h2 class="serif text-4xl mb-12">Featured Collection</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-            <template x-for="(cake, index) in cakes" :key="index">
-                <div class="bg-white p-6 rounded-[50px] shadow-sm relative group transition-all duration-500 hover:shadow-2xl" 
-                     :class="isAdmin ? 'admin-glow' : ''" data-tilt>
-                    
-                    <!-- ADMIN ACTIONS -->
-                    <div x-show="isAdmin" class="absolute top-6 right-6 flex gap-2 z-20">
-                        <button @click="openEditModal(index)" class="bg-white/90 p-3 rounded-full shadow-md hover:bg-blue-500 hover:text-white transition">✏️</button>
-                        <button @click="deleteItem(index)" class="bg-white/90 p-3 rounded-full shadow-md hover:bg-red-500 hover:text-white transition">🗑️</button>
-                    </div>
-
-                    <div class="rounded-[40px] overflow-hidden mb-6 aspect-square">
-                        <img :src="cake.img" class="w-full h-full object-cover group-hover:scale-110 transition duration-1000">
-                    </div>
-                    <h3 class="serif text-2xl text-[#3E2723] mb-1" x-text="cake.name"></h3>
-                    <p class="text-pink-500 font-bold text-lg mb-6" x-text="'₹' + cake.price"></p>
-                    <a :href="'https://wa.me/918218250432?text=Hi, I want to order ' + cake.name" class="block w-full bg-[#3E2723] text-white py-4 rounded-2xl text-center text-[10px] font-bold uppercase tracking-widest hover:bg-black transition">Order Now</a>
+            <template x-for="cake in db.cakes">
+                <div class="bg-white p-6 rounded-[50px] shadow-sm relative transition hover:shadow-2xl" :class="isAdmin ? 'admin-box' : ''">
+                    <img :src="cake.img || 'https://via.placeholder.com/400'" class="w-full aspect-square object-cover rounded-[40px] mb-6 shadow-md">
+                    <h3 class="serif text-2xl mb-1" x-text="cake.name"></h3>
+                    <p class="text-pink-500 font-bold mb-6" x-text="'₹'+cake.price"></p>
+                    <a :href="'https://wa.me/'+db.contact.phone+'?text=Hi, I want to order '+cake.name" class="block w-full bg-black text-white py-4 rounded-2xl text-center text-[10px] font-bold uppercase tracking-widest">Order via WhatsApp</a>
                 </div>
             </template>
         </div>
     </section>
 
-    <!-- OFFERS SECTION -->
-    <section class="py-24 px-6 bg-[#3E2723] text-white">
-        <div class="max-w-7xl mx-auto text-center">
-            <h2 class="serif text-5xl mb-16">Limited Time Deals</h2>
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="glass p-10 rounded-[50px] relative">
-                    <h3 class="serif text-3xl mb-4 text-pink-300">Birthday Combo</h3>
-                    <p class="text-white/60 mb-8">Get 1KG Chocolate Truffle + 10 Cupcakes at 20% Off!</p>
-                    <div class="text-[10px] uppercase font-bold tracking-widest bg-white/10 py-2 px-6 rounded-full inline-block">Code: BDAY20</div>
-                </div>
-                <div class="glass p-10 rounded-[50px] relative">
-                    <h3 class="serif text-3xl mb-4 text-pink-300">Wedding Luxe</h3>
-                    <p class="text-white/60 mb-8">Free delivery and setup on all multi-tier wedding cakes.</p>
-                    <div class="text-[10px] uppercase font-bold tracking-widest bg-white/10 py-2 px-6 rounded-full inline-block">Najibabad Local Only</div>
-                </div>
+    <!-- 11. FAQ -->
+    <section class="py-20 px-6 bg-[#FDF8F5]">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="serif text-4xl text-center mb-12">Common Questions</h2>
+            <div class="space-y-4">
+                <template x-for="(faq, index) in db.faqs">
+                    <div class="bg-white p-6 rounded-3xl shadow-sm">
+                        <p class="font-bold text-[#3E2723] mb-2" x-text="faq.q"></p>
+                        <p class="text-gray-400 text-sm" x-text="faq.a"></p>
+                    </div>
+                </template>
             </div>
         </div>
     </section>
 
-    <!-- CONTACT SECTION -->
-    <section class="py-24 px-6 md:px-16 bg-white">
-        <div class="max-w-7xl mx-auto glass p-10 md:p-20 rounded-[80px] shadow-2xl flex flex-col md:flex-row gap-16 items-center">
+    <!-- 12. CONTACT -->
+    <section class="py-20 px-6 bg-white">
+        <div class="max-w-7xl mx-auto glass p-10 md:p-20 rounded-[80px] flex flex-col md:flex-row gap-16 items-center">
             <div class="flex-1">
-                <h2 class="serif text-6xl text-[#3E2723] mb-8 leading-tight">Find us in <br><span class="italic text-pink-500">Najibabad.</span></h2>
-                <div class="space-y-6 text-sm text-gray-500">
-                    <p><b>📍 Location:</b> Mota Aam, Near Pooja Hospital, Najibabad, UP</p>
-                    <p><b>📞 Phone:</b> +91 8218250432</p>
-                    <p><b>📸 Instagram:</b> @momsbakeryandcakecorner</p>
-                </div>
-                <div class="mt-10 flex gap-4">
-                    <a href="https://wa.me/918218250432" class="bg-green-600 text-white px-8 py-3 rounded-full text-[10px] font-bold">WhatsApp Us</a>
-                </div>
+                <h2 class="serif text-6xl mb-6">Contact Us</h2>
+                <p class="mb-2">📍 <span x-text="db.contact.address"></span></p>
+                <p class="mb-8">📞 <span x-text="db.contact.phone"></span></p>
+                <a :href="'https://wa.me/'+db.contact.phone" class="bg-green-600 text-white px-8 py-3 rounded-full text-xs font-bold uppercase">Chat on WhatsApp</a>
             </div>
-            <div class="w-full md:w-1/2 h-[450px] rounded-[50px] overflow-hidden shadow-xl grayscale contrast-125">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3485.456!2d78.33!3d29.6!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjnCsDM2JzAwLjAiTiA3OMKwMjAnMDAuMCJF!5e0!3m2!1sen!2sin!4v12345678" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            <div class="w-full md:w-1/2 h-[400px] rounded-[50px] overflow-hidden border-8 border-pink-50">
+                <iframe :src="db.contact.map" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
             </div>
         </div>
     </section>
 
-    <footer class="py-12 bg-[#3E2723] text-center">
-        <p class="text-white/20 text-[10px] uppercase tracking-[0.5em] mb-4">Mom's Bakery Najibabad © 2026</p>
-        <!-- ADMIN LOGIN TOGGLE -->
-        <button @click="isAdmin ? logout() : (showLogin = true)" class="text-white/40 text-[9px] uppercase border border-white/10 px-4 py-1 rounded-full hover:bg-white/10 transition" x-text="isAdmin ? 'Logout Admin' : 'Admin Login'"></button>
+    <footer class="py-10 text-center bg-[#3E2723]">
+        <p class="text-white/20 text-[10px] tracking-[0.4em] mb-4 uppercase">Mom's Bakery Najibabad © 2026</p>
+        <button @click="isAdmin ? logout() : (showLogin = true)" class="text-white/40 text-[9px] uppercase border border-white/10 px-4 py-1 rounded-full">
+            <span x-text="isAdmin ? 'Exit Admin' : 'Admin Login'"></span>
+        </button>
     </footer>
 
     <script>
         document.addEventListener('alpine:init', () => {
-            Alpine.data('bakeryAdmin', () => ({
-                isAdmin: Alpine.$persist(false), // Saves login status
+            Alpine.data('bakeryMaster', () => ({
+                isAdmin: Alpine.$persist(false),
                 showLogin: false,
-                loginPass: '',
-                showEditor: false,
-                editIndex: null,
+                showDash: false,
+                passInput: '',
                 
-                // Form Data for Adding/Editing
-                form: { name: '', price: '', img: '' },
+                // --- THE ENTIRE DATABASE ---
+                db: Alpine.$persist({
+                    hero: {
+                        title: "Mom's Bakery <br>& <span class='italic font-light'>Cake Corner</span>",
+                        subtitle: "Handcrafted memories baked fresh daily in Najibabad.",
+                        bg: "https://images.unsplash.com/photo-1535254973040-607b474cb8c2?q=80"
+                    },
+                    story: {
+                        text: "Born from a mother’s kitchen, we provide 100% eggless, homemade quality cakes with premium ingredients."
+                    },
+                    cakes: [
+                        { name: "Belgian Truffle", price: "550", img: "https://images.unsplash.com/photo-1562773229-da4488414447?q=80" },
+                        { name: "Red Velvet Luxe", price: "650", img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80" }
+                    ],
+                    faqs: [
+                        { q: "How to order?", a: "Send a message on WhatsApp with your preferred design." },
+                        { q: "Delivery areas?", a: "We deliver all across Najibabad city." }
+                    ],
+                    contact: {
+                        phone: "918218250432",
+                        address: "Mota Aam, Near Pooja Hospital, Najibabad, UP",
+                        map: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3485.456!2d78.33!3d29.6!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjnCsDM2JzAwLjAiTiA3OMKwMjAnMDAuMCJF!5e0!3m2!1sen!2sin!4v12345678"
+                    }
+                }),
 
-                // DATABASE (Saved in LocalStorage)
-                cakes: Alpine.$persist([
-                    { name: 'Belgian Truffle', price: '550', img: 'https://images.unsplash.com/photo-1562773229-da4488414447?q=80' },
-                    { name: 'Red Velvet Luxe', price: '650', img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80' },
-                    { name: 'Lotus Biscoff', price: '799', img: 'https://images.unsplash.com/photo-1535141192574-5d4897c12636?q=80' }
-                ]),
-
-                attemptLogin() {
-                    if (this.loginPass === 'admin123') {
+                // LOGIN LOGIC
+                checkLogin() {
+                    if (this.passInput === 'admin123') {
                         this.isAdmin = true;
                         this.showLogin = false;
-                        this.loginPass = '';
-                    } else {
-                        alert('Incorrect Password!');
-                    }
+                        this.showDash = true;
+                        this.passInput = '';
+                    } else { alert('Wrong Password!'); }
+                },
+                logout() { this.isAdmin = false; this.showDash = false; },
+
+                // 📸 THE GALLERY UPLOAD LOGIC
+                uploadImage(event, section, key) {
+                    const file = event.target.files[0];
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        this.db[section][key] = reader.result;
+                    };
+                    reader.readAsDataURL(file);
                 },
 
-                logout() {
-                    this.isAdmin = false;
+                uploadItemImage(event, index, section) {
+                    const file = event.target.files[0];
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        this.db[section][index].img = reader.result;
+                    };
+                    reader.readAsDataURL(file);
                 },
 
-                openAddModal() {
-                    this.editIndex = null;
-                    this.form = { name: '', price: '', img: '' };
-                    this.showEditor = true;
-                },
-
-                openEditModal(index) {
-                    this.editIndex = index;
-                    this.form = { ...this.cakes[index] };
-                    this.showEditor = true;
-                },
-
-                saveItem() {
-                    if (this.editIndex === null) {
-                        this.cakes.push({ ...this.form });
-                    } else {
-                        this.cakes[this.editIndex] = { ...this.form };
-                    }
-                    this.showEditor = false;
-                },
-
-                deleteItem(index) {
-                    if (confirm('Are you sure you want to delete this cake?')) {
-                        this.cakes.splice(index, 1);
-                    }
+                saveAll() {
+                    alert('All sections and photos saved successfully!');
+                    this.showDash = false;
+                    window.location.reload();
                 }
             }));
         });
 
-        // SMOOTH SCROLL
+        // Smooth Scroll
         const lenis = new Lenis();
         function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
         requestAnimationFrame(raf);
-
-        // TILT EFFECT
-        VanillaTilt.init(document.querySelectorAll("[data-tilt]"), { max: 10, speed: 400, glare: true, "max-glare": 0.2 });
     </script>
 </body>
 </html>
