@@ -20,6 +20,14 @@
         [x-cloak] { display: none !important; }
         .edit-pill { background: #ec4899; color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; }
         .admin-box { border: 2px dashed #ec4899; }
+        
+        /* Size Guide Custom Animation */
+        .cake-blob {
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .size-card:hover .cake-blob {
+            transform: scale(1.1) rotate(5deg);
+        }
     </style>
 </head>
 <body x-data="bakeryMaster" x-cloak>
@@ -38,8 +46,17 @@
                 <div class="p-4 bg-gray-50 rounded-3xl">
                     <p class="font-bold text-xs uppercase mb-3">1. Hero Section</p>
                     <input type="text" x-model="db.hero.title" class="w-full p-3 border rounded-xl mb-2 text-sm">
-                    <p class="text-[10px] text-gray-400 mb-2">Change Image (Upload from phone):</p>
-                    <input type="file" @change="uploadImage($event, 'hero', 'bg')" class="text-xs">
+                </div>
+
+                <!-- SIZE GUIDE EDIT -->
+                <div class="p-4 bg-pink-50 rounded-3xl border border-pink-100">
+                    <p class="font-bold text-xs uppercase mb-3 text-pink-600">2. Size Guide Details</p>
+                    <template x-for="(sz, index) in db.sizes">
+                        <div class="grid grid-cols-2 gap-2 mb-3">
+                            <input type="text" x-model="sz.label" class="p-2 text-xs border rounded-lg" placeholder="Weight">
+                            <input type="text" x-model="sz.serves" class="p-2 text-xs border rounded-lg" placeholder="Servings">
+                        </div>
+                    </template>
                 </div>
 
                 <!-- CAKE LIBRARY EDIT -->
@@ -55,23 +72,11 @@
                                 <input type="file" @change="uploadItemImage($event, index, 'cakes')" class="text-[10px]">
                             </div>
                         </template>
-                        <button @click="db.cakes.push({name:'New Cake', price:'500', img:''})" class="w-full py-2 border-2 border-dashed border-pink-300 rounded-xl text-xs font-bold text-pink-500">+ Add New Cake</button>
                     </div>
                 </div>
 
-                <!-- FAQ EDIT -->
-                <div class="p-4 bg-gray-50 rounded-3xl">
-                    <p class="font-bold text-xs uppercase mb-3">11. FAQ Editor</p>
-                    <template x-for="(faq, index) in db.faqs">
-                        <div class="mb-3">
-                            <input type="text" x-model="faq.q" class="w-full p-2 text-xs font-bold border rounded-t-lg">
-                            <textarea x-model="faq.a" class="w-full p-2 text-xs border rounded-b-lg"></textarea>
-                        </div>
-                    </template>
-                </div>
-
                 <!-- SAVE BUTTON -->
-                <button @click="saveAll" class="w-full bg-green-600 text-white py-5 rounded-2xl font-bold text-lg shadow-xl shadow-green-100">SAVE ALL UPDATES</button>
+                <button @click="saveAll" class="w-full bg-green-600 text-white py-5 rounded-2xl font-bold text-lg shadow-xl">SAVE ALL UPDATES</button>
             </div>
         </div>
     </div>
@@ -114,6 +119,36 @@
         <div class="max-w-3xl mx-auto" :class="isAdmin ? 'admin-box' : ''">
             <h2 class="serif text-4xl mb-6">Our Story</h2>
             <p class="text-gray-500 italic text-xl" x-text="db.story.text"></p>
+        </div>
+    </section>
+
+    <!-- NEW SECTION: SIZE GUIDE -->
+    <section class="py-24 px-6 bg-pink-50/50">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="serif text-5xl mb-4">Choose Your Size</h2>
+                <p class="text-gray-400">Perfectly portioned for every celebration</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
+                <template x-for="(size, index) in db.sizes">
+                    <div class="size-card group bg-white p-8 rounded-[40px] shadow-sm hover:shadow-xl transition-all text-center border border-pink-100" :class="isAdmin ? 'admin-box' : ''">
+                        <div class="relative flex justify-center items-center mb-8 h-32">
+                            <!-- Animated Cake Visual -->
+                            <div class="cake-blob bg-pink-200 rounded-full absolute" 
+                                 :style="`width: ${60 + (index * 20)}px; height: ${60 + (index * 20)}px; opacity: 0.3;` ">
+                            </div>
+                            <div class="cake-blob bg-pink-400 rounded-full flex items-center justify-center text-white serif shadow-lg"
+                                 :style="`width: ${40 + (index * 15)}px; height: ${40 + (index * 15)}px;` ">
+                                <span class="text-[10px]" x-text="size.label"></span>
+                            </div>
+                        </div>
+                        <h3 class="serif text-2xl mb-1" x-text="size.label"></h3>
+                        <p class="text-xs uppercase tracking-widest text-pink-500 font-bold mb-4" x-text="size.serves"></p>
+                        <div class="h-[1px] w-10 bg-pink-100 mx-auto"></div>
+                    </div>
+                </template>
+            </div>
         </div>
     </section>
 
@@ -177,7 +212,6 @@
                 showDash: false,
                 passInput: '',
                 
-                // --- THE ENTIRE DATABASE ---
                 db: Alpine.$persist({
                     hero: {
                         title: "Mom's Bakery <br>& <span class='italic font-light'>Cake Corner</span>",
@@ -187,6 +221,13 @@
                     story: {
                         text: "Born from a mother’s kitchen, we provide 100% eggless, homemade quality cakes with premium ingredients."
                     },
+                    // NEW: SIZE GUIDE DATA
+                    sizes: [
+                        { label: "250 GM", serves: "Ideal for 2" },
+                        { label: "500 GM", serves: "Serves 4-6" },
+                        { label: "750 GM", serves: "Serves 7-9" },
+                        { label: "1 KG", serves: "Serves 10-12" }
+                    ],
                     cakes: [
                         { name: "Belgian Truffle", price: "550", img: "https://images.unsplash.com/photo-1562773229-da4488414447?q=80" },
                         { name: "Red Velvet Luxe", price: "650", img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80" }
@@ -202,7 +243,6 @@
                     }
                 }),
 
-                // LOGIN LOGIC
                 checkLogin() {
                     if (this.passInput === 'admin123') {
                         this.isAdmin = true;
@@ -212,16 +252,6 @@
                     } else { alert('Wrong Password!'); }
                 },
                 logout() { this.isAdmin = false; this.showDash = false; },
-
-                // 📸 THE GALLERY UPLOAD LOGIC
-                uploadImage(event, section, key) {
-                    const file = event.target.files[0];
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                        this.db[section][key] = reader.result;
-                    };
-                    reader.readAsDataURL(file);
-                },
 
                 uploadItemImage(event, index, section) {
                     const file = event.target.files[0];
@@ -233,9 +263,8 @@
                 },
 
                 saveAll() {
-                    alert('All sections and photos saved successfully!');
+                    alert('All updates saved!');
                     this.showDash = false;
-                    window.location.reload();
                 }
             }));
         });
