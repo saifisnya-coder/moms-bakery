@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MomsBakery | Full Admin Control</title>
+    <title>MomsBakery | Najibabad's Premium Store</title>
     
     <!-- Scripts & Styles -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -16,144 +16,220 @@
         .serif { font-family: 'Playfair Display', serif; }
         .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
         [x-cloak] { display: none !important; }
-        .out-of-stock { filter: grayscale(1); opacity: 0.6; }
-        .admin-input { border: 1px solid #e2e8f0; padding: 10px; border-radius: 12px; width: 100%; margin-bottom: 10px; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .admin-input { border: 1px solid #e2e8f0; padding: 12px; border-radius: 15px; width: 100%; margin-bottom: 12px; font-size: 14px;}
     </style>
 </head>
 <body x-data="bakeryApp()" x-init="init()">
 
     <!-- NAVIGATION -->
-    <nav class="fixed w-full z-50 glass py-4 px-6 flex justify-between items-center shadow-md">
+    <nav class="fixed w-full z-50 glass py-3 px-6 flex justify-between items-center shadow-sm">
         <div class="serif text-2xl font-bold text-[#3E2723]">MomsBakery</div>
         <div class="flex items-center gap-4">
-            <button @click="showAdminLogin = true" class="text-xs font-bold bg-[#3E2723] text-white px-4 py-2 rounded-full">ADMIN</button>
+            <button @click="showAdminLogin = true" class="text-[10px] font-bold border border-[#3E2723] px-3 py-1 rounded-full">ADMIN</button>
             <div class="relative cursor-pointer" @click="showCart = true">
-                🛒 <span class="absolute -top-2 -right-2 bg-pink-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center" x-text="cart.length"></span>
+                <span class="text-2xl">🛒</span>
+                <span class="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center animate__animated animate__bounceIn" x-text="cartCount()"></span>
             </div>
         </div>
     </nav>
 
     <!-- HERO SECTION -->
-    <section class="h-[60vh] flex items-center justify-center text-center bg-gradient-to-b from-pink-100 to-[#FDF8F5] pt-20 px-6">
-        <div class="animate__animated animate__zoomIn">
-            <span class="text-pink-500 font-bold tracking-[0.3em] text-xs uppercase">Premium Bakery & Gifts</span>
-            <h1 class="serif text-5xl md:text-7xl text-[#3E2723] mt-2 mb-6">MomsBakery & <br><span class="italic font-light">Cake Corner</span></h1>
-            <a href="#shop" class="bg-[#3E2723] text-white px-10 py-4 rounded-full font-bold shadow-lg hover:scale-105 transition block w-fit mx-auto">Browse Store</a>
+    <section class="h-[75vh] flex items-center justify-center text-center bg-[#FFF5F5] px-6">
+        <div class="animate__animated animate__fadeIn">
+            <span class="text-pink-500 font-bold tracking-[0.4em] text-xs uppercase block mb-2">Najibabad • Since 2026</span>
+            <h1 class="serif text-5xl md:text-8xl text-[#3E2723] mb-6">Sweet Moments,<br><span class="italic font-light">Delivered.</span></h1>
+            <div class="flex gap-4 justify-center">
+                <a href="#shop" class="bg-[#3E2723] text-white px-8 py-3 rounded-full font-bold text-sm shadow-xl">Shop Now</a>
+                <a href="#faq" class="bg-white text-[#3E2723] px-8 py-3 rounded-full font-bold text-sm shadow-sm">Ordering Info</a>
+            </div>
         </div>
     </section>
 
-    <!-- NEW ARRIVALS SLIDER -->
-    <section class="py-10 px-6" x-show="getNewLaunches().length > 0">
-        <h2 class="serif text-2xl mb-6">🔥 New Launches</h2>
-        <div class="flex overflow-x-auto gap-4 no-scrollbar pb-4">
-            <template x-for="item in getNewLaunches()">
-                <div class="min-w-[160px] bg-white p-3 rounded-3xl shadow-sm border border-pink-50">
-                    <img :src="item.image" class="w-full aspect-square object-cover rounded-2xl mb-2">
-                    <h3 class="font-bold text-[11px] truncate" x-text="item.name"></h3>
-                    <p class="text-pink-500 text-[10px] font-bold">₹<span x-text="item.price"></span></p>
-                </div>
-            </template>
-        </div>
-    </section>
-
-    <!-- MAIN SHOP SECTION -->
-    <section id="shop" class="py-12 px-6">
-        <div class="flex overflow-x-auto gap-3 no-scrollbar mb-8">
-            <template x-for="cat in categories">
-                <button @click="activeTab = cat" 
-                        :class="activeTab === cat ? 'bg-[#3E2723] text-white' : 'bg-white text-gray-500'"
-                        class="px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap shadow-sm border border-gray-100 transition"
-                        x-text="cat"></button>
-            </template>
+    <!-- MAIN STOREFRONT -->
+    <section id="shop" class="py-16 px-6 max-w-7xl mx-auto">
+        <div class="text-center mb-10">
+            <h2 class="serif text-4xl mb-4">Our Collection</h2>
+            <div class="flex overflow-x-auto gap-3 no-scrollbar justify-start md:justify-center pb-4">
+                <template x-for="cat in categories">
+                    <button @click="activeTab = cat" 
+                            :class="activeTab === cat ? 'bg-[#3E2723] text-white shadow-lg scale-105' : 'bg-white text-gray-500'"
+                            class="px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-300 border border-gray-100"
+                            x-text="cat"></button>
+                </template>
+            </div>
         </div>
 
         <!-- PRODUCT GRID -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <template x-for="(item, index) in filteredItems" :key="item.id">
-                <div class="bg-white p-3 rounded-[30px] shadow-sm relative overflow-hidden animate__animated animate__fadeInUp">
-                    <!-- Out of Stock Overlay -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <template x-for="item in filteredItems" :key="item.id">
+                <div class="bg-white p-4 rounded-[35px] shadow-sm hover:shadow-xl transition-all border border-pink-50 relative group">
                     <template x-if="item.isOutOfStock">
-                        <div class="absolute inset-0 z-10 bg-white/60 flex items-center justify-center">
-                            <span class="bg-red-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-tighter">Out of Stock</span>
+                        <div class="absolute inset-0 z-10 bg-white/70 backdrop-blur-[2px] flex items-center justify-center rounded-[35px]">
+                            <span class="bg-black text-white text-[10px] font-bold px-4 py-2 rounded-full">SOLD OUT</span>
                         </div>
                     </template>
-
-                    <img :src="item.image" :class="item.isOutOfStock ? 'out-of-stock' : ''" class="w-full aspect-square object-cover rounded-[20px] mb-3">
                     
-                    <h3 class="font-bold text-sm truncate text-[#3E2723]" x-text="item.name"></h3>
-                    <p class="text-pink-600 font-bold text-sm mb-3">₹<span x-text="item.price"></span></p>
+                    <img :src="item.image" class="w-full aspect-square object-cover rounded-[25px] mb-4 group-hover:scale-105 transition duration-500">
+                    <h3 class="font-bold text-sm text-[#3E2723] truncate" x-text="item.name"></h3>
+                    <p class="text-pink-600 font-bold mb-4">₹<span x-text="item.price"></span></p>
                     
-                    <!-- Order Logic -->
-                    <template x-if="!item.isOutOfStock">
-                        <div class="flex gap-1">
-                            <button @click="addToCart(item)" class="flex-1 bg-pink-50 text-pink-600 py-2 rounded-xl text-[10px] font-bold uppercase">Add</button>
-                            <a :href="'https://wa.me/918218250432?text=Order: ' + item.name" class="flex-1 bg-green-500 text-white py-2 rounded-xl text-[10px] font-bold uppercase text-center">WhatsApp</a>
-                        </div>
-                    </template>
+                    <button @click="addToCart(item)" 
+                            :disabled="item.isOutOfStock"
+                            class="w-full bg-[#3E2723] text-white py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest active:scale-95 transition">
+                        Add to Cart
+                    </button>
                 </div>
             </template>
         </div>
     </section>
 
-    <!-- ADMIN LOGIN MODAL -->
-    <div x-show="showAdminLogin" class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80" x-cloak>
-        <div class="bg-white w-full max-w-sm p-8 rounded-[40px] text-center animate__animated animate__zoomIn">
-            <h2 class="serif text-2xl mb-4">Admin Access</h2>
-            <input type="password" x-model="adminPassword" placeholder="Enter Password" class="admin-input text-center">
-            <button @click="loginAdmin()" class="w-full bg-[#3E2723] text-white py-4 rounded-2xl font-bold mt-2">Login</button>
-            <button @click="showAdminLogin = false" class="mt-4 text-gray-400 text-sm">Cancel</button>
+    <!-- SHOPPING CART SLIDE-OUT -->
+    <div x-show="showCart" class="fixed inset-0 z-[100] flex justify-end" x-cloak>
+        <div class="absolute inset-0 bg-black/50" @click="showCart = false"></div>
+        <div class="relative w-full max-w-md bg-white h-full shadow-2xl p-8 flex flex-col animate__animated animate__slideInRight">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="serif text-3xl">Your Cart</h2>
+                <button @click="showCart = false" class="text-3xl">&times;</button>
+            </div>
+
+            <!-- Cart Items List -->
+            <div class="flex-1 overflow-y-auto pr-2 no-scrollbar">
+                <template x-if="cart.length === 0">
+                    <div class="text-center py-20">
+                        <p class="text-gray-400">Your cart is empty.</p>
+                    </div>
+                </template>
+                <template x-for="(item, index) in cart" :key="index">
+                    <div class="flex gap-4 mb-6 bg-gray-50 p-4 rounded-3xl items-center">
+                        <img :src="item.image" class="w-16 h-16 rounded-2xl object-cover shadow-sm">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-sm" x-text="item.name"></h4>
+                            <p class="text-xs text-pink-500 font-bold">₹<span x-text="item.price"></span></p>
+                            <div class="flex items-center gap-3 mt-2">
+                                <button @click="updateQty(index, -1)" class="w-6 h-6 bg-white rounded-full shadow-sm text-sm">-</button>
+                                <span class="text-sm font-bold" x-text="item.qty"></span>
+                                <button @click="updateQty(index, 1)" class="w-6 h-6 bg-white rounded-full shadow-sm text-sm">+</button>
+                            </div>
+                        </div>
+                        <button @click="cart.splice(index, 1)" class="text-red-400">🗑️</button>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Total & Checkout -->
+            <div class="border-t pt-6" x-show="cart.length > 0">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-gray-500">Total Amount:</span>
+                    <span class="text-2xl font-bold text-[#3E2723]">₹<span x-text="getCartTotal()"></span></span>
+                </div>
+                <button @click="checkoutWhatsApp()" class="w-full bg-green-500 text-white py-4 rounded-[20px] font-bold flex items-center justify-center gap-3 shadow-lg">
+                    <span>Order via WhatsApp</span>
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- FULL ADMIN DASHBOARD -->
-    <div x-show="isAdmin" class="fixed inset-0 z-[100] bg-white overflow-y-auto p-6 animate__animated animate__slideInUp" x-cloak>
-        <div class="max-w-2xl mx-auto">
-            <div class="flex justify-between items-center border-b pb-4 mb-8">
-                <h2 class="serif text-3xl">Owner Control</h2>
-                <button @click="isAdmin = false" class="bg-red-500 text-white px-6 py-2 rounded-full font-bold">Close Panel</button>
+    <!-- FAQ SECTION -->
+    <section id="faq" class="py-20 px-6 bg-white">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="serif text-4xl text-center mb-12">Frequently Asked Questions</h2>
+            <div class="space-y-4" x-data="{ openFaq: null }">
+                <!-- FAQ Item 1 -->
+                <div class="border border-pink-100 rounded-3xl overflow-hidden">
+                    <button @click="openFaq = (openFaq === 1 ? null : 1)" class="w-full p-6 text-left font-bold text-[#3E2723] flex justify-between bg-pink-50/30">
+                        How do I place an order?
+                        <span x-text="openFaq === 1 ? '−' : '+'"></span>
+                    </button>
+                    <div x-show="openFaq === 1" class="p-6 text-sm text-gray-600 bg-white leading-relaxed" x-collapse>
+                        Browse our items, add them to your cart, and click "Order via WhatsApp". We will confirm your order details and delivery time instantly on chat.
+                    </div>
+                </div>
+                <!-- FAQ Item 2 -->
+                <div class="border border-pink-100 rounded-3xl overflow-hidden">
+                    <button @click="openFaq = (openFaq === 2 ? null : 2)" class="w-full p-6 text-left font-bold text-[#3E2723] flex justify-between bg-pink-50/30">
+                        What are the payment methods?
+                        <span x-text="openFaq === 2 ? '−' : '+'"></span>
+                    </button>
+                    <div x-show="openFaq === 2" class="p-6 text-sm text-gray-600 bg-white" x-collapse>
+                        We accept GPay, PhonePe, Paytm, and Bank Transfers. Cash on Delivery (COD) is available for orders within Najibabad city.
+                    </div>
+                </div>
+                <!-- FAQ Item 3 -->
+                <div class="border border-pink-100 rounded-3xl overflow-hidden">
+                    <button @click="openFaq = (openFaq === 3 ? null : 3)" class="w-full p-6 text-left font-bold text-[#3E2723] flex justify-between bg-pink-50/30">
+                        Do you offer same-day delivery?
+                        <span x-text="openFaq === 3 ? '−' : '+'"></span>
+                    </button>
+                    <div x-show="openFaq === 3" class="p-6 text-sm text-gray-600 bg-white" x-collapse>
+                        Yes! For standard cakes and cupcakes, same-day delivery is available if ordered before 4:00 PM. Custom designer cakes require at least 24-48 hours notice.
+                    </div>
+                </div>
+                <!-- FAQ Item 4 -->
+                <div class="border border-pink-100 rounded-3xl overflow-hidden">
+                    <button @click="openFaq = (openFaq === 4 ? null : 4)" class="w-full p-6 text-left font-bold text-[#3E2723] flex justify-between bg-pink-50/30">
+                        What is your custom cake policy?
+                        <span x-text="openFaq === 4 ? '−' : '+'"></span>
+                    </button>
+                    <div x-show="openFaq === 4" class="p-6 text-sm text-gray-600 bg-white" x-collapse>
+                        Custom cakes are non-refundable once production starts. Changes to design must be made at least 24 hours before the scheduled pickup/delivery.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ADMIN SYSTEM -->
+    <div x-show="showAdminLogin" class="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-black/90" x-cloak>
+        <div class="bg-white w-full max-w-sm p-8 rounded-[40px] text-center">
+            <h2 class="serif text-2xl mb-6">MomsBakery Admin</h2>
+            <input type="password" x-model="adminPassword" placeholder="Admin Password" class="admin-input text-center">
+            <button @click="loginAdmin()" class="w-full bg-[#3E2723] text-white py-4 rounded-2xl font-bold">Access Dashboard</button>
+            <button @click="showAdminLogin = false" class="mt-4 text-gray-400 text-xs">Close</button>
+        </div>
+    </div>
+
+    <div x-show="isAdmin" class="fixed inset-0 z-[120] bg-white overflow-y-auto p-6" x-cloak>
+        <div class="max-w-xl mx-auto">
+            <div class="flex justify-between items-center mb-8 border-b pb-4">
+                <h2 class="serif text-3xl">Control Center</h2>
+                <button @click="isAdmin = false" class="bg-red-500 text-white px-6 py-2 rounded-full text-xs font-bold">Logout</button>
             </div>
 
-            <!-- ADD NEW ITEM FORM -->
-            <div class="bg-gray-50 p-6 rounded-[35px] mb-10 border-2 border-dashed border-gray-200">
-                <h3 class="font-bold text-lg mb-4">Add New Item to Shop</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <input type="text" x-model="newItem.name" placeholder="Item Name" class="admin-input">
-                    <input type="number" x-model="newItem.price" placeholder="Price (₹)" class="admin-input">
-                </div>
+            <!-- Add Product -->
+            <div class="bg-pink-50 p-6 rounded-[40px] mb-10">
+                <h3 class="font-bold mb-4">Add New Item</h3>
+                <input type="text" x-model="newItem.name" placeholder="Item Name" class="admin-input">
+                <input type="number" x-model="newItem.price" placeholder="Price (₹)" class="admin-input">
                 <select x-model="newItem.category" class="admin-input">
                     <template x-for="cat in categories">
                         <option :value="cat" x-text="cat"></option>
                     </template>
                 </select>
-                <div class="flex items-center gap-4 my-2">
-                    <label class="flex items-center gap-2 text-xs"><input type="checkbox" x-model="newItem.isNew"> New Arrival</label>
-                </div>
-                <div class="bg-white p-6 rounded-2xl border-2 border-pink-100 text-center mb-4">
-                    <p class="text-xs text-gray-400 mb-2">Item Image (Select from Gallery)</p>
+                <div class="bg-white p-6 rounded-2xl border-2 border-dashed border-pink-200 text-center mb-4">
+                    <p class="text-[10px] text-gray-400 mb-2 font-bold uppercase">Upload Photo from Gallery</p>
                     <input type="file" @change="handleFileUpload" class="text-xs">
                 </div>
-                <button @click="addItem()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-bold shadow-lg">🚀 ADD TO INVENTORY</button>
+                <button @click="addItem()" class="w-full bg-[#3E2723] text-white py-4 rounded-2xl font-bold shadow-lg">Upload to Store</button>
             </div>
 
-            <!-- INVENTORY MANAGEMENT LIST -->
-            <h3 class="font-bold text-lg mb-4">Manage Existing Items</h3>
+            <!-- Manage Inventory -->
+            <h3 class="font-bold text-lg mb-4">Live Inventory Management</h3>
             <div class="space-y-3">
-                <template x-for="(item, index) in items" :key="item.id">
-                    <div class="bg-white border p-4 rounded-2xl flex items-center justify-between gap-4">
-                        <img :src="item.image" class="w-12 h-12 rounded-lg object-cover">
+                <template x-for="item in items" :key="item.id">
+                    <div class="flex items-center gap-4 bg-white border p-4 rounded-2xl shadow-sm">
+                        <img :src="item.image" class="w-12 h-12 rounded-xl object-cover">
                         <div class="flex-1">
                             <h4 class="font-bold text-xs" x-text="item.name"></h4>
-                            <p class="text-[10px] text-gray-500">₹<span x-text="item.price"></span> | <span x-text="item.category"></span></p>
+                            <p class="text-[10px] text-gray-400">₹<span x-text="item.price"></span></p>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <!-- Toggle Stock -->
+                        <div class="flex gap-2">
                             <button @click="toggleStock(item.id)" 
                                     :class="item.isOutOfStock ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'"
-                                    class="px-3 py-1 rounded-full text-[10px] font-bold">
-                                <span x-text="item.isOutOfStock ? 'Out of Stock' : 'In Stock'"></span>
+                                    class="text-[10px] px-3 py-1 rounded-full font-bold">
+                                <span x-text="item.isOutOfStock ? 'Out' : 'In Stock'"></span>
                             </button>
-                            <!-- Delete -->
-                            <button @click="deleteItem(item.id)" class="text-gray-300 hover:text-red-500">🗑️</button>
+                            <button @click="deleteItem(item.id)" class="text-gray-300">🗑️</button>
                         </div>
                     </div>
                 </template>
@@ -161,38 +237,61 @@
         </div>
     </div>
 
-    <!-- WHATSAPP FLOATING -->
-    <a href="https://wa.me/918218250432" class="fixed bottom-6 right-6 bg-green-500 text-white px-6 py-3 rounded-full font-bold shadow-2xl z-40 animate-bounce">WhatsApp Order</a>
+    <!-- FOOTER / CONTACT -->
+    <footer class="bg-[#3E2723] text-white py-20 px-6">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-12">
+            <div>
+                <h3 class="serif text-3xl mb-6">MomsBakery</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Crafting the finest cakes and gifts in Najibabad. Our mission is to make every celebration special with a mother's touch of love and quality.</p>
+            </div>
+            <div>
+                <h4 class="font-bold uppercase tracking-widest text-xs mb-6">Store Location</h4>
+                <p class="text-gray-400 text-sm italic">
+                    Mota Aam, near Pooja Hospital,<br>
+                    Najibabad, Uttar Pradesh.<br><br>
+                    <span class="text-white">Phone:</span> +91 8218250432
+                </p>
+            </div>
+            <div>
+                <h4 class="font-bold uppercase tracking-widest text-xs mb-6">Quick Links</h4>
+                <div class="grid grid-cols-1 gap-3 text-sm text-gray-400">
+                    <a href="#shop">Cakes & Gifts</a>
+                    <a href="#faq">Delivery Policy</a>
+                    <a href="https://wa.me/918218250432">Contact Us</a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-20 pt-10 border-t border-white/10 text-[10px] uppercase tracking-[0.5em] text-gray-500">
+            © 2026 MomsBakery Najibabad
+        </div>
+    </footer>
 
     <script>
         function bakeryApp() {
             return {
                 isAdmin: false,
                 showAdminLogin: false,
+                showCart: false,
                 adminPassword: '',
                 activeTab: 'Cakes',
                 cart: [],
                 categories: ['Cakes', 'Drinks', 'Bouquets', 'Watches', 'Perfumes', 'Imported'],
                 
-                newItem: { name: '', price: '', category: 'Cakes', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80', isNew: false, isOutOfStock: false },
+                newItem: { name: '', price: '', category: 'Cakes', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80', isOutOfStock: false },
 
                 items: [
-                    { id: 1, name: 'Belgian Truffle', price: 550, category: 'Cakes', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80', isNew: true, isOutOfStock: false },
-                    { id: 2, name: 'Luxury Rose Bouquet', price: 1200, category: 'Bouquets', image: 'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?q=80', isNew: true, isOutOfStock: false },
-                    { id: 3, name: 'Cold Coffee Luxe', price: 150, category: 'Drinks', image: 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?q=80', isNew: false, isOutOfStock: true },
+                    { id: 1, name: 'Belgian Truffle Cake', price: 550, category: 'Cakes', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80', isOutOfStock: false },
+                    { id: 2, name: 'Red Velvet Lux', price: 750, category: 'Cakes', image: 'https://images.unsplash.com/photo-1616541823729-00fe0aacd32c?q=80', isOutOfStock: false },
+                    { id: 3, name: 'Luxury Rose Bouquet', price: 999, category: 'Bouquets', image: 'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?q=80', isOutOfStock: false }
                 ],
 
                 init() {
-                    const saved = localStorage.getItem('moms_bakery_final');
+                    const saved = localStorage.getItem('moms_bakery_pro_v1');
                     if(saved) this.items = JSON.parse(saved);
                 },
 
                 get filteredItems() {
                     return this.items.filter(item => item.category === this.activeTab);
-                },
-
-                getNewLaunches() {
-                    return this.items.filter(item => item.isNew);
                 },
 
                 loginAdmin() {
@@ -201,7 +300,7 @@
                         this.showAdminLogin = false;
                         this.adminPassword = '';
                     } else {
-                        alert('Wrong Admin Password!');
+                        alert('Unauthorized Access!');
                     }
                 },
 
@@ -213,15 +312,15 @@
                 },
 
                 addItem() {
-                    if(!this.newItem.name || !this.newItem.price) return alert('Enter name and price');
+                    if(!this.newItem.name || !this.newItem.price) return alert('Enter details');
                     this.items.push({ ...this.newItem, id: Date.now() });
                     this.save();
-                    this.newItem = { name: '', price: '', category: 'Cakes', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80', isNew: false, isOutOfStock: false };
-                    alert('Item Added to Shop!');
+                    this.newItem = { name: '', price: '', category: 'Cakes', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80', isOutOfStock: false };
+                    alert('Store Updated!');
                 },
 
                 deleteItem(id) {
-                    if(confirm('Delete this item permanently?')) {
+                    if(confirm('Delete forever?')) {
                         this.items = this.items.filter(i => i.id !== id);
                         this.save();
                     }
@@ -229,19 +328,46 @@
 
                 toggleStock(id) {
                     const item = this.items.find(i => i.id === id);
-                    if(item) {
-                        item.isOutOfStock = !item.isOutOfStock;
-                        this.save();
-                    }
+                    if(item) { item.isOutOfStock = !item.isOutOfStock; this.save(); }
                 },
 
                 save() {
-                    localStorage.setItem('moms_bakery_final', JSON.stringify(this.items));
+                    localStorage.setItem('moms_bakery_pro_v1', JSON.stringify(this.items));
                 },
 
+                // Cart Logic
                 addToCart(item) {
-                    this.cart.push(item);
-                    alert('Added to your bag!');
+                    let existing = this.cart.find(i => i.id === item.id);
+                    if(existing) {
+                        existing.qty++;
+                    } else {
+                        this.cart.push({...item, qty: 1});
+                    }
+                    this.showCart = true;
+                },
+
+                updateQty(index, amount) {
+                    this.cart[index].qty += amount;
+                    if(this.cart[index].qty < 1) this.cart.splice(index, 1);
+                },
+
+                getCartTotal() {
+                    return this.cart.reduce((total, item) => total + (item.price * item.qty), 0);
+                },
+
+                cartCount() {
+                    return this.cart.reduce((total, item) => total + item.qty, 0);
+                },
+
+                checkoutWhatsApp() {
+                    let msg = `*New Order from MomsBakery Website*\n\n`;
+                    this.cart.forEach(item => {
+                        msg += `• ${item.name} (x${item.qty}) - ₹${item.price * item.qty}\n`;
+                    });
+                    msg += `\n*Total Amount: ₹${this.getCartTotal()}*\n\nAddress: Mota Aam, near Pooja Hospital, Najibabad.`;
+                    
+                    const url = `https://wa.me/918218250432?text=${encodeURIComponent(msg)}`;
+                    window.open(url, '_blank');
                 }
             }
         }
