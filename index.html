@@ -68,13 +68,8 @@
         .reveal.active { opacity: 1; transform: translateY(0); }
         
         /* 3D Donut Canvas Container */
-        #donut3dContainer {
-            touch-action: none;
-            cursor: grab;
-        }
-        #donut3dContainer:active {
-            cursor: grabbing;
-        }
+        #donut3dContainer { touch-action: none; cursor: grab; }
+        #donut3dContainer:active { cursor: grabbing; }
 
         ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: #FAF6F0; } ::-webkit-scrollbar-thumb { background: #D97706; border-radius: 4px; }
         @media (max-width: 1024px) { #floating3dStage { top: auto; bottom: 20px; right: 20px; scale: 0.75; } }
@@ -90,7 +85,6 @@
              alt="Luxury French Bakery Croissant Background" 
              class="w-full h-full object-cover object-center transform scale-105 filter brightness-95 contrast-105 transition-all duration-1000" 
              loading="lazy" />
-        <!-- Semi-Transparent Cream Overlay (50%) for perfect readability -->
         <div class="absolute inset-0 bg-[#FAF6F0]/50 backdrop-blur-[2px]"></div>
     </div>
 
@@ -263,7 +257,6 @@
                             👆 Click to Spin | Drag to Rotate
                         </span>
 
-                        <!-- Three.js Canvas Container -->
                         <div id="donut3dContainer" class="w-full h-full rounded-2xl relative overflow-hidden"></div>
                     </div>
                 </div>
@@ -482,24 +475,26 @@
         </div>
     </div>
 
-    <!-- PRODUCT DETAIL & WEIGHT SELECTION MODAL -->
+    <!-- PRODUCT DETAIL MODAL (DYNAMIC: WEIGHT FOR CAKES / QUANTITY FOR OTHER SECTIONS) -->
     <div id="productDetailModalBackdrop" onclick="closeProductDetailModal()" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
     <div id="productDetailModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] max-w-2xl bg-cream-light/95 backdrop-blur-xl border-2 border-amber-300/70 rounded-3xl shadow-2xl z-50 opacity-0 pointer-events-none transition-all duration-300 scale-95 overflow-hidden text-bakery-brown">
         <button onclick="closeProductDetailModal()" class="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/10 hover:bg-black/20 text-bakery-brown flex items-center justify-center"><i class="fa-solid fa-xmark text-lg"></i></button>
         <div class="grid grid-cols-1 md:grid-cols-12 gap-6 p-5 sm:p-7 items-center max-h-[85vh] overflow-y-auto">
             <div class="md:col-span-5 relative group">
                 <div class="h-56 sm:h-72 rounded-2xl overflow-hidden shadow-lg border border-amber-900/10">
-                    <img id="modalProductImg" src="" alt="Cake Image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <img id="modalProductImg" src="" alt="Product Image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 </div>
-                <span id="modalProductBadge" class="absolute top-3 left-3 bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm">✨ Handcrafted</span>
+                <span id="modalProductBadge" class="absolute top-3 left-3 bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm">✨ Fresh Bake</span>
             </div>
             <div class="md:col-span-7 space-y-4">
                 <div>
                     <span id="modalProductCategory" class="text-xs text-honey-gold font-bold uppercase tracking-widest block">Cakes</span>
-                    <h3 id="modalProductName" class="font-serif text-2xl sm:text-3xl font-bold text-bakery-brown leading-tight">Cake Title</h3>
+                    <h3 id="modalProductName" class="font-serif text-2xl sm:text-3xl font-bold text-bakery-brown leading-tight">Product Title</h3>
                     <p id="modalProductDesc" class="text-xs sm:text-sm text-bakery-brown/75 mt-1 font-light leading-relaxed">Delicious bake.</p>
                 </div>
-                <div class="space-y-2 pt-2 border-t border-amber-900/10">
+
+                <!-- WEIGHT SELECTION SECTION (ONLY SHOWN FOR CAKES) -->
+                <div id="modalWeightSection" class="space-y-2 pt-2 border-t border-amber-900/10">
                     <div class="flex items-center justify-between">
                         <label class="text-xs font-bold text-bakery-brown uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-weight-scale text-honey-gold"></i> Select Cake Weight:</label>
                         <span id="weightRequiredBadge" class="text-[10px] text-berry-red font-bold italic animate-pulse">* Please select a weight</span>
@@ -516,13 +511,34 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- QUANTITY SELECTION SECTION (FOR ALL NON-CAKE ITEMS) -->
+                <div id="modalQuantitySection" class="space-y-3 pt-2 border-t border-amber-900/10 hidden">
+                    <label class="text-xs font-bold text-bakery-brown uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-boxes-stacked text-honey-gold"></i> Select Quantity:
+                    </label>
+                    <div class="flex items-center gap-3">
+                        <div class="flex items-center bg-white border border-amber-300 rounded-xl p-1 shadow-sm">
+                            <button type="button" onclick="changeModalQty(-1)" class="w-8 h-8 rounded-lg bg-amber-100 hover:bg-amber-200 text-bakery-brown font-bold text-sm flex items-center justify-center transition-colors">-</button>
+                            <span id="modalQtyDisplay" class="px-4 font-extrabold text-sm text-bakery-brown min-w-[3rem] text-center">1</span>
+                            <button type="button" onclick="changeModalQty(1)" class="w-8 h-8 rounded-lg bg-amber-100 hover:bg-amber-200 text-bakery-brown font-bold text-sm flex items-center justify-center transition-colors">+</button>
+                        </div>
+                        <div class="flex items-center gap-1.5 overflow-x-auto py-1">
+                            <button type="button" onclick="setModalQty(1)" class="px-3 py-1.5 rounded-lg border border-amber-300 text-xs font-bold bg-amber-50 text-bakery-brown hover:bg-amber-200 transition-colors">1</button>
+                            <button type="button" onclick="setModalQty(2)" class="px-3 py-1.5 rounded-lg border border-amber-300 text-xs font-bold bg-amber-50 text-bakery-brown hover:bg-amber-200 transition-colors">2</button>
+                            <button type="button" onclick="setModalQty(5)" class="px-3 py-1.5 rounded-lg border border-amber-300 text-xs font-bold bg-amber-50 text-bakery-brown hover:bg-amber-200 transition-colors">5</button>
+                            <button type="button" onclick="setModalQty(10)" class="px-3 py-1.5 rounded-lg border border-amber-300 text-xs font-bold bg-amber-50 text-bakery-brown hover:bg-amber-200 transition-colors">10</button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="pt-3 border-t border-amber-900/10 flex items-center justify-between gap-4">
                     <div>
                         <span class="text-[10px] text-bakery-brown/60 font-bold uppercase block">Total Price</span>
                         <p id="modalDisplayPrice" class="font-serif text-2xl sm:text-3xl font-bold text-honey-gold transition-all">₹0</p>
                     </div>
                     <button id="modalAddToCartBtn" disabled onclick="addModalItemToCart()" class="flex-1 bg-gray-300 text-gray-500 font-bold py-3 px-5 rounded-2xl text-xs sm:text-sm shadow transition-all duration-300 flex items-center justify-center gap-2 cursor-not-allowed opacity-60">
-                        <i class="fa-solid fa-basket-shopping"></i><span id="modalBtnText">Select Weight First</span>
+                        <i class="fa-solid fa-basket-shopping"></i><span id="modalBtnText">Select Option</span>
                     </button>
                 </div>
             </div>
@@ -570,7 +586,7 @@
                                     <option value="gifts">Special Gift Hampers</option>
                                 </select>
                             </div>
-                            <div><label class="block font-medium text-bakery-brown mb-1">Category / Tag *</label><input type="text" id="prodCategory" required placeholder="e.g. Energy Drink, Cakes" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                            <div><label class="block font-medium text-bakery-brown mb-1">Category / Tag *</label><input type="text" id="prodCategory" required placeholder="e.g. Cakes, Breads, Cookies" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
                             <div><label class="block font-medium text-bakery-brown mb-1">Price (₹) *</label><input type="number" id="prodPrice" required placeholder="e.g. 699" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
                             <div class="md:col-span-2"><label class="block font-medium text-bakery-brown mb-1">Description *</label><input type="text" id="prodDesc" required placeholder="Brief description" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
                             <div><label class="block font-medium text-bakery-brown mb-1">📷 Upload Photo From Gallery</label><input type="file" id="prodImageFile" accept="image/*" onchange="handleImageFileUpload(event)" class="w-full text-xs text-bakery-brown file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-honey-gold file:text-white cursor-pointer bg-white border border-amber-300 rounded-lg"></div>
@@ -658,6 +674,7 @@
         let currentModalProduct = null;
         let selectedModalWeight = null;
         let selectedModalPrice = 0;
+        let selectedModalQty = 1;
 
         document.addEventListener('DOMContentLoaded', () => {
             applySiteSettings();
@@ -697,24 +714,19 @@
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             container.appendChild(renderer.domElement);
 
-            // Donut Root Group
             const donutGroup = new THREE.Group();
             scene.add(donutGroup);
 
-            // 1. Doughnut Base
             const doughnutGeo = new THREE.TorusGeometry(1.5, 0.72, 32, 64);
             const doughnutMat = new THREE.MeshStandardMaterial({ color: 0xD89254, roughness: 0.65, metalness: 0.05 });
             const doughnut = new THREE.Mesh(doughnutGeo, doughnutMat);
             doughnut.castShadow = true;
             donutGroup.add(doughnut);
 
-            // 2. Glossy Chocolate Icing Layer
             const icingGeo = new THREE.TorusGeometry(1.51, 0.72, 32, 64);
             const pos = icingGeo.attributes.position;
             for (let i = 0; i < pos.count; i++) {
-                if (pos.getY(i) < -0.15) {
-                    pos.setY(i, pos.getY(i) * 0.15); // Layer upper half
-                }
+                if (pos.getY(i) < -0.15) { pos.setY(i, pos.getY(i) * 0.15); }
             }
             icingGeo.computeVertexNormals();
 
@@ -726,7 +738,6 @@
             icing.castShadow = true;
             donutGroup.add(icing);
 
-            // 3. Colorful 3D Sprinkles
             const sprinkleColors = [0xff2255, 0x00d2ff, 0xffcc00, 0x00ff88, 0xffffff, 0xff77bb];
             const sprinkleGeo = new THREE.CylinderGeometry(0.038, 0.038, 0.18, 8);
             for (let i = 0; i < 85; i++) {
@@ -745,7 +756,6 @@
                 donutGroup.add(sprinkle);
             }
 
-            // 4. Floating Chocolate Particles & Crumbs
             const crumbsGroup = new THREE.Group();
             const crumbGeo = new THREE.DodecahedronGeometry(0.06, 0);
             const crumbMat = new THREE.MeshStandardMaterial({ color: 0x3d1c13, roughness: 0.4 });
@@ -757,7 +767,6 @@
             }
             scene.add(crumbsGroup);
 
-            // 5. Soft Ground Shadow Plane
             const shadowGeo = new THREE.PlaneGeometry(6, 6);
             const shadowMat = new THREE.ShadowMaterial({ opacity: 0.25 });
             const shadowPlane = new THREE.Mesh(shadowGeo, shadowMat);
@@ -766,40 +775,28 @@
             shadowPlane.receiveShadow = true;
             scene.add(shadowPlane);
 
-            // 6. HDR Ambient & Directional Lighting
             const ambientLight = new THREE.AmbientLight(0xfff8ee, 0.85);
             scene.add(ambientLight);
 
             const keyLight = new THREE.DirectionalLight(0xfff5ea, 1.8);
             keyLight.position.set(5, 7, 5);
             keyLight.castShadow = true;
-            keyLight.shadow.mapSize.width = 1024;
-            keyLight.shadow.mapSize.height = 1024;
             scene.add(keyLight);
 
             const fillLight = new THREE.PointLight(0xffd2a8, 1.2, 10);
             fillLight.position.set(-4, 3, 2);
             scene.add(fillLight);
 
-            const rimLight = new THREE.DirectionalLight(0xffffff, 0.9);
-            rimLight.position.set(0, -3, -4);
-            scene.add(rimLight);
-
-            // ENTRANCE ANIMATION (GSAP)
             donutGroup.scale.set(0, 0, 0);
             donutGroup.rotation.set(0.6, -0.8, 0);
             if (typeof gsap !== 'undefined') {
                 gsap.to(donutGroup.scale, { x: 1, y: 1, z: 1, duration: 1.6, ease: "elastic.out(1, 0.5)" });
                 gsap.to(donutGroup.rotation, { x: 0.3, y: 0.5, duration: 1.6, ease: "power2.out" });
-            } else {
-                donutGroup.scale.set(1, 1, 1);
-            }
+            } else { donutGroup.scale.set(1, 1, 1); }
 
-            // INTERACTION & PHYSICS (CLICK SPIN + DRAG ROTATION WITH MOMENTUM)
             let isDragging = false;
             let previousMousePosition = { x: 0, y: 0 };
             let rotationVelocity = { x: 0, y: 0 };
-            let mouseLead = { x: 0, y: 0 };
 
             const onPointerDown = (e) => {
                 isDragging = true;
@@ -809,77 +806,51 @@
             };
 
             const onPointerMove = (e) => {
+                if (!isDragging) return;
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const deltaX = clientX - previousMousePosition.x;
+                const deltaY = clientY - previousMousePosition.y;
 
-                if (isDragging) {
-                    const deltaX = clientX - previousMousePosition.x;
-                    const deltaY = clientY - previousMousePosition.y;
+                rotationVelocity.y = deltaX * 0.008;
+                rotationVelocity.x = deltaY * 0.008;
+                donutGroup.rotation.y += rotationVelocity.y;
+                donutGroup.rotation.x += rotationVelocity.x;
 
-                    rotationVelocity.y = deltaX * 0.008;
-                    rotationVelocity.x = deltaY * 0.008;
-
-                    donutGroup.rotation.y += rotationVelocity.y;
-                    donutGroup.rotation.x += rotationVelocity.x;
-
-                    previousMousePosition = { x: clientX, y: clientY };
-                } else {
-                    const rect = container.getBoundingClientRect();
-                    mouseLead.x = ((clientX - rect.left) / rect.width - 0.5) * 0.4;
-                    mouseLead.y = ((clientY - rect.top) / rect.height - 0.5) * 0.4;
-                }
+                previousMousePosition = { x: clientX, y: clientY };
             };
 
             const onPointerUp = () => { isDragging = false; };
 
-            // Click 360 Spin Event
-            container.addEventListener('click', (e) => {
-                if (Math.abs(rotationVelocity.x) > 0.02 || Math.abs(rotationVelocity.y) > 0.02) return;
+            container.addEventListener('click', () => {
                 if (typeof gsap !== 'undefined') {
-                    gsap.to(donutGroup.rotation, {
-                        y: donutGroup.rotation.y + Math.PI * 2,
-                        duration: 1.2, ease: "back.out(1.5)"
-                    });
+                    gsap.to(donutGroup.rotation, { y: donutGroup.rotation.y + Math.PI * 2, duration: 1.2, ease: "back.out(1.5)" });
                 }
             });
 
             container.addEventListener('mousedown', onPointerDown);
             window.addEventListener('mousemove', onPointerMove);
             window.addEventListener('mouseup', onPointerUp);
-
             container.addEventListener('touchstart', onPointerDown, { passive: true });
             window.addEventListener('touchmove', onPointerMove, { passive: true });
             window.addEventListener('touchend', onPointerUp);
 
-            // ANIMATION LOOP
             let clock = new THREE.Clock();
             function animate() {
                 requestAnimationFrame(animate);
                 const elapsedTime = clock.getElapsedTime();
-
-                // Continuous Idle Floating & Gentle Spin
                 if (!isDragging) {
                     donutGroup.position.y = Math.sin(elapsedTime * 1.8) * 0.18;
                     donutGroup.rotation.y += 0.005 + rotationVelocity.y;
                     donutGroup.rotation.x += rotationVelocity.x;
-
-                    // Momentum friction decay
                     rotationVelocity.x *= 0.93;
                     rotationVelocity.y *= 0.93;
-
-                    // Mouse lead smooth damping
-                    donutGroup.rotation.z = THREE.MathUtils.lerp(donutGroup.rotation.z, mouseLead.x * 0.3, 0.05);
                 }
-
-                // Slow rotation for crumbs
                 crumbsGroup.rotation.y = elapsedTime * 0.05;
-
                 renderer.render(scene, camera);
             }
-
             animate();
 
-            // Resize Handler
             window.addEventListener('resize', () => {
                 const w = container.clientWidth || 380;
                 const h = container.clientHeight || 380;
@@ -920,7 +891,6 @@
 
         (function initScrollParallaxBackground() {
             if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-            const bgGradientOverlay = document.getElementById('bgGradientOverlay');
             const motifFlour = document.getElementById('motifFlourParticles');
             const motifWhisk = document.getElementById('motifWhisk');
             const motifRollingPin = document.getElementById('motifRollingPin');
@@ -943,8 +913,7 @@
 
                 if (drinksSec) {
                     const drinksRect = drinksSec.getBoundingClientRect();
-                    const inDrinksZone = drinksRect.top < window.innerHeight && drinksRect.bottom > 0;
-                    if (inDrinksZone) {
+                    if (drinksRect.top < window.innerHeight && drinksRect.bottom > 0) {
                         if (motifEnergyGlow) motifEnergyGlow.style.opacity = '0.8';
                         if (motifDrinksFizz) {
                             motifDrinksFizz.style.opacity = '1';
@@ -984,6 +953,15 @@
             });
         }
 
+        // ========================================================
+        // MODAL HANDLER: WEIGHT FOR CAKES vs QUANTITY FOR OTHERS
+        // ========================================================
+        function isCakeCategory(category) {
+            if (!category) return false;
+            const cat = category.trim().toLowerCase();
+            return cat === 'cakes' || cat === 'cake';
+        }
+
         function openProductDetailModal(productId) {
             const product = products.find(p => p.id === productId);
             if (!product) return;
@@ -991,25 +969,50 @@
             currentModalProduct = product;
             selectedModalWeight = null;
             selectedModalPrice = 0;
+            selectedModalQty = 1;
 
             document.getElementById('modalProductImg').src = product.img || 'https://images.unsplash.com/photo-1586788680434-30d324b2d46f?auto=format&fit=crop&w=600&q=80';
             document.getElementById('modalProductName').innerText = product.name;
             document.getElementById('modalProductCategory').innerText = product.category || 'Bakery';
             document.getElementById('modalProductDesc').innerText = product.desc;
-            document.getElementById('modalDisplayPrice').innerText = '₹0';
 
-            const base = product.price || 500;
-            const price250 = Math.round(base * 0.58);
-            const price500 = base;
-            const price1kg = Math.round(base * 1.8);
+            const isCake = isCakeCategory(product.category);
+            const weightSec = document.getElementById('modalWeightSection');
+            const qtySec = document.getElementById('modalQuantitySection');
 
-            product.weightPrices = { '250 g': price250, '500 g': price500, '1 kg': price1kg };
+            if (isCake) {
+                // SHOW WEIGHT OPTIONS FOR CAKE SECTION
+                weightSec.classList.remove('hidden');
+                qtySec.classList.add('hidden');
 
-            document.getElementById('price-250g').innerText = `₹${price250}`;
-            document.getElementById('price-500g').innerText = `₹${price500}`;
-            document.getElementById('price-1kg').innerText = `₹${price1kg}`;
+                const base = product.price || 500;
+                const price250 = Math.round(base * 0.58);
+                const price500 = base;
+                const price1kg = Math.round(base * 1.8);
 
-            resetWeightPills();
+                product.weightPrices = { '250 g': price250, '500 g': price500, '1 kg': price1kg };
+
+                document.getElementById('price-250g').innerText = `₹${price250}`;
+                document.getElementById('price-500g').innerText = `₹${price500}`;
+                document.getElementById('price-1kg').innerText = `₹${price1kg}`;
+                document.getElementById('modalDisplayPrice').innerText = '₹0';
+
+                resetWeightPills();
+            } else {
+                // SHOW QUANTITY OPTIONS FOR ALL OTHER SECTIONS
+                weightSec.classList.add('hidden');
+                qtySec.classList.remove('hidden');
+
+                document.getElementById('modalQtyDisplay').innerText = '1';
+                selectedModalPrice = product.price;
+                document.getElementById('modalDisplayPrice').innerText = `₹${product.price}`;
+
+                const btn = document.getElementById('modalAddToCartBtn');
+                btn.disabled = false;
+                btn.classList.add('btn-enabled');
+                btn.classList.remove('cursor-not-allowed', 'opacity-60', 'bg-gray-300', 'text-gray-500');
+                document.getElementById('modalBtnText').innerText = `Add Item to Cart`;
+            }
 
             const backdrop = document.getElementById('productDetailModalBackdrop');
             const modal = document.getElementById('productDetailModal');
@@ -1059,21 +1062,52 @@
             if (badge) badge.classList.remove('hidden');
         }
 
+        function changeModalQty(delta) {
+            setModalQty(selectedModalQty + delta);
+        }
+
+        function setModalQty(qty) {
+            if (qty < 1) qty = 1;
+            selectedModalQty = qty;
+            document.getElementById('modalQtyDisplay').innerText = selectedModalQty;
+            const totalPrice = currentModalProduct.price * selectedModalQty;
+            document.getElementById('modalDisplayPrice').innerText = `₹${totalPrice}`;
+            document.getElementById('modalBtnText').innerText = `Add ${selectedModalQty} Item(s) to Cart`;
+        }
+
         function addModalItemToCart() {
-            if (!currentModalProduct || !selectedModalWeight) return showToast('Please select a weight first! ⚠️');
+            if (!currentModalProduct) return;
 
-            const cartItemId = `${currentModalProduct.id}_${selectedModalWeight.replace(/\s+/g, '')}`;
-            const existing = cart.find(c => c.cartItemId === cartItemId);
+            const isCake = isCakeCategory(currentModalProduct.category);
 
-            if (existing) existing.qty++;
-            else {
-                cart.push({
-                    cartItemId: cartItemId, id: currentModalProduct.id, name: currentModalProduct.name,
-                    weight: selectedModalWeight, price: selectedModalPrice, img: currentModalProduct.img, qty: 1
-                });
+            if (isCake) {
+                if (!selectedModalWeight) return showToast('Please select a weight first! ⚠️');
+                const cartItemId = `${currentModalProduct.id}_${selectedModalWeight.replace(/\s+/g, '')}`;
+                const existing = cart.find(c => c.cartItemId === cartItemId);
+
+                if (existing) existing.qty++;
+                else {
+                    cart.push({
+                        cartItemId: cartItemId, id: currentModalProduct.id, name: currentModalProduct.name,
+                        weight: selectedModalWeight, price: selectedModalPrice, img: currentModalProduct.img, qty: 1
+                    });
+                }
+                showToast(`Added ${currentModalProduct.name} (${selectedModalWeight}) to cart! 🎂`);
+            } else {
+                const cartItemId = currentModalProduct.id;
+                const existing = cart.find(c => c.cartItemId === cartItemId || c.id === currentModalProduct.id);
+
+                if (existing) existing.qty += selectedModalQty;
+                else {
+                    cart.push({
+                        cartItemId: cartItemId, id: currentModalProduct.id, name: currentModalProduct.name,
+                        price: currentModalProduct.price, img: currentModalProduct.img, qty: selectedModalQty
+                    });
+                }
+                showToast(`Added ${selectedModalQty} × ${currentModalProduct.name} to cart! 🛒`);
             }
-            saveState(); updateCartUI(); closeProductDetailModal();
-            showToast(`Added ${currentModalProduct.name} (${selectedModalWeight}) to cart! 🎂`);
+
+            saveState(); updateCartUI(); closeProductDetailModal(); renderAllSections();
         }
 
         function applySiteSettings() {
@@ -1151,6 +1185,10 @@
         }
 
         function createCompactProductCardHTML(item, specialBadge = '') {
+            const isCake = isCakeCategory(item.category);
+            const cartItem = cart.find(c => c.id === item.id || c.cartItemId === item.id);
+            const qty = cartItem ? cartItem.qty : 0;
+
             return `
                 <div class="tilt-card bg-cream-light/90 backdrop-blur-md rounded-2xl overflow-hidden border border-amber-900/10 shadow-sm hover:shadow-2xl transition-all flex flex-col justify-between group relative">
                     ${item.isSoldOut ? `<div class="absolute top-2 left-2 z-20 bg-berry-red text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow">SOLD OUT</div>` : ''}
@@ -1166,11 +1204,25 @@
                         </div>
                     </div>
                     <div class="p-3 sm:p-4 pt-0 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-amber-900/5 mt-1">
-                        <p class="font-serif text-xs sm:text-base font-bold text-bakery-brown">From ₹${Math.round((item.price || 500) * 0.58)}</p>
+                        <p class="font-serif text-xs sm:text-base font-bold text-bakery-brown">${isCake ? `From ₹${Math.round((item.price || 500) * 0.58)}` : `₹${item.price}`}</p>
                         ${item.isSoldOut ? `<button disabled class="bg-gray-200 text-gray-500 font-semibold px-2 py-1 rounded-lg text-[10px]">Unavailable</button>` : `
-                            <button onclick="openProductDetailModal('${item.id}')" class="bg-honey-gold hover:bg-amber-600 text-white font-semibold px-3 py-1.5 rounded-lg text-xs shadow transition-all flex items-center justify-center gap-1">
-                                <i class="fa-solid fa-weight-scale text-[10px]"></i> Select Weight
-                            </button>
+                            ${isCake ? `
+                                <button onclick="openProductDetailModal('${item.id}')" class="bg-honey-gold hover:bg-amber-600 text-white font-semibold px-3 py-1.5 rounded-lg text-xs shadow transition-all flex items-center justify-center gap-1">
+                                    <i class="fa-solid fa-weight-scale text-[10px]"></i> Select Weight
+                                </button>
+                            ` : `
+                                ${qty > 0 ? `
+                                    <div class="flex items-center bg-amber-100/90 rounded-lg p-0.5 border border-amber-300">
+                                        <button onclick="updateQty('${item.id}', -1)" class="w-6 h-6 rounded bg-white text-bakery-brown font-bold text-xs shadow-sm">-</button>
+                                        <span class="px-2 font-bold text-xs text-bakery-brown">${qty}</span>
+                                        <button onclick="updateQty('${item.id}', 1)" class="w-6 h-6 rounded bg-white text-bakery-brown font-bold text-xs shadow-sm">+</button>
+                                    </div>
+                                ` : `
+                                    <button onclick="openProductDetailModal('${item.id}')" class="bg-honey-gold hover:bg-amber-600 text-white font-semibold px-3 py-1.5 rounded-lg text-xs shadow transition-all flex items-center justify-center gap-1">
+                                        <i class="fa-solid fa-cart-plus text-[10px]"></i> Add Item
+                                    </button>
+                                `}
+                            `}
                         `}
                     </div>
                 </div>
@@ -1178,7 +1230,7 @@
         }
 
         function createDrinkCardHTML(item) {
-            const cartItem = cart.find(c => c.id === item.id);
+            const cartItem = cart.find(c => c.id === item.id || c.cartItemId === item.id);
             const qty = cartItem ? cartItem.qty : 0;
             return `
                 <div class="tilt-card bg-monster-dark/95 backdrop-blur-md rounded-2xl overflow-hidden border border-emerald-500/40 shadow-xl hover:shadow-monster-green/30 transition-all flex flex-col justify-between group relative">
@@ -1212,6 +1264,9 @@
         }
 
         function createHamperCardHTML(item) {
+            const cartItem = cart.find(c => c.id === item.id || c.cartItemId === item.id);
+            const qty = cartItem ? cartItem.qty : 0;
+
             return `
                 <div class="tilt-card bg-cream-light/95 backdrop-blur-md text-bakery-brown rounded-3xl p-3 sm:p-5 shadow-2xl border-2 border-amber-500/40 hover:border-amber-400 transition-all flex flex-col justify-between group relative overflow-hidden">
                     <div onclick="openProductDetailModal('${item.id}')" class="cursor-pointer">
@@ -1226,9 +1281,17 @@
                     </div>
                     <div class="mt-4 pt-2 border-t border-amber-900/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <p class="font-serif text-base sm:text-xl font-bold text-honey-gold">₹${item.price}</p>
-                        <button onclick="openProductDetailModal('${item.id}')" class="bg-honey-gold hover:bg-amber-600 text-white font-bold px-4 py-1.5 rounded-xl text-xs shadow transition-all flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-gift text-xs"></i> Order Hamper
-                        </button>
+                        ${qty > 0 ? `
+                            <div class="flex items-center bg-amber-100 rounded-lg p-0.5 border border-amber-300">
+                                <button onclick="updateQty('${item.id}', -1)" class="w-6 h-6 rounded bg-white text-bakery-brown font-bold text-xs shadow-sm">-</button>
+                                <span class="px-2 font-bold text-xs text-bakery-brown">${qty}</span>
+                                <button onclick="updateQty('${item.id}', 1)" class="w-6 h-6 rounded bg-white text-bakery-brown font-bold text-xs shadow-sm">+</button>
+                            </div>
+                        ` : `
+                            <button onclick="openProductDetailModal('${item.id}')" class="bg-honey-gold hover:bg-amber-600 text-white font-bold px-4 py-1.5 rounded-xl text-xs shadow transition-all flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-gift text-xs"></i> Order Hamper
+                            </button>
+                        `}
                     </div>
                 </div>
             `;
@@ -1403,7 +1466,7 @@
                 <div class="flex items-center justify-between bg-white p-2.5 rounded-xl border border-amber-900/10 text-xs">
                     <div class="flex items-center gap-3">
                         <img src="${item.img || 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80'}" class="w-10 h-10 rounded-lg object-cover">
-                        <div><span class="font-bold text-bakery-brown">${item.name}</span><p class="text-bakery-brown/60">₹${item.price} • Section: ${item.section}</p></div>
+                        <div><span class="font-bold text-bakery-brown">${item.name}</span><p class="text-bakery-brown/60">₹${item.price} • Category: ${item.category}</p></div>
                     </div>
                     <div class="flex items-center gap-1.5">
                         <button onclick="toggleSoldOut('${item.id}')" class="px-2 py-0.5 rounded text-[10px] font-bold ${item.isSoldOut ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-800'}">${item.isSoldOut ? 'Sold Out' : 'Available'}</button>
