@@ -1,395 +1,1612 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bakery - Tasty & Spicy Easter Cake Bread</title>
+    <title>Mom's Bakery & Refreshments | Handcrafted 3D Bakery Experience</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
+    <!-- Google Fonts: Playfair Display & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Three.js & GSAP CDNs for 3D Chocolate Donut & Cinematic Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            gold: '#f3af10',
-                            goldHover: '#d99a0a',
-                            bgLight: '#fdf8f0',
-                            cardBg: '#faf3e8',
-                            darkText: '#1f1f1f',
-                            muted: '#666666'
-                        }
+                        cream: '#FAF6F0',
+                        'cream-light': '#FFFDF9',
+                        'bakery-brown': '#2C1A14',
+                        'bakery-dark': '#1C100B',
+                        'honey-gold': '#D97706',
+                        'honey-light': '#FEF3C7',
+                        'berry-red': '#991B1B',
+                        'berry-light': '#FEE2E2',
+                        'monster-green': '#00FF66',
+                        'monster-dark': '#0A120A',
                     },
                     fontFamily: {
-                        serif: ['Playfair Display', 'serif'],
-                        sans: ['Poppins', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['Outfit', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
-</head>
-<body class="bg-brand-bgLight text-brand-darkText font-sans antialiased">
 
-    <!-- ================= HEADER / NAV ================= -->
-    <header class="bg-brand-bgLight border-b border-amber-100/60 sticky top-0 z-50">
+    <style>
+        body { background-color: #FAF6F0; color: #2C1A14; font-family: 'Outfit', sans-serif; overflow-x: hidden; }
+        .tilt-card { transform-style: preserve-3d; transition: transform 0.25s ease-out, box-shadow 0.25s ease-out; perspective: 1200px; }
+        .tilt-card:hover { box-shadow: 0 25px 35px -12px rgba(44, 26, 20, 0.25); }
+        #floating3dStage { position: fixed; top: 25%; right: 3%; z-index: 30; pointer-events: none; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease; }
+        @keyframes bobbing3d { 0%, 100% { transform: translateY(0px) rotateY(0deg); } 50% { transform: translateY(-22px) rotateY(18deg); } }
+        .animate-bobbing { animation: bobbing3d 6s ease-in-out infinite; }
+        @keyframes floatParticle { 0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.6; } 50% { transform: translateY(-35px) rotate(180deg); opacity: 1; } }
+        @keyframes floatBubble { 0% { transform: translateY(120px) scale(0.4); opacity: 0; } 50% { opacity: 0.8; } 100% { transform: translateY(-140px) scale(1.3); opacity: 0; } }
+        @keyframes slowRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes monsterPulse { 0%, 100% { filter: drop-shadow(0 0 12px #00FF66); transform: scale(1); } 50% { filter: drop-shadow(0 0 30px #00FF66); transform: scale(1.05); } }
+        .animate-slow-rotate { animation: slowRotate 28s linear infinite; }
+        .animate-particle { animation: floatParticle 4s ease-in-out infinite; }
+        .monster-glow { animation: monsterPulse 2s infinite ease-in-out; }
+        .fizz-bubble { position: absolute; background: rgba(0, 255, 102, 0.3); border-radius: 50%; border: 1px solid rgba(0, 255, 102, 0.7); animation: floatBubble 4.5s linear infinite; }
+        #scrollBgContainer { will-change: transform; transform: translateZ(0); }
+        .dust-particle, .fizz-particle { position: absolute; will-change: transform, opacity; pointer-events: none; }
+        .weight-pill { transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .weight-pill.active-weight { background-color: #D97706 !important; color: #ffffff !important; border-color: #F59E0B !important; box-shadow: 0 10px 20px -5px rgba(217, 119, 6, 0.5) !important; transform: scale(1.05) translateY(-2px) !important; }
+        .weight-pill.active-weight span { color: #ffffff !important; }
+        .btn-enabled { background-color: #D97706 !important; color: #ffffff !important; cursor: pointer !important; opacity: 1 !important; box-shadow: 0 10px 25px -5px rgba(217, 119, 6, 0.4) !important; }
+        .btn-enabled:hover { background-color: #B45309 !important; transform: translateY(-2px); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        /* 3D Donut Canvas Container */
+        #donut3dContainer { touch-action: none; cursor: grab; }
+        #donut3dContainer:active { cursor: grabbing; }
+
+        ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: #FAF6F0; } ::-webkit-scrollbar-thumb { background: #D97706; border-radius: 4px; }
+        @media (max-width: 1024px) { #floating3dStage { top: auto; bottom: 20px; right: 20px; scale: 0.75; } }
+        @media (prefers-reduced-motion: reduce) { .animate-bobbing, .animate-slow-rotate, .animate-particle, .monster-glow { animation: none !important; } #scrollBgContainer *, #bgGradientOverlay, .dust-particle, .fizz-particle { animation: none !important; transform: none !important; transition: none !important; } .reveal { transition: none !important; opacity: 1 !important; transform: none !important; } .tilt-card { transform: none !important; } }
+    </style>
+</head>
+<body class="antialiased selection:bg-honey-gold selection:text-white relative min-h-screen">
+
+    <!-- GLOBAL FIXED LUXURY FRENCH CROISSANT BACKGROUND LAYER -->
+    <div class="fixed inset-0 z-[-2] overflow-hidden pointer-events-none select-none" aria-hidden="true">
+        <img id="globalCroissantBg" 
+             src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=2000&q=80" 
+             alt="Luxury French Bakery Croissant Background" 
+             class="w-full h-full object-cover object-center transform scale-105 filter brightness-95 contrast-105 transition-all duration-1000" 
+             loading="lazy" />
+        <div class="absolute inset-0 bg-[#FAF6F0]/50 backdrop-blur-[2px]"></div>
+    </div>
+
+    <!-- SCROLL-LINKED PARALLAX BACKGROUND ACCENT LAYER -->
+    <div id="scrollBgContainer" class="fixed inset-0 pointer-events-none z-[-1] overflow-hidden select-none" aria-hidden="true">
+        <div id="bgGradientOverlay" class="absolute inset-0 bg-gradient-to-b from-cream/40 via-amber-50/30 to-cream/40 transition-colors duration-700 opacity-80"></div>
+        <div id="motifFlourParticles" class="absolute inset-0 will-change-transform">
+            <div class="dust-particle particle-1 top-[12%] left-[8%] w-3 h-3 bg-amber-400/30 rounded-full blur-[1px]"></div>
+            <div class="dust-particle particle-2 top-[22%] left-[85%] w-4 h-4 bg-amber-300/35 rounded-full blur-[2px]"></div>
+            <div class="dust-particle particle-3 top-[35%] left-[15%] w-2 h-2 bg-amber-500/30 rounded-full"></div>
+            <div class="dust-particle particle-4 top-[48%] left-[78%] w-5 h-5 bg-orange-300/25 rounded-full blur-[2px]"></div>
+        </div>
+        <div id="motifWhisk" class="absolute top-[28%] left-[5%] text-amber-900/10 text-7xl will-change-transform opacity-60"><i class="fa-solid fa-wheat-awn"></i></div>
+        <div id="motifRollingPin" class="absolute top-[45%] right-[4%] text-amber-900/10 text-8xl will-change-transform opacity-60"><i class="fa-solid fa-cookie-bite"></i></div>
+        <div id="motifEnergyGlow" class="absolute top-[58%] left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-monster-green/15 rounded-full blur-3xl opacity-0 transition-opacity duration-700 will-change-transform"></div>
+        <div id="motifDrinksFizz" class="absolute inset-0 opacity-0 transition-opacity duration-700 will-change-transform">
+            <div class="fizz-particle top-[62%] left-[20%] w-3 h-3 border border-monster-green/40 rounded-full"></div>
+            <div class="fizz-particle top-[66%] left-[80%] w-4 h-4 border border-monster-green/50 rounded-full"></div>
+            <div class="fizz-particle top-[72%] left-[35%] w-2 h-2 bg-monster-green/30 rounded-full"></div>
+        </div>
+        <div id="motifGiftsSparkles" class="absolute top-[78%] right-[10%] text-amber-500/20 text-9xl will-change-transform opacity-0 transition-opacity duration-700">✨</div>
+    </div>
+
+    <!-- FLOATING 3D STAGE (CAKE <-> MONSTER DRINK MORPH) -->
+    <div id="floating3dStage" class="hidden sm:block pointer-events-none">
+        <div class="animate-bobbing relative">
+            <div id="morphCakeVisual" class="w-44 h-44 sm:w-56 sm:h-56 bg-gradient-to-tr from-amber-200/90 via-orange-100/90 to-amber-50/90 rounded-3xl p-4 shadow-2xl border-2 border-amber-400/80 backdrop-blur-md flex flex-col items-center justify-center transition-all duration-700">
+                <span class="bg-white/90 text-amber-900 text-[10px] font-extrabold px-3 py-0.5 rounded-full shadow-md mb-1 transform -rotate-3">✨ Handcrafted Cake</span>
+                <svg viewBox="0 0 200 200" fill="none" class="w-28 h-28 sm:w-36 sm:h-36 drop-shadow-2xl">
+                    <ellipse cx="100" cy="180" rx="65" ry="12" fill="#2C1A14" fill-opacity="0.18" />
+                    <rect x="55" y="115" width="90" height="38" rx="6" fill="#78350F" />
+                    <path d="M55 125 C 70 132, 90 120, 100 128 C 110 120, 130 132, 145 125 V 115 H 55 Z" fill="#FFFDF9" />
+                    <rect x="65" y="80" width="70" height="38" rx="6" fill="#991B1B" />
+                    <path d="M65 90 C 75 96, 90 86, 100 93 C 110 86, 125 96, 135 90 V 80 H 65 Z" fill="#FFFDF9" />
+                    <circle cx="100" cy="70" r="11" fill="#DC2626" />
+                </svg>
+                <p class="font-serif italic text-bakery-brown font-bold text-xs mt-1">Mom's Bakery</p>
+            </div>
+            <div id="morphMonsterVisual" class="hidden w-44 h-52 sm:w-56 sm:h-64 bg-monster-dark/95 rounded-3xl p-4 shadow-2xl border-2 border-monster-green/80 backdrop-blur-md flex flex-col items-center justify-center transition-all duration-700 monster-glow">
+                <span class="bg-monster-green text-black text-[10px] font-black px-3 py-0.5 rounded-full shadow-md mb-2 uppercase tracking-widest">⚡ Monster Energy</span>
+                <div class="w-20 h-32 sm:w-24 sm:h-40 relative">
+                    <svg viewBox="0 0 100 160" class="w-full h-full">
+                        <rect x="15" y="10" width="70" height="140" rx="14" fill="#000000" stroke="#00FF66" stroke-width="4" />
+                        <path d="M28 35 L38 125 M50 25 L50 135 M72 35 L62 125" stroke="#00FF66" stroke-width="8" stroke-linecap="round" />
+                        <rect x="30" y="4" width="40" height="8" rx="3" fill="#A0A0A0" />
+                    </svg>
+                </div>
+                <p class="text-[11px] font-extrabold text-monster-green tracking-wider uppercase mt-2">Chilled & Ready</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ANNOUNCEMENT BAR -->
+    <div class="bg-bakery-brown/95 backdrop-blur-md text-honey-light text-xs sm:text-sm py-2 px-4 text-center font-medium flex items-center justify-center gap-2 z-40 relative shadow-md">
+        <span>✨ Free home delivery on orders above ₹799!</span>
+        <span class="hidden md:inline">| Fresh batches baked daily at 8 AM & Chilled Monster Energy In Stock</span>
+        <a href="#menu" class="underline hover:text-honey-gold transition-colors ml-1 font-bold">Order Now</a>
+    </div>
+
+    <!-- NAVIGATION BAR -->
+    <nav class="sticky top-0 z-40 bg-cream-light/85 backdrop-blur-md border-b border-amber-900/10 transition-all duration-300 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <!-- Logo -->
-            <a href="#" class="flex items-center space-x-2">
-                <div class="w-12 h-12 rounded-full border-2 border-brand-gold bg-black flex flex-col items-center justify-center text-white text-[10px] font-bold text-center leading-tight">
-                    <span class="text-brand-gold text-[8px]">PREMIUM</span>
-                    <span>Bakery</span>
-                    <span class="text-[6px] text-gray-400">SHOP</span>
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-12 h-12 rounded-full bg-honey-gold text-white flex items-center justify-center text-2xl shadow-lg group-hover:scale-105 transition-transform duration-300">
+                    <i class="fa-solid font-serif italic text-xl">M</i>
+                </div>
+                <div>
+                    <span class="font-serif text-2xl font-bold tracking-tight text-bakery-brown block leading-none">Mom's Bakery</span>
+                    <span class="text-xs font-sans tracking-widest uppercase text-honey-gold font-semibold">& Monster Drinks</span>
                 </div>
             </a>
-
-            <!-- Navigation Links -->
-            <nav class="hidden md:flex space-x-8 text-sm font-medium">
-                <a href="#" class="text-brand-gold">Home</a>
-                <a href="#" class="hover:text-brand-gold transition">About Us</a>
-                <a href="#" class="hover:text-brand-gold transition">Shop+</a>
-                <a href="#" class="hover:text-brand-gold transition">Products+</a>
-                <a href="#" class="hover:text-brand-gold transition">Blog</a>
-                <a href="#" class="hover:text-brand-gold transition">Contact Us</a>
-            </nav>
-
-            <!-- Icons -->
-            <div class="flex items-center space-x-5 text-gray-700">
-                <button class="hover:text-brand-gold"><i class="fa-solid fa-magnifying-glass text-lg"></i></button>
-                <button class="hover:text-brand-gold"><i class="fa-regular fa-user text-lg"></i></button>
-                <button class="hover:text-brand-gold relative">
-                    <i class="fa-solid fa-bag-shopping text-lg"></i>
-                    <span class="absolute -top-2 -right-2 bg-brand-gold text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold">0</span>
+            <div class="hidden lg:flex items-center space-x-6 font-medium text-sm text-bakery-brown">
+                <a href="#hero" class="hover:text-honey-gold transition-colors">Our Story</a>
+                <a href="#menu" class="hover:text-honey-gold transition-colors">Menu</a>
+                <a href="#imported" class="hover:text-honey-gold transition-colors">Imported</a>
+                <a href="#drinks" class="hover:text-monster-green transition-colors flex items-center gap-1 font-extrabold text-emerald-900 bg-emerald-100/90 px-3 py-1 rounded-full border border-emerald-400">
+                    <i class="fa-solid fa-bolt text-xs text-emerald-600 animate-pulse"></i> Monster Drinks
+                </a>
+                <a href="#custom" class="hover:text-honey-gold transition-colors">Specialties</a>
+                <a href="#gifts" class="hover:text-honey-gold transition-colors">Gift Hampers</a>
+                <a href="#contact" class="hover:text-honey-gold transition-colors">Visit Us</a>
+                <button onclick="openAdminModal()" class="text-xs uppercase tracking-wider bg-amber-100/90 hover:bg-amber-200 text-bakery-brown px-3 py-1.5 rounded-full border border-amber-300 transition-all font-semibold shadow-sm">
+                    <i class="fa-solid fa-lock mr-1"></i> Admin
+                </button>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="toggleCartDrawer()" class="relative bg-honey-gold hover:bg-amber-600 text-white p-3 rounded-full shadow-lg hover:shadow-amber-600/30 transition-all duration-300 hover:scale-105 flex items-center justify-center">
+                    <i class="fa-solid fa-basket-shopping text-lg"></i>
+                    <span id="cartBadge" class="absolute -top-1 -right-1 bg-berry-red text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white transform scale-0 transition-transform duration-300">0</span>
+                </button>
+                <button onclick="toggleMobileNav()" class="lg:hidden text-bakery-brown text-2xl focus:outline-none p-1">
+                    <i id="mobileMenuIcon" class="fa-solid fa-bars"></i>
                 </button>
             </div>
         </div>
-    </header>
 
-    <!-- ================= HERO SECTION ================= -->
-    <section class="relative bg-brand-bgLight py-16 lg:py-24 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <!-- Text Content -->
-            <div class="space-y-6 z-10">
-                <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 uppercase leading-tight">
-                    Tasty & Spicy<br>
-                    <span class="text-gray-900">Easter Cake Bread</span>
-                </h1>
-                <a href="#" class="inline-block bg-brand-gold text-white font-semibold px-8 py-3 rounded shadow hover:bg-brand-goldHover transition">
-                    Shop Now
+        <div id="mobileNav" class="hidden lg:hidden bg-cream-light/95 backdrop-blur-md border-b border-amber-900/10 px-6 py-4 space-y-3 font-medium text-bakery-brown shadow-lg">
+            <a href="#hero" onclick="toggleMobileNav()" class="block hover:text-honey-gold py-1">Our Story</a>
+            <a href="#menu" onclick="toggleMobileNav()" class="block hover:text-honey-gold py-1">Bakery Menu</a>
+            <a href="#imported" onclick="toggleMobileNav()" class="block hover:text-honey-gold py-1">Imported Items</a>
+            <a href="#drinks" onclick="toggleMobileNav()" class="block font-bold py-1 text-emerald-800 flex items-center gap-2"><i class="fa-solid fa-bolt text-monster-green"></i> Monster Drinks Section</a>
+            <a href="#custom" onclick="toggleMobileNav()" class="block hover:text-honey-gold py-1">Specialties & Savory</a>
+            <a href="#gifts" onclick="toggleMobileNav()" class="block hover:text-honey-gold py-1">Gift Hampers</a>
+            <a href="#contact" onclick="toggleMobileNav()" class="block hover:text-honey-gold py-1">Visit Us</a>
+            <div class="pt-2 border-t border-amber-900/10 flex justify-between items-center">
+                <button onclick="toggleMobileNav(); openAdminModal();" class="text-xs uppercase tracking-wider bg-amber-100 text-bakery-brown px-3 py-1.5 rounded-full font-semibold">
+                    <i class="fa-solid fa-lock mr-1"></i> Admin Panel
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION WITH INTERACTIVE ULTRA-REALISTIC 3D CHOCOLATE DONUT -->
+    <section id="hero" class="relative pt-8 pb-16 md:pt-14 md:pb-28 overflow-hidden">
+        <div class="absolute top-12 left-10 text-amber-500/40 text-2xl animate-particle pointer-events-none">✨</div>
+        <div class="absolute bottom-20 left-1/4 text-rose-500/30 text-xl animate-particle pointer-events-none" style="animation-delay: 1.5s;">🌾</div>
+        <div class="absolute top-24 right-1/3 text-amber-600/30 text-3xl animate-particle pointer-events-none" style="animation-delay: 2.5s;">🍩</div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                
+                <!-- Hero Left Content -->
+                <div class="lg:col-span-7 space-y-6 reveal">
+                    <div class="inline-flex items-center gap-2 bg-amber-100/90 border border-amber-300/80 text-bakery-brown text-xs sm:text-sm font-semibold px-4 py-1.5 rounded-full shadow-sm backdrop-blur-md">
+                        <i class="fa-solid fa-wheat-awn text-honey-gold"></i>
+                        <span>100% Organic Bakes & Ice-Cold Monster Energy</span>
+                    </div>
+                    <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-bakery-brown leading-tight drop-shadow-sm">
+                        Warm Oven Delights <br>
+                        <span class="italic text-honey-gold font-normal">& Chilled Monster Energy</span> Fresh Daily.
+                    </h1>
+                    <p class="text-base sm:text-lg text-bakery-brown/90 max-w-2xl leading-relaxed font-normal bg-cream-light/40 backdrop-blur-xs p-3 rounded-2xl border border-amber-900/5">
+                        Welcome to <strong>Mom’s Bakery</strong> — crafting sourdough breads, buttery croissants, artisanal cakes, cookies, luxury gift trunks, and chilled Monster Energy drinks to fuel your day!
+                    </p>
+                    
+                    <div class="pt-2 max-w-lg">
+                        <div class="relative flex items-center">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 text-amber-700/60 text-lg"></i>
+                            <input type="text" id="heroSearchInput" oninput="handleSearch(this.value)" placeholder="Search cakes, Monster energy, croissants..." class="w-full pl-12 pr-28 py-3.5 rounded-2xl border-2 border-amber-300/80 bg-white/90 backdrop-blur-md shadow-lg focus:outline-none focus:border-honey-gold text-sm font-medium text-bakery-brown transition-all">
+                            <a href="#menu" class="absolute right-2 bg-honey-gold hover:bg-amber-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow">Find Food</a>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 flex flex-wrap items-center gap-4">
+                        <a href="#menu" class="bg-honey-gold hover:bg-amber-600 text-white font-semibold px-7 py-3.5 rounded-xl shadow-lg hover:shadow-amber-600/30 transition-all flex items-center gap-3 text-sm sm:text-base">
+                            <span>Explore Menu</span><i class="fa-solid fa-arrow-right text-xs"></i>
+                        </a>
+                        <a href="#drinks" class="bg-monster-dark/95 hover:bg-black text-monster-green border border-monster-green/60 font-bold px-6 py-3.5 rounded-xl shadow-lg transition-all flex items-center gap-2 text-sm sm:text-base backdrop-blur-md">
+                            <i class="fa-solid fa-bolt text-lg"></i><span>Monster Drinks</span>
+                        </a>
+                        <a href="#" id="heroWhatsappBtn" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3.5 rounded-xl shadow-md transition-all flex items-center gap-2 text-sm sm:text-base">
+                            <i class="fa-brands fa-whatsapp text-lg"></i><span>WhatsApp Order</span>
+                        </a>
+                    </div>
+
+                    <div class="pt-6 grid grid-cols-3 gap-4 border-t border-amber-900/10">
+                        <div class="bg-cream-light/60 p-2.5 rounded-xl backdrop-blur-sm border border-amber-900/5"><p class="font-serif text-2xl font-bold text-bakery-brown">4.9 ★</p><p class="text-xs text-bakery-brown/70 font-medium">1,200+ Customers</p></div>
+                        <div class="bg-cream-light/60 p-2.5 rounded-xl backdrop-blur-sm border border-amber-900/5"><p class="font-serif text-2xl font-bold text-bakery-brown">100%</p><p class="text-xs text-bakery-brown/70 font-medium">Eggless Options</p></div>
+                        <div class="bg-cream-light/60 p-2.5 rounded-xl backdrop-blur-sm border border-amber-900/5"><p class="font-serif text-2xl font-bold text-bakery-brown">60 Mins</p><p class="text-xs text-bakery-brown/70 font-medium">Express Local Delivery</p></div>
+                    </div>
+                </div>
+
+                <!-- Hero Right Interactive 3D Chocolate Donut Visual Centerpiece -->
+                <div class="lg:col-span-5 flex justify-center relative reveal">
+                    <div class="w-80 h-80 sm:w-96 sm:h-96 bg-gradient-to-tr from-amber-200/90 via-orange-100/80 to-amber-50 rounded-3xl shadow-2xl border-2 border-amber-300/80 relative overflow-hidden backdrop-blur-md flex flex-col items-center justify-center p-2">
+                        
+                        <span class="absolute top-4 left-5 z-20 bg-white/95 text-amber-900 text-xs font-bold px-3.5 py-1 rounded-full shadow-md transform -rotate-3 border border-amber-200">
+                            🍩 Interactive 3D Donut
+                        </span>
+                        <span class="absolute bottom-4 right-5 z-20 bg-amber-900 text-amber-100 text-[10px] font-bold px-3 py-1 rounded-full shadow-md">
+                            👆 Click to Spin | Drag to Rotate
+                        </span>
+
+                        <div id="donut3dContainer" class="w-full h-full rounded-2xl relative overflow-hidden"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: MENU -->
+    <section id="menu" class="py-12 md:py-20 bg-cream-light/85 backdrop-blur-md border-y border-amber-900/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-10 reveal">
+                <span class="text-xs font-bold uppercase tracking-widest text-honey-gold bg-amber-100/90 px-3.5 py-1.5 rounded-full border border-amber-200">Fresh From Oven</span>
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold text-bakery-brown mt-3">Our Bakery Menu</h2>
+                <p class="text-bakery-brown/80 mt-2 text-sm font-light">Select from our freshly baked options. Filter or search items below!</p>
+                <div class="mt-6 max-w-md mx-auto relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-amber-700/60 text-sm"></i>
+                    <input type="text" id="menuSearchInput" oninput="handleSearch(this.value)" placeholder="Search menu items..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-amber-300/80 bg-white/90 backdrop-blur-md shadow-sm focus:outline-none focus:border-honey-gold text-xs font-medium text-bakery-brown">
+                </div>
+                <div class="flex flex-wrap items-center justify-center gap-2 mt-6" id="categoryFilters">
+                    <button onclick="filterCategory('all')" class="cat-btn active bg-honey-gold text-white px-4 py-1.5 rounded-full text-xs font-semibold transition-all shadow-sm">All Items</button>
+                    <button onclick="filterCategory('Cakes')" class="cat-btn bg-amber-100/90 text-bakery-brown hover:bg-amber-200 px-4 py-1.5 rounded-full text-xs font-semibold transition-all">Cakes</button>
+                    <button onclick="filterCategory('Breads')" class="cat-btn bg-amber-100/90 text-bakery-brown hover:bg-amber-200 px-4 py-1.5 rounded-full text-xs font-semibold transition-all">Breads</button>
+                    <button onclick="filterCategory('Cookies')" class="cat-btn bg-amber-100/90 text-bakery-brown hover:bg-amber-200 px-4 py-1.5 rounded-full text-xs font-semibold transition-all">Cookies</button>
+                    <button onclick="filterCategory('Cupcakes')" class="cat-btn bg-amber-100/90 text-bakery-brown hover:bg-amber-200 px-4 py-1.5 rounded-full text-xs font-semibold transition-all">Cupcakes</button>
+                </div>
+            </div>
+            <div id="mainMenuGrid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8"></div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: IMPORTED ITEMS -->
+    <section id="imported" class="py-12 md:py-20 bg-gradient-to-b from-cream/80 via-amber-50/50 to-cream/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 reveal">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-berry-red bg-berry-light px-3.5 py-1.5 rounded-full">✈️ Hand-Picked Specialties</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-bakery-brown mt-3">Imported Delicacies</h2>
+                    <p class="text-bakery-brown/80 mt-1 text-xs sm:text-sm font-light max-w-xl">European chocolates and famous imported bakes.</p>
+                </div>
+            </div>
+            <div id="importedGrid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8"></div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: MONSTER ENERGY & DRINKS -->
+    <section id="drinks" class="py-16 md:py-24 bg-gradient-to-br from-monster-dark/95 via-black/90 to-emerald-950/95 backdrop-blur-md text-white relative overflow-hidden border-y border-emerald-500/40">
+        <div class="fizz-bubble w-10 h-10 left-12" style="animation-delay: 0s;"></div>
+        <div class="fizz-bubble w-16 h-16 left-1/3" style="animation-delay: 1.2s;"></div>
+        <div class="fizz-bubble w-8 h-8 right-1/4" style="animation-delay: 2.2s;"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-12 reveal">
+                <span class="text-xs font-black uppercase tracking-widest text-monster-green bg-emerald-950/90 px-4 py-1.5 rounded-full border border-monster-green/60 shadow-inner inline-flex items-center gap-2">
+                    <i class="fa-solid fa-bolt text-monster-green animate-pulse"></i> Monster Energy Drinks & Beverages
+                </span>
+                <h2 class="font-serif text-3xl sm:text-5xl font-bold text-white mt-4 leading-tight">Ice-Cold Monster Energy Boost</h2>
+                <p class="text-emerald-100/80 text-sm sm:text-base mt-2 font-light">Supercharge your favorite bakery treats with authentic, ice-cold Monster Energy drinks!</p>
+            </div>
+            <div id="drinksGrid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8"></div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: SAVORY & CUSTOM SPECIALTIES -->
+    <section id="custom" class="py-12 md:py-20 bg-cream/80 backdrop-blur-md border-b border-amber-900/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-10 reveal">
+                <span class="text-xs font-bold uppercase tracking-widest text-amber-800 bg-amber-200/70 px-3.5 py-1.5 rounded-full">✨ Chef's Creations</span>
+                <h2 class="font-serif text-3xl sm:text-4xl font-bold text-bakery-brown mt-3">Specialties & Savory Bites</h2>
+                <p class="text-bakery-brown/80 mt-2 text-sm font-light">Custom artisan bakes, savory sandwiches, garlic focaccia, and kitchen creations!</p>
+            </div>
+            <div id="customGrid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8"></div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: GIFT HAMPERS -->
+    <section id="gifts" class="py-16 md:py-24 bg-gradient-to-br from-amber-950/95 via-bakery-brown/90 to-amber-900/95 backdrop-blur-md text-cream relative overflow-hidden border-y border-amber-700/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-12 reveal">
+                <span class="text-xs font-bold uppercase tracking-widest text-honey-light bg-amber-800/80 px-4 py-1.5 rounded-full border border-amber-600/50 shadow-inner">🎁 Luxury Unboxing Experience</span>
+                <h2 class="font-serif text-3xl sm:text-5xl font-bold text-cream mt-4 leading-tight">Curated Gift Hampers & Trunks</h2>
+                <p class="text-cream/80 text-sm sm:text-base mt-2 font-light">Hand-packaged in golden trunks with customized greeting tags.</p>
+            </div>
+            <div id="giftsGrid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8"></div>
+        </div>
+    </section>
+
+    <!-- SECTION 7: CONTACT SECTION -->
+    <section id="contact" class="py-16 md:py-24 bg-cream/85 backdrop-blur-md border-t border-amber-900/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                <div class="lg:col-span-6 space-y-6 reveal">
+                    <span class="text-xs font-bold uppercase tracking-widest text-honey-gold bg-amber-100 px-3.5 py-1.5 rounded-full">Visit Our Kitchen</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-bakery-brown">Warm Baker's Corner</h2>
+                    <p class="text-bakery-brown/80 font-light text-sm sm:text-base leading-relaxed">Stop by for morning croissants or grab your chilled Monster energy drink on the go!</p>
+                    <div class="space-y-4 pt-2">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-amber-200/60 text-honey-gold flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-location-dot"></i></div>
+                            <div><h4 class="font-bold text-bakery-brown text-sm">Location Address</h4><p id="contactAddressDisplay" class="text-xs sm:text-sm text-bakery-brown/80">Loading address...</p></div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-amber-200/60 text-honey-gold flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-clock"></i></div>
+                            <div><h4 class="font-bold text-bakery-brown text-sm">Working Hours</h4><p id="contactHoursDisplay" class="text-xs sm:text-sm text-bakery-brown/80">Loading hours...</p></div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-amber-200/60 text-honey-gold flex items-center justify-center shrink-0 mt-1"><i class="fa-solid fa-truck-fast"></i></div>
+                            <div><h4 class="font-bold text-bakery-brown text-sm">Delivery Info</h4><p id="contactDeliveryDisplay" class="text-xs sm:text-sm text-bakery-brown/80">Loading delivery info...</p></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-6 reveal">
+                    <div class="bg-bakery-brown/95 backdrop-blur-md p-6 sm:p-8 rounded-3xl text-cream shadow-2xl space-y-5 border border-amber-800/40">
+                        <h3 class="font-serif text-2xl font-bold">Have a Custom Order Inquiry?</h3>
+                        <p class="text-xs sm:text-sm text-cream/80">Need custom cakes or bulk Monster energy & hamper orders? Talk directly with us!</p>
+                        <div class="p-4 bg-bakery-dark/90 rounded-2xl border border-amber-900/60 flex items-center justify-between">
+                            <div><p class="text-[10px] text-amber-400 font-semibold uppercase">Helpline Number</p><p id="contactPhoneDisplay" class="font-mono text-base sm:text-lg font-bold text-white">+91 8218250432</p></div>
+                            <a id="contactCallBtn" href="tel:+918218250432" class="bg-honey-gold hover:bg-amber-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all">Call Now</a>
+                        </div>
+                        <a id="contactWhatsappBtn" href="#" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-sm">
+                            <i class="fa-brands fa-whatsapp text-lg"></i><span>Chat on WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 8: SOCIAL MEDIA -->
+    <section class="py-12 md:py-16 bg-cream-light/85 backdrop-blur-md border-t border-amber-900/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <span class="text-xs font-bold uppercase tracking-widest text-honey-gold bg-amber-100 px-3.5 py-1.5 rounded-full">@MomsBakeryOfficial</span>
+            <h2 class="font-serif text-3xl font-bold text-bakery-brown mt-3 mb-2">Follow Our Baking Journey</h2>
+            <p class="text-bakery-brown/70 text-xs sm:text-sm max-w-lg mx-auto mb-8">Daily fresh batch alerts & sweet giveaways!</p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+                <a id="instagramLink" href="https://instagram.com" target="_blank" class="p-5 bg-cream-light/90 backdrop-blur-md rounded-2xl border border-amber-900/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col items-center">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white flex items-center justify-center text-xl mb-2"><i class="fa-brands fa-instagram"></i></div>
+                    <h4 class="font-bold text-bakery-brown text-sm">Instagram</h4>
+                    <p class="text-xs text-bakery-brown/60">@MomsBakeryFresh</p>
+                </a>
+                <a id="facebookLink" href="https://facebook.com" target="_blank" class="p-5 bg-cream-light/90 backdrop-blur-md rounded-2xl border border-amber-900/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col items-center">
+                    <div class="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl mb-2"><i class="fa-brands fa-facebook-f"></i></div>
+                    <h4 class="font-bold text-bakery-brown text-sm">Facebook</h4>
+                    <p class="text-xs text-bakery-brown/60">Mom's Bakery Official</p>
+                </a>
+                <a id="socialWhatsappLink" href="#" target="_blank" class="p-5 bg-cream-light/90 backdrop-blur-md rounded-2xl border border-amber-900/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col items-center">
+                    <div class="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xl mb-2"><i class="fa-brands fa-whatsapp"></i></div>
+                    <h4 class="font-bold text-bakery-brown text-sm">WhatsApp Direct</h4>
+                    <p id="socialWhatsappDisplay" class="text-xs text-bakery-brown/60">+91 8218250432</p>
                 </a>
             </div>
-            <!-- Image Container -->
-            <div class="relative flex justify-center">
-                <span class="absolute top-0 right-0 font-serif italic text-7xl lg:text-9xl text-amber-100/60 -z-10 select-none">
-                    greatest
-                </span>
-                <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80" 
-                     alt="Chocolate Croissants" class="w-full max-w-lg object-contain drop-shadow-2xl">
-            </div>
         </div>
     </section>
 
-    <!-- ================= FEATURES BAR ================= -->
-    <section class="py-10 bg-brand-bgLight border-y border-amber-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div class="flex flex-col items-center">
-                <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center text-red-500 mb-3 text-2xl">
-                    <i class="fa-solid fa-truck-fast"></i>
-                </div>
-                <h4 class="text-xs font-bold uppercase tracking-wider">Free Delivery</h4>
-                <p class="text-xs text-brand-muted mt-1">For all order over $100</p>
-            </div>
-            <div class="flex flex-col items-center">
-                <div class="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mb-3 text-2xl">
-                    <i class="fa-solid fa-wallet"></i>
-                </div>
-                <h4 class="text-xs font-bold uppercase tracking-wider">Cash On Delivery</h4>
-                <p class="text-xs text-brand-muted mt-1">For all order over $100</p>
-            </div>
-            <div class="flex flex-col items-center">
-                <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 mb-3 text-2xl">
-                    <i class="fa-solid fa-gift"></i>
-                </div>
-                <h4 class="text-xs font-bold uppercase tracking-wider">Special Gift Card</h4>
-                <p class="text-xs text-brand-muted mt-1">Offer special bonuses</p>
-            </div>
-            <div class="flex flex-col items-center">
-                <div class="w-16 h-16 rounded-full bg-rose-100 flex items-center justify-center text-rose-500 mb-3 text-2xl">
-                    <i class="fa-solid fa-headset"></i>
-                </div>
-                <h4 class="text-xs font-bold uppercase tracking-wider">24/7 Support</h4>
-                <p class="text-xs text-brand-muted mt-1">Answer for question</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= CATEGORY BANNERS ================= -->
-    <section class="py-12 bg-brand-bgLight">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Banner 1 -->
-            <div class="relative h-64 rounded-lg overflow-hidden group">
-                <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80" 
-                     class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="Fresh Bread">
-                <div class="absolute inset-0 bg-black/30 flex flex-col justify-center px-8 items-start">
-                    <h3 class="font-serif text-3xl text-white font-bold mb-4">Fresh Bread</h3>
-                    <a href="#" class="bg-brand-gold text-white text-sm font-medium px-5 py-2 rounded hover:bg-brand-goldHover transition">Shop Now</a>
-                </div>
-            </div>
-            <!-- Banner 2 -->
-            <div class="relative h-64 rounded-lg overflow-hidden group">
-                <img src="https://images.unsplash.com/photo-1586444248902-2f64eddc13df?auto=format&fit=crop&w=800&q=80" 
-                     class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="Bakery Sweets">
-                <div class="absolute inset-0 bg-black/30 flex flex-col justify-center px-8 items-start">
-                    <h3 class="font-serif text-3xl text-white font-bold mb-4">Bakery Sweets</h3>
-                    <a href="#" class="bg-brand-gold text-white text-sm font-medium px-5 py-2 rounded hover:bg-brand-goldHover transition">Shop Now</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= TOP PRODUCTS ================= -->
-    <section class="py-12 bg-brand-bgLight">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="font-serif text-3xl font-bold text-center mb-6">Our Top Products</h2>
-            
-            <!-- Tabs -->
-            <div class="flex justify-center space-x-2 mb-10 text-sm">
-                <button class="px-4 py-1.5 border border-gray-300 rounded text-gray-600 hover:border-brand-gold">New Arrivals</button>
-                <button class="px-4 py-1.5 bg-brand-gold text-white rounded font-medium">Featured</button>
-                <button class="px-4 py-1.5 border border-gray-300 rounded text-gray-600 hover:border-brand-gold">Best Seller</button>
-            </div>
-
-            <!-- Products Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
-                <!-- Product 1 -->
-                <div class="bg-white rounded-lg p-4 border border-amber-100 shadow-sm relative group">
-                    <div class="h-48 flex items-center justify-center overflow-hidden mb-4">
-                        <img src="https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=400&q=80" class="max-h-full object-contain">
-                    </div>
-                    <div class="text-center">
-                        <h4 class="text-sm text-gray-700 font-medium mb-1">Lorem ipsum dolor sit amet</h4>
-                        <div class="flex justify-center items-center space-x-2 mb-2">
-                            <span class="text-brand-gold font-bold text-sm">$20.00</span>
-                            <span class="text-gray-400 line-through text-xs">$30.00</span>
-                        </div>
-                        <div class="text-brand-gold text-xs">★★★★☆</div>
-                    </div>
-                </div>
-
-                <!-- Product 2 (Active/Hovered state with controls) -->
-                <div class="bg-white rounded-lg p-4 border border-amber-100 shadow-sm relative group">
-                    <span class="absolute top-2 left-2 bg-brand-gold text-white text-[10px] font-bold px-1.5 py-0.5 rounded">-10%</span>
-                    <div class="h-48 flex items-center justify-center overflow-hidden mb-4 relative">
-                        <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=400&q=80" class="max-h-full object-contain">
-                        <!-- Floating actions -->
-                        <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-2 bg-white shadow-md px-3 py-1.5 rounded-full border border-gray-100">
-                            <button class="hover:text-brand-gold text-xs"><i class="fa-solid fa-cart-shopping"></i></button>
-                            <button class="hover:text-brand-gold text-xs"><i class="fa-solid fa-arrows-rotate"></i></button>
-                            <button class="hover:text-brand-gold text-xs"><i class="fa-regular fa-eye"></i></button>
-                            <button class="hover:text-brand-gold text-xs"><i class="fa-regular fa-heart"></i></button>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <h4 class="text-sm text-gray-700 font-medium mb-1">Lorem ipsum dolor sit amet</h4>
-                        <div class="flex justify-center items-center space-x-2 mb-2">
-                            <span class="text-brand-gold font-bold text-sm">$20.00</span>
-                            <span class="text-gray-400 line-through text-xs">$30.00</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product 3 -->
-                <div class="bg-white rounded-lg p-4 border border-amber-100 shadow-sm relative group">
-                    <div class="h-48 flex items-center justify-center overflow-hidden mb-4">
-                        <img src="https://images.unsplash.com/photo-1586444248902-2f64eddc13df?auto=format&fit=crop&w=400&q=80" class="max-h-full object-contain">
-                    </div>
-                    <div class="text-center">
-                        <h4 class="text-sm text-gray-700 font-medium mb-1">Lorem ipsum dolor sit amet</h4>
-                        <div class="flex justify-center items-center space-x-2 mb-2">
-                            <span class="text-brand-gold font-bold text-sm">$20.00</span>
-                            <span class="text-gray-400 line-through text-xs">$30.00</span>
-                        </div>
-                        <div class="text-brand-gold text-xs">★★★★☆</div>
-                    </div>
-                </div>
-
-                <!-- Product 4 -->
-                <div class="bg-white rounded-lg p-4 border border-amber-100 shadow-sm relative group">
-                    <div class="h-48 flex items-center justify-center overflow-hidden mb-4">
-                        <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=400&q=80" class="max-h-full object-contain">
-                    </div>
-                    <div class="text-center">
-                        <h4 class="text-sm text-gray-700 font-medium mb-1">Lorem ipsum dolor sit amet</h4>
-                        <div class="flex justify-center items-center space-x-2 mb-2">
-                            <span class="text-brand-gold font-bold text-sm">$20.00</span>
-                            <span class="text-gray-400 line-through text-xs">$30.00</span>
-                        </div>
-                        <div class="text-brand-gold text-xs">★★★★☆</div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Arrow Navigation -->
-            <div class="flex justify-center space-x-3 mt-8">
-                <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-brand-gold hover:text-white transition"><i class="fa-solid fa-arrow-left text-xs"></i></button>
-                <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-brand-gold hover:text-white transition"><i class="fa-solid fa-arrow-right text-xs"></i></button>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= PROMO MIDDLE BANNER ================= -->
-    <section class="relative py-20 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1600&q=80');">
-        <div class="absolute inset-0 bg-black/40"></div>
-        <div class="relative max-w-2xl mx-auto px-4 text-center">
-            <div class="border-2 border-brand-gold bg-white/90 backdrop-blur-sm p-8 rounded shadow-lg">
-                <p class="text-brand-gold italic font-serif mb-1">Fresh & Delicious</p>
-                <h3 class="font-serif text-2xl md:text-3xl font-bold text-gray-900 mb-6">Premium Quality & Testy Products</h3>
-                <a href="#" class="inline-block bg-brand-gold text-white font-medium text-sm px-6 py-2.5 rounded hover:bg-brand-goldHover transition">Shop Now</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= TESTIMONIALS ================= -->
-    <section class="py-16 bg-brand-bgLight">
-        <div class="max-w-4xl mx-auto px-4">
-            <h2 class="font-serif text-3xl font-bold text-center mb-10">Our Clients Words</h2>
-            <div class="flex flex-col md:flex-row items-center gap-8">
-                <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=300&q=80" alt="Client John Doe" class="w-40 h-48 object-cover rounded shadow">
-                <div class="space-y-4 text-center md:text-left">
-                    <h3 class="font-bold text-lg text-gray-800">John Doe</h3>
-                    <p class="text-sm text-brand-muted leading-relaxed">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse rutrum eleifend dui finibus tincidunt. Quisque blandit neque at dui ultrices, ut ultrices dolor pretium.
-                    </p>
-                    <div class="flex justify-center md:justify-start space-x-2">
-                        <button class="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center text-xs hover:bg-brand-gold hover:text-white"><i class="fa-solid fa-arrow-left"></i></button>
-                        <button class="w-7 h-7 rounded-full border border-gray-300 flex items-center justify-center text-xs hover:bg-brand-gold hover:text-white"><i class="fa-solid fa-arrow-right"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= BLOG / NEWS SECTION ================= -->
-    <section class="py-16 bg-brand-bgLight border-t border-amber-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="font-serif text-3xl font-bold text-center mb-12">Our Latest News</h2>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                <!-- Post 1 -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-                    <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=500&q=80" class="w-full h-48 object-cover rounded">
-                    <div class="space-y-2">
-                        <span class="text-xs text-brand-gold">07-feb-2022 - by Admin</span>
-                        <h4 class="font-serif font-bold text-gray-800 text-base leading-snug">Lorem ipsum dolor sit amet consectetur adipi</h4>
-                        <p class="text-xs text-brand-muted line-clamp-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse rutrum eleifend dui finibus...</p>
-                        <a href="#" class="inline-block bg-brand-gold text-white text-xs font-semibold px-4 py-2 rounded hover:bg-brand-goldHover transition">Read More</a>
-                    </div>
-                </div>
-
-                <!-- Post 2 -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-                    <div class="space-y-2 order-2 md:order-1">
-                        <span class="text-xs text-brand-gold">07-feb-2022 - by Admin</span>
-                        <h4 class="font-serif font-bold text-gray-800 text-base leading-snug">Lorem ipsum dolor sit amet consectetur adipi</h4>
-                        <p class="text-xs text-brand-muted line-clamp-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse rutrum eleifend dui finibus...</p>
-                        <a href="#" class="inline-block bg-brand-gold text-white text-xs font-semibold px-4 py-2 rounded hover:bg-brand-goldHover transition">Read More</a>
-                    </div>
-                    <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=500&q=80" class="w-full h-48 object-cover rounded order-1 md:order-2">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= NEWSLETTER ================= -->
-    <section class="bg-stone-900 py-10 text-white">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
-            <h3 class="font-serif text-2xl font-bold">Our Newsletter</h3>
-            <form class="flex w-full md:w-auto max-w-md">
-                <input type="email" placeholder="Enter email" class="px-4 py-2.5 rounded-l text-gray-800 text-sm focus:outline-none w-full md:w-80">
-                <button type="submit" class="bg-brand-gold text-white px-6 py-2.5 rounded-r font-medium text-sm hover:bg-brand-goldHover transition">Subscribe</button>
-            </form>
-        </div>
-    </section>
-
-    <!-- ================= FOOTER ================= -->
-    <footer class="bg-stone-950 text-gray-400 text-xs py-12 border-t border-stone-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-            <!-- Quick Links -->
+    <!-- FOOTER -->
+    <footer class="bg-bakery-dark/95 backdrop-blur-md text-cream/70 py-10 border-t border-amber-900/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-6">
             <div>
-                <h4 class="text-white font-bold text-sm mb-4">Quick Links</h4>
-                <ul class="space-y-2">
-                    <li><a href="#" class="hover:text-brand-gold">Home</a></li>
-                    <li><a href="#" class="hover:text-brand-gold">About Us</a></li>
-                    <li><a href="#" class="hover:text-brand-gold">Products</a></li>
-                    <li><a href="#" class="hover:text-brand-gold">Shop</a></li>
-                    <li><a href="#" class="hover:text-brand-gold">Blog</a></li>
-                    <li><a href="#" class="hover:text-brand-gold">Contact Us</a></li>
-                </ul>
+                <p class="font-serif text-xl font-bold text-cream">Mom's Bakery & Refreshments</p>
+                <p class="text-xs text-cream/50 mt-1">© 2026 Mom's Bakery. All rights reserved.</p>
             </div>
-            <!-- Support -->
-            <div>
-                <h4 class="text-white font-bold text-sm mb-4">Support</h4>
-                <ul class="space-y-2">
-                    <li><a href="#" class="hover:text-brand-gold">Online Support</a></li>
-                    <li><a href="#" class="hover:text-brand-gold">Shipping Policy</a></li>
-                    <li><a href="#" class="hover:text-brand-gold">Return Policy</a></li>
-                    <li><a href="#" class="hover:text-brand-gold">Privacy Policy</a></li>
-                    <li><a href="#" class="hover:text-brand-gold">Terms And Condition</a></li>
-                </ul>
-            </div>
-            <!-- Customer Care -->
-            <div>
-                <h4 class="text-white font-bold text-sm mb-4">Customer Care</h4>
-                <ul class="space-y-2">
-                    <li><a href="#" class="hover:text-brand-gold">Gift a Smile</a></li>
-                    <li><a href="#" class="hover:text-brand-gold">Size Guide</a></li>
-                    <li><a href="#" class="hover:text-brand-gold">FAQs</a></li>
-                    <li><a href="#" class="hover:text-brand-gold">Shipping Options</a></li>
-                    <li><a href="#" class="hover:text-brand-gold">Gift Vouchers</a></li>
-                </ul>
-            </div>
-            <!-- Contact Details -->
-            <div>
-                <h4 class="text-white font-bold text-sm mb-4">Contact Details</h4>
-                <ul class="space-y-3">
-                    <li class="flex items-start space-x-2">
-                        <i class="fa-solid fa-location-dot text-brand-gold mt-0.5"></i>
-                        <span>Demo Store, Lorem Ipsum Dolor Lorem Ipsum</span>
-                    </li>
-                    <li class="flex items-center space-x-2">
-                        <i class="fa-solid fa-phone text-brand-gold"></i>
-                        <span>+00 123 456 789</span>
-                    </li>
-                    <li class="flex items-center space-x-2">
-                        <i class="fa-solid fa-envelope text-brand-gold"></i>
-                        <span>demo@gmail.com</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Sub Footer -->
-        <div class="max-w-7xl mx-auto px-4 mt-12 pt-6 border-t border-stone-800 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p>© 2026 - Ecommerce software by PrestaShop™</p>
-            <div class="flex items-center space-x-4">
-                <i class="fa-brands fa-cc-paypal text-xl text-gray-300"></i>
-                <i class="fa-brands fa-cc-visa text-xl text-gray-300"></i>
-                <i class="fa-brands fa-cc-mastercard text-xl text-gray-300"></i>
-            </div>
-            <div class="flex space-x-3 text-gray-400">
-                <a href="#" class="hover:text-brand-gold"><i class="fa-brands fa-facebook-f"></i></a>
-                <a href="#" class="hover:text-brand-gold"><i class="fa-brands fa-linkedin-in"></i></a>
-                <a href="#" class="hover:text-brand-gold"><i class="fa-brands fa-twitter"></i></a>
-                <a href="#" class="hover:text-brand-gold"><i class="fa-brands fa-instagram"></i></a>
+            <div class="flex items-center gap-6 text-xs font-medium">
+                <a href="#hero" class="hover:text-honey-gold transition-colors">Home</a>
+                <a href="#menu" class="hover:text-honey-gold transition-colors">Menu</a>
+                <a href="#drinks" class="hover:text-monster-green transition-colors">Drinks</a>
+                <a href="#gifts" class="hover:text-honey-gold transition-colors">Gifts</a>
+                <button onclick="openAdminModal()" class="hover:text-honey-gold transition-colors">Admin Login</button>
             </div>
         </div>
     </footer>
 
+    <!-- FLOATING WHATSAPP BUTTON -->
+    <a id="floatingWhatsappBtn" href="#" target="_blank" class="fixed bottom-6 right-6 z-40 bg-emerald-500 hover:bg-emerald-600 text-white p-3.5 sm:p-4 rounded-full shadow-2xl whatsapp-glow hover:scale-110 transition-all flex items-center justify-center group" title="Order via WhatsApp">
+        <i class="fa-brands fa-whatsapp text-2xl sm:text-3xl"></i>
+        <span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all text-xs font-bold pl-0 group-hover:pl-2">Order on WhatsApp</span>
+    </a>
+
+    <!-- CART DRAWER / CHECKOUT MODAL -->
+    <div id="cartDrawerBackdrop" onclick="toggleCartDrawer()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+    <div id="cartDrawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-cream-light/95 backdrop-blur-xl shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="p-5 bg-bakery-brown text-cream flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-basket-shopping text-honey-gold text-lg"></i>
+                <h3 class="font-serif text-lg font-bold">Your Fresh Cart</h3>
+            </div>
+            <button onclick="toggleCartDrawer()" class="text-cream/70 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-5 space-y-3"></div>
+        <div id="cartFooter" class="p-5 bg-cream/90 border-t border-amber-900/10 space-y-3">
+            <div class="space-y-1 text-xs sm:text-sm">
+                <div class="flex justify-between text-bakery-brown/80"><span>Subtotal</span><span id="cartSubtotal" class="font-semibold">₹0</span></div>
+                <div class="flex justify-between text-bakery-brown/80"><span>Packaging & Delivery</span><span class="font-semibold text-emerald-700">FREE</span></div>
+                <div class="flex justify-between text-base font-bold text-bakery-brown pt-2 border-t border-amber-900/10"><span>Total Amount</span><span id="cartTotal" class="text-honey-gold">₹0</span></div>
+            </div>
+            <button onclick="orderCartViaWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl shadow transition-all flex items-center justify-center gap-2 text-xs sm:text-sm">
+                <i class="fa-brands fa-whatsapp text-base"></i><span>Order Cart via WhatsApp</span>
+            </button>
+            <button onclick="showCheckoutForm()" class="w-full bg-honey-gold hover:bg-amber-600 text-white font-semibold py-2.5 rounded-xl shadow transition-all text-xs sm:text-sm">Proceed to Checkout</button>
+        </div>
+        <div id="checkoutFormArea" class="hidden flex-1 overflow-y-auto p-5 bg-cream/90 border-t border-amber-900/10 space-y-3">
+            <div class="flex items-center justify-between border-b border-amber-900/10 pb-2">
+                <h4 class="font-serif font-bold text-base text-bakery-brown">Delivery Details</h4>
+                <button onclick="hideCheckoutForm()" class="text-xs text-honey-gold font-bold underline">Back to Cart</button>
+            </div>
+            <form id="orderForm" onsubmit="handlePlaceOrder(event)" class="space-y-3 text-xs">
+                <div><label class="block font-medium text-bakery-brown mb-1">Full Name *</label><input type="text" id="custName" required placeholder="e.g. Ananya Sharma" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                <div><label class="block font-medium text-bakery-brown mb-1">Phone Number *</label><input type="tel" id="custPhone" required placeholder="e.g. 9876543210" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                <div><label class="block font-medium text-bakery-brown mb-1">Delivery Address *</label><textarea id="custAddress" required rows="2" placeholder="House no, Street, Landmark" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></textarea></div>
+                <div><label class="block font-medium text-bakery-brown mb-1">Payment Method</label>
+                    <select id="paymentMethod" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white">
+                        <option value="Cash on Delivery">Cash on Delivery (COD)</option>
+                        <option value="UPI / QR Code">UPI (GPay, PhonePe, Paytm)</option>
+                        <option value="Credit / Debit Card">Credit / Debit Card</option>
+                    </select>
+                </div>
+                <div class="pt-2"><button type="submit" class="w-full bg-honey-gold hover:bg-amber-600 text-white font-bold py-3 rounded-xl shadow text-xs sm:text-sm">Confirm Order (₹<span id="checkoutTotalAmount">0</span>)</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PRODUCT DETAIL MODAL (DYNAMIC: WEIGHT FOR CAKES / QUANTITY FOR OTHER SECTIONS) -->
+    <div id="productDetailModalBackdrop" onclick="closeProductDetailModal()" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+    <div id="productDetailModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] max-w-2xl bg-cream-light/95 backdrop-blur-xl border-2 border-amber-300/70 rounded-3xl shadow-2xl z-50 opacity-0 pointer-events-none transition-all duration-300 scale-95 overflow-hidden text-bakery-brown">
+        <button onclick="closeProductDetailModal()" class="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/10 hover:bg-black/20 text-bakery-brown flex items-center justify-center"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 p-5 sm:p-7 items-center max-h-[85vh] overflow-y-auto">
+            <div class="md:col-span-5 relative group">
+                <div class="h-56 sm:h-72 rounded-2xl overflow-hidden shadow-lg border border-amber-900/10">
+                    <img id="modalProductImg" src="" alt="Product Image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                </div>
+                <span id="modalProductBadge" class="absolute top-3 left-3 bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm">✨ Fresh Bake</span>
+            </div>
+            <div class="md:col-span-7 space-y-4">
+                <div>
+                    <span id="modalProductCategory" class="text-xs text-honey-gold font-bold uppercase tracking-widest block">Cakes</span>
+                    <h3 id="modalProductName" class="font-serif text-2xl sm:text-3xl font-bold text-bakery-brown leading-tight">Product Title</h3>
+                    <p id="modalProductDesc" class="text-xs sm:text-sm text-bakery-brown/75 mt-1 font-light leading-relaxed">Delicious bake.</p>
+                </div>
+
+                <!-- WEIGHT SELECTION SECTION (ONLY SHOWN FOR CAKES) -->
+                <div id="modalWeightSection" class="space-y-2 pt-2 border-t border-amber-900/10">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-bold text-bakery-brown uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-weight-scale text-honey-gold"></i> Select Cake Weight:</label>
+                        <span id="weightRequiredBadge" class="text-[10px] text-berry-red font-bold italic animate-pulse">* Please select a weight</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2.5" id="weightPillContainer">
+                        <button type="button" onclick="selectWeight('250 g')" id="pill-250g" class="weight-pill py-2.5 px-3 rounded-xl border border-amber-300 text-xs font-bold text-bakery-brown bg-white/80 hover:bg-amber-100 flex flex-col items-center justify-center transition-all">
+                            <span>250 g</span><span id="price-250g" class="text-[10px] opacity-75 mt-0.5">₹399</span>
+                        </button>
+                        <button type="button" onclick="selectWeight('500 g')" id="pill-500g" class="weight-pill py-2.5 px-3 rounded-xl border border-amber-300 text-xs font-bold text-bakery-brown bg-white/80 hover:bg-amber-100 flex flex-col items-center justify-center transition-all">
+                            <span>500 g</span><span id="price-500g" class="text-[10px] opacity-75 mt-0.5">₹699</span>
+                        </button>
+                        <button type="button" onclick="selectWeight('1 kg')" id="pill-1kg" class="weight-pill py-2.5 px-3 rounded-xl border border-amber-300 text-xs font-bold text-bakery-brown bg-white/80 hover:bg-amber-100 flex flex-col items-center justify-center transition-all">
+                            <span>1 kg</span><span id="price-1kg" class="text-[10px] opacity-75 mt-0.5">₹1299</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- QUANTITY SELECTION SECTION (FOR ALL NON-CAKE ITEMS) -->
+                <div id="modalQuantitySection" class="space-y-3 pt-2 border-t border-amber-900/10 hidden">
+                    <label class="text-xs font-bold text-bakery-brown uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-boxes-stacked text-honey-gold"></i> Select Quantity:
+                    </label>
+                    <div class="flex items-center gap-3">
+                        <div class="flex items-center bg-white border border-amber-300 rounded-xl p-1 shadow-sm">
+                            <button type="button" onclick="changeModalQty(-1)" class="w-8 h-8 rounded-lg bg-amber-100 hover:bg-amber-200 text-bakery-brown font-bold text-sm flex items-center justify-center transition-colors">-</button>
+                            <span id="modalQtyDisplay" class="px-4 font-extrabold text-sm text-bakery-brown min-w-[3rem] text-center">1</span>
+                            <button type="button" onclick="changeModalQty(1)" class="w-8 h-8 rounded-lg bg-amber-100 hover:bg-amber-200 text-bakery-brown font-bold text-sm flex items-center justify-center transition-colors">+</button>
+                        </div>
+                        <div class="flex items-center gap-1.5 overflow-x-auto py-1">
+                            <button type="button" onclick="setModalQty(1)" class="px-3 py-1.5 rounded-lg border border-amber-300 text-xs font-bold bg-amber-50 text-bakery-brown hover:bg-amber-200 transition-colors">1</button>
+                            <button type="button" onclick="setModalQty(2)" class="px-3 py-1.5 rounded-lg border border-amber-300 text-xs font-bold bg-amber-50 text-bakery-brown hover:bg-amber-200 transition-colors">2</button>
+                            <button type="button" onclick="setModalQty(5)" class="px-3 py-1.5 rounded-lg border border-amber-300 text-xs font-bold bg-amber-50 text-bakery-brown hover:bg-amber-200 transition-colors">5</button>
+                            <button type="button" onclick="setModalQty(10)" class="px-3 py-1.5 rounded-lg border border-amber-300 text-xs font-bold bg-amber-50 text-bakery-brown hover:bg-amber-200 transition-colors">10</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-3 border-t border-amber-900/10 flex items-center justify-between gap-4">
+                    <div>
+                        <span class="text-[10px] text-bakery-brown/60 font-bold uppercase block">Total Price</span>
+                        <p id="modalDisplayPrice" class="font-serif text-2xl sm:text-3xl font-bold text-honey-gold transition-all">₹0</p>
+                    </div>
+                    <button id="modalAddToCartBtn" disabled onclick="addModalItemToCart()" class="flex-1 bg-gray-300 text-gray-500 font-bold py-3 px-5 rounded-2xl text-xs sm:text-sm shadow transition-all duration-300 flex items-center justify-center gap-2 cursor-not-allowed opacity-60">
+                        <i class="fa-solid fa-basket-shopping"></i><span id="modalBtnText">Select Option</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL MODAL -->
+    <div id="adminModal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-cream-light/95 backdrop-blur-2xl w-full max-w-4xl rounded-3xl shadow-2xl border border-amber-300/50 overflow-hidden flex flex-col max-h-[92vh]">
+            <div class="bg-bakery-brown text-cream p-5 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-honey-gold flex items-center justify-center text-white"><i class="fa-solid fa-user-gear text-sm"></i></div>
+                    <div><h3 class="font-serif text-lg font-bold">Mom's Bakery - Admin Portal</h3><p class="text-[11px] text-amber-300">Live Item Management & Site Settings</p></div>
+                </div>
+                <button onclick="closeAdminModal()" class="text-cream/70 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="adminLoginSection" class="p-8 text-center space-y-4 max-w-md mx-auto my-auto">
+                <i class="fa-solid fa-lock text-3xl text-honey-gold"></i>
+                <h4 class="font-serif text-xl font-bold text-bakery-brown">Admin Authentication</h4>
+                <p class="text-xs text-bakery-brown/70">Enter password to manage products and site details.</p>
+                <div class="space-y-3">
+                    <input type="password" id="adminPassword" placeholder="Enter password (default: admin123)" class="w-full px-4 py-2.5 rounded-xl border border-amber-300 focus:outline-none focus:border-honey-gold text-center text-xs bg-white">
+                    <button onclick="verifyAdminPassword()" class="w-full bg-honey-gold hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-xs transition-all">Unlock Admin Dashboard</button>
+                    <p class="text-[11px] text-amber-700 italic">Hint: Password is <strong>admin123</strong></p>
+                </div>
+            </div>
+            <div id="adminDashboardSection" class="hidden flex-1 overflow-y-auto p-5 space-y-5">
+                <div class="flex border-b border-amber-900/10 space-x-6 font-semibold text-xs sm:text-sm">
+                    <button id="tabBtnProducts" onclick="switchAdminTab('products')" class="pb-2.5 border-b-2 border-honey-gold text-honey-gold"><i class="fa-solid fa-utensils mr-1"></i> Manage Products</button>
+                    <button id="tabBtnOrders" onclick="switchAdminTab('orders')" class="pb-2.5 text-bakery-brown/60 hover:text-honey-gold"><i class="fa-solid fa-receipt mr-1"></i> Customer Orders (<span id="adminOrdersCount">0</span>)</button>
+                    <button id="tabBtnSettings" onclick="switchAdminTab('settings')" class="pb-2.5 text-bakery-brown/60 hover:text-honey-gold"><i class="fa-solid fa-sliders mr-1"></i> Settings & Security</button>
+                </div>
+                <div id="tabContentProducts" class="space-y-5">
+                    <div class="bg-cream/90 p-4 rounded-2xl border border-amber-300/60 space-y-3">
+                        <h4 id="adminFormTitle" class="font-serif font-bold text-base text-bakery-brown">Add New Item</h4>
+                        <form id="productForm" onsubmit="handleSaveProduct(event)" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                            <input type="hidden" id="editProductId" value="">
+                            <div><label class="block font-medium text-bakery-brown mb-1">Item Title *</label><input type="text" id="prodName" required placeholder="e.g. Monster Energy Original" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                            <div><label class="block font-medium text-bakery-brown mb-1">Section *</label>
+                                <select id="prodSection" required class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white">
+                                    <option value="menu">Main Bakery Menu</option>
+                                    <option value="imported">Imported Items Section</option>
+                                    <option value="drinks">⚡ Monster Energy & Drinks Section</option>
+                                    <option value="custom">✨ Savory & Custom Specialties</option>
+                                    <option value="gifts">Special Gift Hampers</option>
+                                </select>
+                            </div>
+                            <div><label class="block font-medium text-bakery-brown mb-1">Category / Tag *</label><input type="text" id="prodCategory" required placeholder="e.g. Cakes, Breads, Cookies" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                            <div><label class="block font-medium text-bakery-brown mb-1">Price (₹) *</label><input type="number" id="prodPrice" required placeholder="e.g. 699" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                            <div class="md:col-span-2"><label class="block font-medium text-bakery-brown mb-1">Description *</label><input type="text" id="prodDesc" required placeholder="Brief description" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                            <div><label class="block font-medium text-bakery-brown mb-1">📷 Upload Photo From Gallery</label><input type="file" id="prodImageFile" accept="image/*" onchange="handleImageFileUpload(event)" class="w-full text-xs text-bakery-brown file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-honey-gold file:text-white cursor-pointer bg-white border border-amber-300 rounded-lg"></div>
+                            <div><label class="block font-medium text-bakery-brown mb-1">Or Paste Image URL</label><input type="url" id="prodImage" placeholder="https://..." class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                            <div id="imagePreviewContainer" class="hidden md:col-span-2 flex items-center gap-3 bg-white p-2 rounded-lg border border-amber-200">
+                                <img id="prodImagePreview" src="" class="w-12 h-12 object-cover rounded-lg border"><span class="text-xs text-emerald-700 font-semibold">Photo ready!</span>
+                            </div>
+                            <div class="md:col-span-2 flex justify-end gap-3 pt-2">
+                                <button type="button" onclick="resetProductForm()" class="px-3 py-1.5 text-xs font-semibold text-bakery-brown/70">Clear</button>
+                                <button type="submit" class="bg-honey-gold hover:bg-amber-600 text-white font-bold px-5 py-2 rounded-lg text-xs transition-all">Save Product</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="space-y-2"><h4 class="font-serif font-bold text-base text-bakery-brown">All Active Products</h4><div id="adminProductsList" class="space-y-2"></div></div>
+                </div>
+                <div id="tabContentOrders" class="hidden space-y-3"><h4 class="font-serif font-bold text-base text-bakery-brown">Customer Placed Orders</h4><div id="adminOrdersList" class="space-y-3"></div></div>
+                <div id="tabContentSettings" class="hidden space-y-4">
+                    <div class="bg-cream/90 p-5 rounded-2xl border border-amber-300/60 space-y-4 text-xs">
+                        <h4 class="font-serif font-bold text-base text-bakery-brown">Edit Bakery Contact & Social Accounts</h4>
+                        <form id="settingsForm" onsubmit="handleSaveSettings(event)" class="space-y-3">
+                            <div><label class="block font-medium text-bakery-brown mb-1">Bakery Address *</label><textarea id="setAddress" required rows="2" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></textarea></div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div><label class="block font-medium text-bakery-brown mb-1">Helpline Phone Number *</label><input type="text" id="setPhone" required class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                                <div><label class="block font-medium text-bakery-brown mb-1">WhatsApp Number (with country code, no +) *</label><input type="text" id="setWhatsapp" required placeholder="e.g. 918218250432" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                            </div>
+                            <div><label class="block font-medium text-bakery-brown mb-1">Working Hours *</label><input type="text" id="setHours" required class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                            <div><label class="block font-medium text-bakery-brown mb-1">Delivery Info *</label><input type="text" id="setDelivery" required class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div><label class="block font-medium text-bakery-brown mb-1">Instagram Profile URL</label><input type="url" id="setInstagram" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                                <div><label class="block font-medium text-bakery-brown mb-1">Facebook Page URL</label><input type="url" id="setFacebook" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                            </div>
+                            <div class="pt-2 flex justify-end"><button type="submit" class="bg-honey-gold hover:bg-amber-600 text-white font-bold px-6 py-2.5 rounded-xl text-xs shadow transition-all">Save Site Settings</button></div>
+                        </form>
+                        <div class="border-t border-amber-900/10 pt-4 mt-4">
+                            <h4 class="font-serif font-bold text-base text-bakery-brown mb-3 flex items-center gap-2"><i class="fa-solid fa-shield-halved text-honey-gold"></i> Change Admin Password</h4>
+                            <form id="changePasswordForm" onsubmit="handleChangeAdminPassword(event)" class="space-y-3 max-w-md">
+                                <div><label class="block font-medium text-bakery-brown mb-1">Current Password *</label><input type="password" id="currentAdminPass" required placeholder="Current password" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                                <div><label class="block font-medium text-bakery-brown mb-1">New Password *</label><input type="password" id="newAdminPass" required placeholder="New password (min 4 chars)" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                                <div><label class="block font-medium text-bakery-brown mb-1">Confirm New Password *</label><input type="password" id="confirmAdminPass" required placeholder="Re-enter new password" class="w-full px-3 py-2 rounded-lg border border-amber-300 bg-white"></div>
+                                <button type="submit" class="bg-honey-gold hover:bg-amber-600 text-white font-bold px-5 py-2 rounded-xl text-xs">Update Password</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- JAVASCRIPT APP STATE & INTERACTIVE THREE.JS DONUT ENGINE -->
+    <script>
+        const DEFAULT_PRODUCTS = [
+            { id: 'm1', section: 'menu', category: 'Cakes', name: 'Classic Red Velvet Cake', price: 699, desc: 'Rich velvet cocoa cake layers with organic cream cheese frosting.', img: 'https://images.unsplash.com/photo-1586788680434-30d324b2d46f?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
+            { id: 'm2', section: 'menu', category: 'Breads', name: 'Sourdough Country Loaf', price: 220, desc: 'Naturally fermented sourdough with crisp golden crust.', img: 'https://images.unsplash.com/photo-1585478259715-876acc5be8eb?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
+            { id: 'm3', section: 'menu', category: 'Cookies', name: 'Belgian Choco-Chip Cookies', price: 340, desc: 'Loaded with 70% dark Belgian chocolate chips.', img: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
+            { id: 'm4', section: 'menu', category: 'Cupcakes', name: 'Honey Cinnamon Cupcakes', price: 380, desc: 'Moist honey cupcakes topped with cinnamon buttercream swirl.', img: 'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
+            { id: 'i1', section: 'imported', category: 'Imported', name: 'Belgian Dark Truffle Collection', price: 1250, desc: 'Authentic cocoa truffles imported directly from Brussels.', img: 'https://images.unsplash.com/photo-1548907040-4baa42d10919?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
+            { id: 'i2', section: 'imported', category: 'Imported', name: 'French Butter Croissants', price: 580, desc: 'Traditional flaky croissants made with Normandy butter.', img: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
+            { id: 'd1', section: 'drinks', category: 'Energy Drink', name: 'Monster Energy Original Green (500ml)', price: 125, desc: 'Iconic energy drink blend with taurine & caffeine boost.', img: 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
+            { id: 'd2', section: 'drinks', category: 'Energy Drink', name: 'Monster Ultra Zero Sugar White', price: 130, desc: 'Crisp zero-sugar energy recharge.', img: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
+            { id: 'd3', section: 'drinks', category: 'Energy Drink', name: 'Monster Mango Loco Juice', price: 135, desc: 'Exotic mango juice blended with full energy boost.', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
+            { id: 'c1', section: 'custom', category: 'Savory', name: 'Smoked Cheese Croissant', price: 210, desc: 'Flaky croissant stuffed with melted cheddar & pickled jalapeños.', img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80', isSoldOut: false },
+            { id: 'g1', section: 'gifts', category: 'Gift Hampers', name: "Mom's Grand Celebration Trunk", price: 2200, desc: 'Includes mini cake, cookies & tea in a golden trunk.', img: 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=600&q=80', isSoldOut: false }
+        ];
+
+        const DEFAULT_SETTINGS = {
+            address: "12 Baker's Lane, Sector 15, City Center, PIN 282002",
+            phone: "+91 8218250432",
+            whatsappNumber: "918218250432",
+            hours: "Monday - Sunday: 8:00 AM – 9:30 PM",
+            deliveryInfo: "Delivering within 12km radius. Express doorstep delivery in under 60 minutes.",
+            instagramUrl: "https://instagram.com",
+            facebookUrl: "https://facebook.com"
+        };
+
+        let products = JSON.parse(localStorage.getItem('moms_bakery_products')) || DEFAULT_PRODUCTS;
+        let settings = JSON.parse(localStorage.getItem('moms_bakery_settings')) || DEFAULT_SETTINGS;
+        let cart = JSON.parse(localStorage.getItem('moms_bakery_cart')) || [];
+        let orders = JSON.parse(localStorage.getItem('moms_bakery_orders')) || [];
+        let currentFilter = 'all';
+        let searchQuery = '';
+        let uploadedBase64Image = '';
+
+        let currentModalProduct = null;
+        let selectedModalWeight = null;
+        let selectedModalPrice = 0;
+        let selectedModalQty = 1;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applySiteSettings();
+            renderAllSections();
+            updateCartUI();
+            initScrollObserver();
+            init3DTilt();
+            initScrollMorphEffect();
+            initHero3DDonut();
+        });
+
+        function saveState() {
+            localStorage.setItem('moms_bakery_products', JSON.stringify(products));
+            localStorage.setItem('moms_bakery_settings', JSON.stringify(settings));
+            localStorage.setItem('moms_bakery_cart', JSON.stringify(cart));
+            localStorage.setItem('moms_bakery_orders', JSON.stringify(orders));
+        }
+
+        // ==========================================
+        // ULTRA-REALISTIC 3D CHOCOLATE DONUT ENGINE
+        // ==========================================
+        function initHero3DDonut() {
+            const container = document.getElementById('donut3dContainer');
+            if (!container || typeof THREE === 'undefined') return;
+
+            const width = container.clientWidth || 380;
+            const height = container.clientHeight || 380;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+            camera.position.set(0, 0.5, 6);
+
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+
+            const donutGroup = new THREE.Group();
+            scene.add(donutGroup);
+
+            const doughnutGeo = new THREE.TorusGeometry(1.5, 0.72, 32, 64);
+            const doughnutMat = new THREE.MeshStandardMaterial({ color: 0xD89254, roughness: 0.65, metalness: 0.05 });
+            const doughnut = new THREE.Mesh(doughnutGeo, doughnutMat);
+            doughnut.castShadow = true;
+            donutGroup.add(doughnut);
+
+            const icingGeo = new THREE.TorusGeometry(1.51, 0.72, 32, 64);
+            const pos = icingGeo.attributes.position;
+            for (let i = 0; i < pos.count; i++) {
+                if (pos.getY(i) < -0.15) { pos.setY(i, pos.getY(i) * 0.15); }
+            }
+            icingGeo.computeVertexNormals();
+
+            const icingMat = new THREE.MeshPhysicalMaterial({
+                color: 0x24110A, roughness: 0.12, metalness: 0.15,
+                clearcoat: 1.0, clearcoatRoughness: 0.08, reflectivity: 0.95
+            });
+            const icing = new THREE.Mesh(icingGeo, icingMat);
+            icing.castShadow = true;
+            donutGroup.add(icing);
+
+            const sprinkleColors = [0xff2255, 0x00d2ff, 0xffcc00, 0x00ff88, 0xffffff, 0xff77bb];
+            const sprinkleGeo = new THREE.CylinderGeometry(0.038, 0.038, 0.18, 8);
+            for (let i = 0; i < 85; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const radius = 1.5 + (Math.random() - 0.5) * 0.85;
+                const x = Math.cos(angle) * radius;
+                const z = Math.sin(angle) * radius;
+                const y = 0.55 + (Math.random() * 0.15);
+
+                const color = sprinkleColors[Math.floor(Math.random() * sprinkleColors.length)];
+                const sprinkleMat = new THREE.MeshStandardMaterial({ color, roughness: 0.25, metalness: 0.2 });
+                const sprinkle = new THREE.Mesh(sprinkleGeo, sprinkleMat);
+                sprinkle.position.set(x, y, z);
+                sprinkle.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+                sprinkle.castShadow = true;
+                donutGroup.add(sprinkle);
+            }
+
+            const crumbsGroup = new THREE.Group();
+            const crumbGeo = new THREE.DodecahedronGeometry(0.06, 0);
+            const crumbMat = new THREE.MeshStandardMaterial({ color: 0x3d1c13, roughness: 0.4 });
+            for (let i = 0; i < 24; i++) {
+                const crumb = new THREE.Mesh(crumbGeo, crumbMat);
+                crumb.position.set((Math.random() - 0.5) * 5, (Math.random() - 0.5) * 4, (Math.random() - 0.5) * 3);
+                crumb.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+                crumbsGroup.add(crumb);
+            }
+            scene.add(crumbsGroup);
+
+            const shadowGeo = new THREE.PlaneGeometry(6, 6);
+            const shadowMat = new THREE.ShadowMaterial({ opacity: 0.25 });
+            const shadowPlane = new THREE.Mesh(shadowGeo, shadowMat);
+            shadowPlane.position.y = -2.2;
+            shadowPlane.rotation.x = -Math.PI / 2;
+            shadowPlane.receiveShadow = true;
+            scene.add(shadowPlane);
+
+            const ambientLight = new THREE.AmbientLight(0xfff8ee, 0.85);
+            scene.add(ambientLight);
+
+            const keyLight = new THREE.DirectionalLight(0xfff5ea, 1.8);
+            keyLight.position.set(5, 7, 5);
+            keyLight.castShadow = true;
+            scene.add(keyLight);
+
+            const fillLight = new THREE.PointLight(0xffd2a8, 1.2, 10);
+            fillLight.position.set(-4, 3, 2);
+            scene.add(fillLight);
+
+            donutGroup.scale.set(0, 0, 0);
+            donutGroup.rotation.set(0.6, -0.8, 0);
+            if (typeof gsap !== 'undefined') {
+                gsap.to(donutGroup.scale, { x: 1, y: 1, z: 1, duration: 1.6, ease: "elastic.out(1, 0.5)" });
+                gsap.to(donutGroup.rotation, { x: 0.3, y: 0.5, duration: 1.6, ease: "power2.out" });
+            } else { donutGroup.scale.set(1, 1, 1); }
+
+            let isDragging = false;
+            let previousMousePosition = { x: 0, y: 0 };
+            let rotationVelocity = { x: 0, y: 0 };
+
+            const onPointerDown = (e) => {
+                isDragging = true;
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                previousMousePosition = { x: clientX, y: clientY };
+            };
+
+            const onPointerMove = (e) => {
+                if (!isDragging) return;
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const deltaX = clientX - previousMousePosition.x;
+                const deltaY = clientY - previousMousePosition.y;
+
+                rotationVelocity.y = deltaX * 0.008;
+                rotationVelocity.x = deltaY * 0.008;
+                donutGroup.rotation.y += rotationVelocity.y;
+                donutGroup.rotation.x += rotationVelocity.x;
+
+                previousMousePosition = { x: clientX, y: clientY };
+            };
+
+            const onPointerUp = () => { isDragging = false; };
+
+            container.addEventListener('click', () => {
+                if (typeof gsap !== 'undefined') {
+                    gsap.to(donutGroup.rotation, { y: donutGroup.rotation.y + Math.PI * 2, duration: 1.2, ease: "back.out(1.5)" });
+                }
+            });
+
+            container.addEventListener('mousedown', onPointerDown);
+            window.addEventListener('mousemove', onPointerMove);
+            window.addEventListener('mouseup', onPointerUp);
+            container.addEventListener('touchstart', onPointerDown, { passive: true });
+            window.addEventListener('touchmove', onPointerMove, { passive: true });
+            window.addEventListener('touchend', onPointerUp);
+
+            let clock = new THREE.Clock();
+            function animate() {
+                requestAnimationFrame(animate);
+                const elapsedTime = clock.getElapsedTime();
+                if (!isDragging) {
+                    donutGroup.position.y = Math.sin(elapsedTime * 1.8) * 0.18;
+                    donutGroup.rotation.y += 0.005 + rotationVelocity.y;
+                    donutGroup.rotation.x += rotationVelocity.x;
+                    rotationVelocity.x *= 0.93;
+                    rotationVelocity.y *= 0.93;
+                }
+                crumbsGroup.rotation.y = elapsedTime * 0.05;
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                const w = container.clientWidth || 380;
+                const h = container.clientHeight || 380;
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+                renderer.setSize(w, h);
+            });
+        }
+
+        function getAdminPassword() { return localStorage.getItem('moms_bakery_admin_pass') || 'admin123'; }
+
+        function verifyAdminPassword() {
+            const enteredPass = document.getElementById('adminPassword').value;
+            if (enteredPass === getAdminPassword()) {
+                document.getElementById('adminLoginSection').classList.add('hidden');
+                document.getElementById('adminDashboardSection').classList.remove('hidden');
+                document.getElementById('adminPassword').value = ''; 
+                renderAdminProducts();
+                renderAdminOrders();
+                showToast('Welcome Back, Admin! 🔓');
+            } else { alert('Incorrect admin password!'); }
+        }
+
+        function handleChangeAdminPassword(e) {
+            e.preventDefault();
+            const currentInput = document.getElementById('currentAdminPass').value;
+            const newPass = document.getElementById('newAdminPass').value;
+            const confirmPass = document.getElementById('confirmAdminPass').value;
+
+            if (currentInput !== getAdminPassword()) return showToast('Current password incorrect! ❌');
+            if (newPass.length < 4) return showToast('Min 4 chars required!');
+            if (newPass !== confirmPass) return showToast('Passwords do not match! ❌');
+
+            localStorage.setItem('moms_bakery_admin_pass', newPass);
+            document.getElementById('changePasswordForm').reset();
+            showToast('Admin password updated! 🔐');
+        }
+
+        (function initScrollParallaxBackground() {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const motifFlour = document.getElementById('motifFlourParticles');
+            const motifWhisk = document.getElementById('motifWhisk');
+            const motifRollingPin = document.getElementById('motifRollingPin');
+            const motifEnergyGlow = document.getElementById('motifEnergyGlow');
+            const motifDrinksFizz = document.getElementById('motifDrinksFizz');
+            const motifGiftsSparkles = document.getElementById('motifGiftsSparkles');
+            const drinksSec = document.getElementById('drinks');
+            const giftsSec = document.getElementById('gifts');
+            let ticking = false;
+
+            function onScrollUpdate() {
+                const scrollY = window.scrollY || window.pageYOffset;
+                const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+                const scrollProgress = Math.min(Math.max(scrollY / (maxScroll || 1), 0), 1);
+
+                if (motifFlour) motifFlour.style.transform = `translate3d(0, ${scrollY * -0.15}px, 0)`;
+                if (motifWhisk) motifWhisk.style.transform = `translate3d(0, ${scrollY * -0.2}px, 0) rotate(${(scrollY * 0.08) % 360}deg)`;
+                if (motifRollingPin) motifRollingPin.style.transform = `translate3d(0, ${scrollY * -0.25}px, 0) rotate(${(scrollY * -0.06) % 360}deg)`;
+                if (motifGiftsSparkles) motifGiftsSparkles.style.transform = `translate3d(0, ${scrollY * -0.1}px, 0) scale(${1 + Math.sin(scrollProgress * Math.PI * 4) * 0.15})`;
+
+                if (drinksSec) {
+                    const drinksRect = drinksSec.getBoundingClientRect();
+                    if (drinksRect.top < window.innerHeight && drinksRect.bottom > 0) {
+                        if (motifEnergyGlow) motifEnergyGlow.style.opacity = '0.8';
+                        if (motifDrinksFizz) {
+                            motifDrinksFizz.style.opacity = '1';
+                            motifDrinksFizz.style.transform = `translate3d(0, ${(drinksRect.top - window.innerHeight) * 0.12}px, 0)`;
+                        }
+                    } else {
+                        if (motifEnergyGlow) motifEnergyGlow.style.opacity = '0';
+                        if (motifDrinksFizz) motifDrinksFizz.style.opacity = '0';
+                    }
+                }
+
+                if (giftsSec) {
+                    const giftsRect = giftsSec.getBoundingClientRect();
+                    if (motifGiftsSparkles) motifGiftsSparkles.style.opacity = (giftsRect.top < window.innerHeight && giftsRect.bottom > 0) ? '1' : '0';
+                }
+
+                ticking = false;
+            }
+
+            window.addEventListener('scroll', () => { if (!ticking) { window.requestAnimationFrame(onScrollUpdate); ticking = true; } }, { passive: true });
+            onScrollUpdate();
+        })();
+
+        function initScrollMorphEffect() {
+            const cakeVisual = document.getElementById('morphCakeVisual');
+            const monsterVisual = document.getElementById('morphMonsterVisual');
+            const drinksSection = document.getElementById('drinks');
+
+            window.addEventListener('scroll', () => {
+                if (!drinksSection) return;
+                const drinksRect = drinksSection.getBoundingClientRect();
+                if (drinksRect.top <= window.innerHeight / 2 && drinksRect.bottom >= 100) {
+                    cakeVisual.classList.add('hidden'); monsterVisual.classList.remove('hidden');
+                } else {
+                    cakeVisual.classList.remove('hidden'); monsterVisual.classList.add('hidden');
+                }
+            });
+        }
+
+        // ========================================================
+        // MODAL HANDLER: WEIGHT FOR CAKES vs QUANTITY FOR OTHERS
+        // ========================================================
+        function isCakeCategory(category) {
+            if (!category) return false;
+            const cat = category.trim().toLowerCase();
+            return cat === 'cakes' || cat === 'cake';
+        }
+
+        function openProductDetailModal(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            currentModalProduct = product;
+            selectedModalWeight = null;
+            selectedModalPrice = 0;
+            selectedModalQty = 1;
+
+            document.getElementById('modalProductImg').src = product.img || 'https://images.unsplash.com/photo-1586788680434-30d324b2d46f?auto=format&fit=crop&w=600&q=80';
+            document.getElementById('modalProductName').innerText = product.name;
+            document.getElementById('modalProductCategory').innerText = product.category || 'Bakery';
+            document.getElementById('modalProductDesc').innerText = product.desc;
+
+            const isCake = isCakeCategory(product.category);
+            const weightSec = document.getElementById('modalWeightSection');
+            const qtySec = document.getElementById('modalQuantitySection');
+
+            if (isCake) {
+                // SHOW WEIGHT OPTIONS FOR CAKE SECTION
+                weightSec.classList.remove('hidden');
+                qtySec.classList.add('hidden');
+
+                const base = product.price || 500;
+                const price250 = Math.round(base * 0.58);
+                const price500 = base;
+                const price1kg = Math.round(base * 1.8);
+
+                product.weightPrices = { '250 g': price250, '500 g': price500, '1 kg': price1kg };
+
+                document.getElementById('price-250g').innerText = `₹${price250}`;
+                document.getElementById('price-500g').innerText = `₹${price500}`;
+                document.getElementById('price-1kg').innerText = `₹${price1kg}`;
+                document.getElementById('modalDisplayPrice').innerText = '₹0';
+
+                resetWeightPills();
+            } else {
+                // SHOW QUANTITY OPTIONS FOR ALL OTHER SECTIONS
+                weightSec.classList.add('hidden');
+                qtySec.classList.remove('hidden');
+
+                document.getElementById('modalQtyDisplay').innerText = '1';
+                selectedModalPrice = product.price;
+                document.getElementById('modalDisplayPrice').innerText = `₹${product.price}`;
+
+                const btn = document.getElementById('modalAddToCartBtn');
+                btn.disabled = false;
+                btn.classList.add('btn-enabled');
+                btn.classList.remove('cursor-not-allowed', 'opacity-60', 'bg-gray-300', 'text-gray-500');
+                document.getElementById('modalBtnText').innerText = `Add Item to Cart`;
+            }
+
+            const backdrop = document.getElementById('productDetailModalBackdrop');
+            const modal = document.getElementById('productDetailModal');
+            backdrop.classList.remove('opacity-0', 'pointer-events-none');
+            modal.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
+            modal.classList.add('scale-100');
+        }
+
+        function closeProductDetailModal() {
+            const backdrop = document.getElementById('productDetailModalBackdrop');
+            const modal = document.getElementById('productDetailModal');
+            backdrop.classList.add('opacity-0', 'pointer-events-none');
+            modal.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
+            modal.classList.remove('scale-100');
+        }
+
+        function selectWeight(weight) {
+            if (!currentModalProduct) return;
+            selectedModalWeight = weight;
+            selectedModalPrice = currentModalProduct.weightPrices[weight];
+
+            resetWeightPills();
+
+            const pillId = weight === '250 g' ? 'pill-250g' : weight === '500 g' ? 'pill-500g' : 'pill-1kg';
+            const activePill = document.getElementById(pillId);
+            if (activePill) activePill.classList.add('active-weight');
+
+            document.getElementById('modalDisplayPrice').innerText = `₹${selectedModalPrice}`;
+
+            const btn = document.getElementById('modalAddToCartBtn');
+            const badge = document.getElementById('weightRequiredBadge');
+            btn.disabled = false;
+            btn.classList.add('btn-enabled');
+            btn.classList.remove('cursor-not-allowed', 'opacity-60', 'bg-gray-300', 'text-gray-500');
+            document.getElementById('modalBtnText').innerText = `Add (${weight}) to Cart`;
+            if (badge) badge.classList.add('hidden');
+        }
+
+        function resetWeightPills() {
+            document.querySelectorAll('.weight-pill').forEach(pill => pill.classList.remove('active-weight'));
+            const btn = document.getElementById('modalAddToCartBtn');
+            const badge = document.getElementById('weightRequiredBadge');
+            btn.disabled = true;
+            btn.classList.remove('btn-enabled');
+            btn.classList.add('cursor-not-allowed', 'opacity-60', 'bg-gray-300', 'text-gray-500');
+            document.getElementById('modalBtnText').innerText = 'Select Weight First';
+            if (badge) badge.classList.remove('hidden');
+        }
+
+        function changeModalQty(delta) {
+            setModalQty(selectedModalQty + delta);
+        }
+
+        function setModalQty(qty) {
+            if (qty < 1) qty = 1;
+            selectedModalQty = qty;
+            document.getElementById('modalQtyDisplay').innerText = selectedModalQty;
+            const totalPrice = currentModalProduct.price * selectedModalQty;
+            document.getElementById('modalDisplayPrice').innerText = `₹${totalPrice}`;
+            document.getElementById('modalBtnText').innerText = `Add ${selectedModalQty} Item(s) to Cart`;
+        }
+
+        function addModalItemToCart() {
+            if (!currentModalProduct) return;
+
+            const isCake = isCakeCategory(currentModalProduct.category);
+
+            if (isCake) {
+                if (!selectedModalWeight) return showToast('Please select a weight first! ⚠️');
+                const cartItemId = `${currentModalProduct.id}_${selectedModalWeight.replace(/\s+/g, '')}`;
+                const existing = cart.find(c => c.cartItemId === cartItemId);
+
+                if (existing) existing.qty++;
+                else {
+                    cart.push({
+                        cartItemId: cartItemId, id: currentModalProduct.id, name: currentModalProduct.name,
+                        weight: selectedModalWeight, price: selectedModalPrice, img: currentModalProduct.img, qty: 1
+                    });
+                }
+                showToast(`Added ${currentModalProduct.name} (${selectedModalWeight}) to cart! 🎂`);
+            } else {
+                const cartItemId = currentModalProduct.id;
+                const existing = cart.find(c => c.cartItemId === cartItemId || c.id === currentModalProduct.id);
+
+                if (existing) existing.qty += selectedModalQty;
+                else {
+                    cart.push({
+                        cartItemId: cartItemId, id: currentModalProduct.id, name: currentModalProduct.name,
+                        price: currentModalProduct.price, img: currentModalProduct.img, qty: selectedModalQty
+                    });
+                }
+                showToast(`Added ${selectedModalQty} × ${currentModalProduct.name} to cart! 🛒`);
+            }
+
+            saveState(); updateCartUI(); closeProductDetailModal(); renderAllSections();
+        }
+
+        function applySiteSettings() {
+            document.getElementById('contactAddressDisplay').innerText = settings.address;
+            document.getElementById('contactHoursDisplay').innerText = settings.hours;
+            document.getElementById('contactDeliveryDisplay').innerText = settings.deliveryInfo;
+            document.getElementById('contactPhoneDisplay').innerText = settings.phone;
+            document.getElementById('contactCallBtn').href = `tel:${settings.phone.replace(/\s+/g, '')}`;
+
+            const waMsg = encodeURIComponent("Hi, I'd like to place an order at Mom's Bakery!");
+            const waUrl = `https://wa.me/${settings.whatsappNumber}?text=${waMsg}`;
+
+            document.getElementById('heroWhatsappBtn').href = waUrl;
+            document.getElementById('floatingWhatsappBtn').href = waUrl;
+            document.getElementById('contactWhatsappBtn').href = waUrl;
+            document.getElementById('socialWhatsappLink').href = waUrl;
+            document.getElementById('socialWhatsappDisplay').innerText = `+${settings.whatsappNumber}`;
+
+            if (settings.instagramUrl) document.getElementById('instagramLink').href = settings.instagramUrl;
+            if (settings.facebookUrl) document.getElementById('facebookLink').href = settings.facebookUrl;
+
+            document.getElementById('setAddress').value = settings.address;
+            document.getElementById('setPhone').value = settings.phone;
+            document.getElementById('setWhatsapp').value = settings.whatsappNumber;
+            document.getElementById('setHours').value = settings.hours;
+            document.getElementById('setDelivery').value = settings.deliveryInfo;
+            document.getElementById('setInstagram').value = settings.instagramUrl;
+            document.getElementById('setFacebook').value = settings.facebookUrl;
+        }
+
+        function renderAllSections() { renderMenuGrid(); renderImportedGrid(); renderDrinksGrid(); renderCustomGrid(); renderGiftsGrid(); }
+
+        function filterProductBySearchAndCat(p, targetSection) {
+            if (p.section !== targetSection) return false;
+            const matchesCategory = targetSection !== 'menu' || currentFilter === 'all' || p.category === currentFilter;
+            const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.desc.toLowerCase().includes(searchQuery.toLowerCase()) || p.category.toLowerCase().includes(searchQuery.toLowerCase());
+            return matchesCategory && matchesSearch;
+        }
+
+        function renderMenuGrid() {
+            const container = document.getElementById('mainMenuGrid');
+            const filtered = products.filter(p => filterProductBySearchAndCat(p, 'menu'));
+            if (filtered.length === 0) { container.innerHTML = `<p class="col-span-full text-center py-10 text-bakery-brown/60 text-xs font-semibold">No items matched.</p>`; return; }
+            container.innerHTML = filtered.map(item => createCompactProductCardHTML(item)).join('');
+            init3DTilt();
+        }
+
+        function renderImportedGrid() {
+            const container = document.getElementById('importedGrid');
+            const filtered = products.filter(p => filterProductBySearchAndCat(p, 'imported'));
+            container.innerHTML = filtered.map(item => createCompactProductCardHTML(item, '✈️ Imported')).join('');
+            init3DTilt();
+        }
+
+        function renderDrinksGrid() {
+            const container = document.getElementById('drinksGrid');
+            const filtered = products.filter(p => filterProductBySearchAndCat(p, 'drinks'));
+            if (filtered.length === 0) { container.innerHTML = `<p class="col-span-full text-center py-10 text-emerald-300 text-xs font-semibold">No drinks found.</p>`; return; }
+            container.innerHTML = filtered.map(item => createDrinkCardHTML(item)).join('');
+            init3DTilt();
+        }
+
+        function renderCustomGrid() {
+            const container = document.getElementById('customGrid');
+            const filtered = products.filter(p => filterProductBySearchAndCat(p, 'custom'));
+            container.innerHTML = filtered.map(item => createCompactProductCardHTML(item, '✨ Chef Special')).join('');
+            init3DTilt();
+        }
+
+        function renderGiftsGrid() {
+            const container = document.getElementById('giftsGrid');
+            const filtered = products.filter(p => filterProductBySearchAndCat(p, 'gifts'));
+            container.innerHTML = filtered.map(item => createHamperCardHTML(item)).join('');
+            init3DTilt();
+        }
+
+        function createCompactProductCardHTML(item, specialBadge = '') {
+            const isCake = isCakeCategory(item.category);
+            const cartItem = cart.find(c => c.id === item.id || c.cartItemId === item.id);
+            const qty = cartItem ? cartItem.qty : 0;
+
+            return `
+                <div class="tilt-card bg-cream-light/90 backdrop-blur-md rounded-2xl overflow-hidden border border-amber-900/10 shadow-sm hover:shadow-2xl transition-all flex flex-col justify-between group relative">
+                    ${item.isSoldOut ? `<div class="absolute top-2 left-2 z-20 bg-berry-red text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow">SOLD OUT</div>` : ''}
+                    ${specialBadge && !item.isSoldOut ? `<div class="absolute top-2 left-2 z-20 bg-amber-100 text-amber-900 border border-amber-300 text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm">${specialBadge}</div>` : ''}
+                    <div onclick="openProductDetailModal('${item.id}')" class="cursor-pointer">
+                        <div class="h-32 sm:h-48 overflow-hidden relative">
+                            <img src="${item.img || 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80'}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div class="p-3 sm:p-4">
+                            <span class="text-[9px] sm:text-xs text-honey-gold font-bold uppercase tracking-wider block mb-0.5">${item.category}</span>
+                            <h3 class="font-serif text-xs sm:text-base font-bold text-bakery-brown leading-snug group-hover:text-honey-gold transition-colors line-clamp-1">${item.name}</h3>
+                            <p class="text-[10px] sm:text-xs text-bakery-brown/70 mt-1 line-clamp-2 leading-tight font-light">${item.desc}</p>
+                        </div>
+                    </div>
+                    <div class="p-3 sm:p-4 pt-0 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-amber-900/5 mt-1">
+                        <p class="font-serif text-xs sm:text-base font-bold text-bakery-brown">${isCake ? `From ₹${Math.round((item.price || 500) * 0.58)}` : `₹${item.price}`}</p>
+                        ${item.isSoldOut ? `<button disabled class="bg-gray-200 text-gray-500 font-semibold px-2 py-1 rounded-lg text-[10px]">Unavailable</button>` : `
+                            ${isCake ? `
+                                <button onclick="openProductDetailModal('${item.id}')" class="bg-honey-gold hover:bg-amber-600 text-white font-semibold px-3 py-1.5 rounded-lg text-xs shadow transition-all flex items-center justify-center gap-1">
+                                    <i class="fa-solid fa-weight-scale text-[10px]"></i> Select Weight
+                                </button>
+                            ` : `
+                                ${qty > 0 ? `
+                                    <div class="flex items-center bg-amber-100/90 rounded-lg p-0.5 border border-amber-300">
+                                        <button onclick="updateQty('${item.id}', -1)" class="w-6 h-6 rounded bg-white text-bakery-brown font-bold text-xs shadow-sm">-</button>
+                                        <span class="px-2 font-bold text-xs text-bakery-brown">${qty}</span>
+                                        <button onclick="updateQty('${item.id}', 1)" class="w-6 h-6 rounded bg-white text-bakery-brown font-bold text-xs shadow-sm">+</button>
+                                    </div>
+                                ` : `
+                                    <button onclick="openProductDetailModal('${item.id}')" class="bg-honey-gold hover:bg-amber-600 text-white font-semibold px-3 py-1.5 rounded-lg text-xs shadow transition-all flex items-center justify-center gap-1">
+                                        <i class="fa-solid fa-cart-plus text-[10px]"></i> Add Item
+                                    </button>
+                                `}
+                            `}
+                        `}
+                    </div>
+                </div>
+            `;
+        }
+
+        function createDrinkCardHTML(item) {
+            const cartItem = cart.find(c => c.id === item.id || c.cartItemId === item.id);
+            const qty = cartItem ? cartItem.qty : 0;
+            return `
+                <div class="tilt-card bg-monster-dark/95 backdrop-blur-md rounded-2xl overflow-hidden border border-emerald-500/40 shadow-xl hover:shadow-monster-green/30 transition-all flex flex-col justify-between group relative">
+                    <span class="absolute top-2 left-2 z-20 bg-monster-green text-black font-black text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider shadow">⚡ Energy</span>
+                    <div>
+                        <div class="h-36 sm:h-48 overflow-hidden relative">
+                            <img src="${item.img || 'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?auto=format&fit=crop&w=600&q=80'}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <div class="p-3 sm:p-4">
+                            <span class="text-[9px] sm:text-xs text-monster-green font-mono font-bold block mb-0.5">${item.category}</span>
+                            <h3 class="font-serif text-xs sm:text-base font-bold text-white leading-snug group-hover:text-monster-green transition-colors line-clamp-1">${item.name}</h3>
+                            <p class="text-[10px] sm:text-xs text-emerald-100/70 mt-1 line-clamp-2 leading-tight font-light">${item.desc}</p>
+                        </div>
+                    </div>
+                    <div class="p-3 sm:p-4 pt-0 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-emerald-500/20 mt-1">
+                        <p class="font-serif text-base sm:text-lg font-bold text-monster-green">₹${item.price}</p>
+                        ${qty > 0 ? `
+                            <div class="flex items-center bg-emerald-950 rounded-lg p-0.5 border border-monster-green">
+                                <button onclick="updateQty('${item.cartItemId || item.id}', -1)" class="w-6 h-6 rounded bg-black text-monster-green font-bold text-xs">-</button>
+                                <span class="px-2 font-bold text-xs text-white">${qty}</span>
+                                <button onclick="updateQty('${item.cartItemId || item.id}', 1)" class="w-6 h-6 rounded bg-black text-monster-green font-bold text-xs">+</button>
+                            </div>
+                        ` : `
+                            <button onclick="addDirectToCart('${item.id}')" class="bg-monster-green hover:bg-emerald-400 text-black font-extrabold px-3 py-1.5 rounded-lg text-xs shadow-lg transition-all flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-bolt text-[10px]"></i> Add Drink
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `;
+        }
+
+        function createHamperCardHTML(item) {
+            const cartItem = cart.find(c => c.id === item.id || c.cartItemId === item.id);
+            const qty = cartItem ? cartItem.qty : 0;
+
+            return `
+                <div class="tilt-card bg-cream-light/95 backdrop-blur-md text-bakery-brown rounded-3xl p-3 sm:p-5 shadow-2xl border-2 border-amber-500/40 hover:border-amber-400 transition-all flex flex-col justify-between group relative overflow-hidden">
+                    <div onclick="openProductDetailModal('${item.id}')" class="cursor-pointer">
+                        <div class="h-36 sm:h-52 rounded-2xl overflow-hidden relative">
+                            <img src="${item.img || 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=600&q=80'}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <span class="absolute top-2 left-2 bg-amber-950/90 text-amber-300 text-[9px] font-bold px-2.5 py-1 rounded-full border border-amber-500">🎁 Luxury Trunk</span>
+                        </div>
+                        <div class="mt-3">
+                            <h3 class="font-serif text-sm sm:text-lg font-bold text-bakery-brown leading-snug group-hover:text-honey-gold transition-colors line-clamp-1">${item.name}</h3>
+                            <p class="text-[10px] sm:text-xs text-bakery-brown/70 mt-1 line-clamp-2 leading-tight font-light">${item.desc}</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-2 border-t border-amber-900/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <p class="font-serif text-base sm:text-xl font-bold text-honey-gold">₹${item.price}</p>
+                        ${qty > 0 ? `
+                            <div class="flex items-center bg-amber-100 rounded-lg p-0.5 border border-amber-300">
+                                <button onclick="updateQty('${item.id}', -1)" class="w-6 h-6 rounded bg-white text-bakery-brown font-bold text-xs shadow-sm">-</button>
+                                <span class="px-2 font-bold text-xs text-bakery-brown">${qty}</span>
+                                <button onclick="updateQty('${item.id}', 1)" class="w-6 h-6 rounded bg-white text-bakery-brown font-bold text-xs shadow-sm">+</button>
+                            </div>
+                        ` : `
+                            <button onclick="openProductDetailModal('${item.id}')" class="bg-honey-gold hover:bg-amber-600 text-white font-bold px-4 py-1.5 rounded-xl text-xs shadow transition-all flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-gift text-xs"></i> Order Hamper
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `;
+        }
+
+        function addDirectToCart(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+            const existing = cart.find(c => c.cartItemId === product.id || c.id === id);
+            if (existing) existing.qty++;
+            else cart.push({ cartItemId: product.id, id: product.id, name: product.name, price: product.price, img: product.img, qty: 1 });
+            saveState(); updateCartUI(); renderAllSections(); showToast(`Added "${product.name}" to cart! 🛒`);
+        }
+
+        function handleSearch(val) {
+            searchQuery = val;
+            document.getElementById('heroSearchInput').value = val;
+            document.getElementById('menuSearchInput').value = val;
+            renderAllSections();
+        }
+
+        function filterCategory(cat) {
+            currentFilter = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-honey-gold', 'text-white');
+                btn.classList.add('bg-amber-100', 'text-bakery-brown');
+            });
+            event.target.classList.add('active', 'bg-honey-gold', 'text-white');
+            event.target.classList.remove('bg-amber-100', 'text-bakery-brown');
+            renderMenuGrid();
+        }
+
+        function updateQty(cartKey, change) {
+            const item = cart.find(c => c.cartItemId === cartKey || c.id === cartKey);
+            if (!item) return;
+            item.qty += change;
+            if (item.qty <= 0) cart = cart.filter(c => c !== item);
+            saveState(); updateCartUI(); renderAllSections();
+        }
+
+        function updateCartUI() {
+            const badge = document.getElementById('cartBadge');
+            const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+            const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            if (totalCount > 0) { badge.innerText = totalCount; badge.classList.remove('scale-0'); badge.classList.add('scale-100'); }
+            else { badge.classList.remove('scale-100'); badge.classList.add('scale-0'); }
+
+            document.getElementById('cartSubtotal').innerText = `₹${totalAmount}`;
+            document.getElementById('cartTotal').innerText = `₹${totalAmount}`;
+            document.getElementById('checkoutTotalAmount').innerText = totalAmount;
+
+            const container = document.getElementById('cartItemsContainer');
+            if (cart.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 text-bakery-brown/60 space-y-2"><i class="fa-solid fa-cookie-bite text-4xl text-amber-300"></i><p class="font-serif text-sm font-semibold">Your cart is empty</p></div>`;
+            } else {
+                container.innerHTML = cart.map(item => `
+                    <div class="flex items-center justify-between bg-white p-2.5 rounded-xl border border-amber-900/10 shadow-sm text-xs">
+                        <img src="${item.img || 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80'}" class="w-12 h-12 rounded-lg object-cover">
+                        <div class="flex-1 px-3">
+                            <h4 class="font-bold text-bakery-brown leading-tight">${item.name}</h4>
+                            ${item.weight ? `<span class="inline-block bg-amber-100 text-amber-900 text-[10px] font-extrabold px-2 py-0.5 rounded-full mt-0.5">Weight: ${item.weight}</span>` : ''}
+                            <p class="text-honey-gold font-semibold mt-0.5">₹${item.price} × ${item.qty} = ₹${item.price * item.qty}</p>
+                        </div>
+                        <div class="flex items-center bg-amber-50 rounded-lg p-0.5 border border-amber-200">
+                            <button onclick="updateQty('${item.cartItemId || item.id}', -1)" class="w-5 h-5 rounded bg-white font-bold text-xs">-</button>
+                            <span class="px-2 font-bold text-xs text-bakery-brown">${item.qty}</span>
+                            <button onclick="updateQty('${item.cartItemId || item.id}', 1)" class="w-5 h-5 rounded bg-white font-bold text-xs">+</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function toggleCartDrawer() {
+            const drawer = document.getElementById('cartDrawer');
+            const backdrop = document.getElementById('cartDrawerBackdrop');
+            drawer.classList.toggle('translate-x-full');
+            backdrop.classList.toggle('opacity-0');
+            backdrop.classList.toggle('pointer-events-none');
+        }
+
+        function showCheckoutForm() {
+            if (cart.length === 0) return showToast('Add items to cart first!');
+            document.getElementById('cartFooter').classList.add('hidden');
+            document.getElementById('cartItemsContainer').classList.add('hidden');
+            document.getElementById('checkoutFormArea').classList.remove('hidden');
+        }
+
+        function hideCheckoutForm() {
+            document.getElementById('cartFooter').classList.remove('hidden');
+            document.getElementById('cartItemsContainer').classList.remove('hidden');
+            document.getElementById('checkoutFormArea').classList.add('hidden');
+        }
+
+        function orderCartViaWhatsApp() {
+            if (cart.length === 0) return showToast('Your cart is empty!');
+            let text = "Hi Mom's Bakery! I would like to place an order:\n\n";
+            cart.forEach((item, idx) => {
+                const weightLabel = item.weight ? ` [${item.weight}]` : '';
+                text += `${idx + 1}. ${item.name}${weightLabel} x ${item.qty} = ₹${item.price * item.qty}\n`;
+            });
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            text += `\n*Total Amount: ₹${total}*\n\nPlease confirm availability.`;
+            window.open(`https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function handlePlaceOrder(e) {
+            e.preventDefault();
+            const name = document.getElementById('custName').value;
+            const phone = document.getElementById('custPhone').value;
+            const address = document.getElementById('custAddress').value;
+            const payment = document.getElementById('paymentMethod').value;
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            const newOrder = {
+                orderId: 'MB-' + Math.floor(100000 + Math.random() * 900000),
+                date: new Date().toLocaleString(),
+                customer: { name, phone, address },
+                items: [...cart],
+                paymentMethod: payment,
+                totalAmount: total,
+                status: 'New'
+            };
+
+            orders.unshift(newOrder);
+            cart = [];
+            saveState(); updateCartUI(); toggleCartDrawer();
+            showToast(`Order #${newOrder.orderId} Placed! 🎉`);
+            alert(`Thank you ${name}! Your order #${newOrder.orderId} has been placed successfully.`);
+        }
+
+        function handleImageFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                uploadedBase64Image = evt.target.result;
+                document.getElementById('prodImagePreview').src = uploadedBase64Image;
+                document.getElementById('imagePreviewContainer').classList.remove('hidden');
+                showToast('Photo uploaded from gallery! 📸');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function openAdminModal() { document.getElementById('adminModal').classList.remove('hidden'); }
+        function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
+
+        function switchAdminTab(tab) {
+            document.getElementById('tabContentProducts').classList.add('hidden');
+            document.getElementById('tabContentOrders').classList.add('hidden');
+            document.getElementById('tabContentSettings').classList.add('hidden');
+            document.getElementById('tabBtnProducts').className = "pb-2.5 text-bakery-brown/60 hover:text-honey-gold";
+            document.getElementById('tabBtnOrders').className = "pb-2.5 text-bakery-brown/60 hover:text-honey-gold";
+            document.getElementById('tabBtnSettings').className = "pb-2.5 text-bakery-brown/60 hover:text-honey-gold";
+
+            if (tab === 'products') {
+                document.getElementById('tabContentProducts').classList.remove('hidden');
+                document.getElementById('tabBtnProducts').className = "pb-2.5 border-b-2 border-honey-gold text-honey-gold font-semibold";
+            } else if (tab === 'orders') {
+                document.getElementById('tabContentOrders').classList.remove('hidden');
+                document.getElementById('tabBtnOrders').className = "pb-2.5 border-b-2 border-honey-gold text-honey-gold font-semibold";
+            } else {
+                document.getElementById('tabContentSettings').classList.remove('hidden');
+                document.getElementById('tabBtnSettings').className = "pb-2.5 border-b-2 border-honey-gold text-honey-gold font-semibold";
+            }
+        }
+
+        function renderAdminProducts() {
+            const container = document.getElementById('adminProductsList');
+            container.innerHTML = products.map(item => `
+                <div class="flex items-center justify-between bg-white p-2.5 rounded-xl border border-amber-900/10 text-xs">
+                    <div class="flex items-center gap-3">
+                        <img src="${item.img || 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80'}" class="w-10 h-10 rounded-lg object-cover">
+                        <div><span class="font-bold text-bakery-brown">${item.name}</span><p class="text-bakery-brown/60">₹${item.price} • Category: ${item.category}</p></div>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="toggleSoldOut('${item.id}')" class="px-2 py-0.5 rounded text-[10px] font-bold ${item.isSoldOut ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-800'}">${item.isSoldOut ? 'Sold Out' : 'Available'}</button>
+                        <button onclick="editProduct('${item.id}')" class="px-2 py-0.5 bg-amber-100 text-bakery-brown rounded text-[10px] font-bold">Edit</button>
+                        <button onclick="deleteProduct('${item.id}')" class="px-2 py-0.5 bg-red-100 text-red-700 rounded text-[10px] font-bold">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderAdminOrders() {
+            const container = document.getElementById('adminOrdersList');
+            document.getElementById('adminOrdersCount').innerText = orders.length;
+            if (orders.length === 0) { container.innerHTML = `<p class="text-center py-6 text-bakery-brown/60 text-xs">No customer orders yet.</p>`; return; }
+            container.innerHTML = orders.map(ord => `
+                <div class="bg-white p-3 rounded-xl border border-amber-900/10 text-xs space-y-2">
+                    <div class="flex items-center justify-between border-b pb-1">
+                        <span class="font-bold text-bakery-brown">${ord.orderId} (${ord.date})</span>
+                        <select onchange="updateOrderStatus('${ord.orderId}', this.value)" class="text-xs font-bold px-2 py-0.5 rounded bg-amber-50 border">
+                            <option value="New" ${ord.status === 'New' ? 'selected' : ''}>New</option>
+                            <option value="Confirmed" ${ord.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
+                            <option value="Preparing" ${ord.status === 'Preparing' ? 'selected' : ''}>Preparing</option>
+                            <option value="Out for Delivery" ${ord.status === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery</option>
+                            <option value="Delivered" ${ord.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                        </select>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-bakery-brown">${ord.customer.name} (${ord.customer.phone}) - ${ord.customer.address}</p>
+                        <p class="text-honey-gold font-bold">Total: ₹${ord.totalAmount} (${ord.paymentMethod})</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function handleSaveProduct(e) {
+            e.preventDefault();
+            const editId = document.getElementById('editProductId').value;
+            const name = document.getElementById('prodName').value;
+            const section = document.getElementById('prodSection').value;
+            const category = document.getElementById('prodCategory').value;
+            const price = parseFloat(document.getElementById('prodPrice').value);
+            const desc = document.getElementById('prodDesc').value;
+            const imgUrl = document.getElementById('prodImage').value;
+            const finalImage = uploadedBase64Image || imgUrl;
+
+            if (editId) {
+                const index = products.findIndex(p => p.id === editId);
+                if (index !== -1) products[index] = { ...products[index], name, section, category, price, desc, img: finalImage || products[index].img };
+            } else {
+                products.push({ id: 'p-' + Date.now(), name, section, category, price, desc, img: finalImage, isSoldOut: false });
+            }
+            saveState(); renderAllSections(); renderAdminProducts(); resetProductForm(); showToast('Product saved!');
+        }
+
+        function editProduct(id) {
+            const prod = products.find(p => p.id === id);
+            if (!prod) return;
+            document.getElementById('editProductId').value = prod.id;
+            document.getElementById('prodName').value = prod.name;
+            document.getElementById('prodSection').value = prod.section;
+            document.getElementById('prodCategory').value = prod.category;
+            document.getElementById('prodPrice').value = prod.price;
+            document.getElementById('prodDesc').value = prod.desc;
+            document.getElementById('prodImage').value = prod.img.startsWith('data:') ? '' : prod.img;
+            if (prod.img) {
+                uploadedBase64Image = prod.img;
+                document.getElementById('prodImagePreview').src = prod.img;
+                document.getElementById('imagePreviewContainer').classList.remove('hidden');
+            }
+            document.getElementById('adminFormTitle').innerText = 'Edit Product';
+        }
+
+        function resetProductForm() {
+            document.getElementById('productForm').reset();
+            document.getElementById('editProductId').value = '';
+            uploadedBase64Image = '';
+            document.getElementById('imagePreviewContainer').classList.add('hidden');
+            document.getElementById('adminFormTitle').innerText = 'Add New Item';
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Delete this product?')) {
+                products = products.filter(p => p.id !== id);
+                saveState(); renderAllSections(); renderAdminProducts(); showToast('Product deleted.');
+            }
+        }
+
+        function toggleSoldOut(id) {
+            const prod = products.find(p => p.id === id);
+            if (prod) { prod.isSoldOut = !prod.isSoldOut; saveState(); renderAllSections(); renderAdminProducts(); showToast('Status updated.'); }
+        }
+
+        function updateOrderStatus(orderId, status) {
+            const ord = orders.find(o => o.orderId === orderId);
+            if (ord) { ord.status = status; saveState(); showToast(`Order marked as ${status}`); }
+        }
+
+        function handleSaveSettings(e) {
+            e.preventDefault();
+            settings.address = document.getElementById('setAddress').value;
+            settings.phone = document.getElementById('setPhone').value;
+            settings.whatsappNumber = document.getElementById('setWhatsapp').value;
+            settings.hours = document.getElementById('setHours').value;
+            settings.deliveryInfo = document.getElementById('setDelivery').value;
+            settings.instagramUrl = document.getElementById('setInstagram').value;
+            settings.facebookUrl = document.getElementById('setFacebook').value;
+            saveState(); applySiteSettings(); showToast('Bakery details updated!');
+        }
+
+        function toggleMobileNav() { document.getElementById('mobileNav').classList.toggle('hidden'); }
+
+        function showToast(msg) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = "bg-bakery-brown text-cream text-xs font-semibold px-4 py-2 rounded-full shadow-2xl border border-amber-500/30 flex items-center gap-2 transform transition-all duration-300 translate-y-4 opacity-0";
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-honey-gold"></i> <span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.remove('translate-y-4', 'opacity-0'), 10);
+            setTimeout(() => { toast.classList.add('opacity-0', '-translate-y-2'); setTimeout(() => toast.remove(), 300); }, 2800);
+        }
+
+        function initScrollObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('active'); });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        function init3DTilt() {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            document.querySelectorAll('.tilt-card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left - (rect.width / 2);
+                    const y = e.clientY - rect.top - (rect.height / 2);
+                    card.style.transform = `perspective(1000px) rotateX(${-(y / rect.height) * 10}deg) rotateY(${(x / rect.width) * 10}deg) scale3d(1.02, 1.02, 1.02)`;
+                });
+                card.addEventListener('mouseleave', () => { card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`; });
+            });
+        }
+    </script>
 </body>
 </html>
